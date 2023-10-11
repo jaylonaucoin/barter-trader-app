@@ -41,6 +41,10 @@
             android:numStars="5"
             android:stepSize="0.5"
             android:rating="4.5"
+            android:scaleX="0.75"
+            android:scaleY="0.75"
+            android:transformPivotX="0dp"
+            android:transformPivotY="0dp"
             android:isIndicator="true" />
 
     </RelativeLayout>
