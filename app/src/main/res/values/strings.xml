@@ -5,4 +5,6 @@
     <string name="loginPassword">Password</string>
     <string name="loginRegister">Register</string>
     <string name="passwordRecovery">Forgot Password</string>
+    <string name="recoverPage">Password Recovery</string>
+    <string name="returnLogin">Return to Login</string>
 </resources>

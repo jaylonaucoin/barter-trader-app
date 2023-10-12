@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -17,6 +19,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         connectToFirebase();
         writeToFirebase();
+
+        Button passwordRecoverButton = findViewById(R.id.passwordRecoverButton);
+        passwordRecoverButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle the click event and navigate to the PasswordRecovery activity.
+                Intent passwordRecoveryIntent = new Intent(MainActivity.this, PasswordRecoveryActivity.class);
+                startActivity(passwordRecoveryIntent);
+            }
+        });
     }
 
     private void connectToFirebase(){
