@@ -13,16 +13,17 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
         connectToFirebase();
+        writeToFirebase();
     }
 
     private void connectToFirebase(){
-        firebaseDB = FirebaseDatabase.getInstance("https://barter-app-50729-default-rtdb.firebaseio.com/");
-        userNode = firebaseDB.getReference("Users");
+        firebaseDB = FirebaseDatabase.getInstance();
+        userNode = firebaseDB.getReference("user");
     }
 
     private void writeToFirebase(){
-        userNode.setValue("Hello World");
+       userNode.child("id").push().setValue("2");
     }
 }
