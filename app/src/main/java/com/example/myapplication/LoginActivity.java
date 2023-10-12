@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String validEmail = "user@example.com";
+    private static final String validPassword = "password123";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +25,29 @@ public class LoginActivity extends AppCompatActivity {
                 // Handle the click event and navigate to the PasswordRecovery activity.
                 Intent passwordRecoveryIntent = new Intent(LoginActivity.this, PasswordRecoveryActivity.class);
                 startActivity(passwordRecoveryIntent);
+            }
+        });
+
+        Button loginButton = findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get user input
+                EditText emailEditText = findViewById(R.id.email);
+                EditText passwordEditText = findViewById(R.id.password);
+                String userEmail = emailEditText.getText().toString();
+                String userPassword = passwordEditText.getText().toString();
+
+                // Check the input against your database or predefined values
+                if (userEmail.equals(validEmail) && userPassword.equals(validPassword)) {
+                    // Successful login, navigate to the next activity or perform other actions
+                    // Replace MainActivity.class with the appropriate activity to navigate to
+                    Intent loginIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(loginIntent);
+                } else {
+                    // Invalid email or password, show a message to the user
+                    Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
