@@ -22,14 +22,13 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".user_profile_page.user_profile_fragments.ReviewPage"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".user_profile_page.UserProfile"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-
     </application>
 
 </manifest>
