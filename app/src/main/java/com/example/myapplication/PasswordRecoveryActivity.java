@@ -8,11 +8,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class PasswordRecoveryActivity extends AppCompatActivity {
+    private FirebaseDatabase firebaseDB;
+    private DatabaseReference firebaseDBRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password);
+        connectToFirebase();
 
         Button loginReturnButton = findViewById(R.id.loginReturnButton);
         loginReturnButton.setOnClickListener(new View.OnClickListener() {
@@ -24,5 +30,10 @@ public class PasswordRecoveryActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void connectToFirebase(){
+        firebaseDB = FirebaseDatabase.getInstance("https://barter-app-50729-default-rtdb.firebaseio.com/");
+        firebaseDBRef = firebaseDB.getReference("test");
     }
 }
