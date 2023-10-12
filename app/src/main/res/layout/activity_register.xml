@@ -7,6 +7,21 @@
     tools:context=".RegisterActivity">
 
 
+    <EditText
+        android:id="@+id/confirmPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="101dp"
+        android:width="250dp"
+        android:ems="10"
+        android:hint="@string/confirmPassword"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="129dp"
@@ -27,70 +42,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="155dp"
-        android:layout_marginTop="66dp"
+        android:layout_marginTop="19dp"
         android:layout_marginEnd="155dp"
         android:text="@string/register"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/role" />
-
-    <EditText
-        android:id="@+id/lastName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="101dp"
-        android:width="250dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="@string/lastName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/firstName" />
-
-    <Spinner
-        android:id="@+id/role"
-        android:layout_width="250dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="81dp"
-        android:layout_marginEnd="80dp"
-        android:entries="@array/roles_array"
-        android:hint="@string/role_spinner_prompt"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rolePrompt" />
-
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="101dp"
-        android:width="250dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:hint="@string/email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lastName" />
-
-    <EditText
-        android:id="@+id/firstName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="104dp"
-        android:layout_marginEnd="101dp"
-        android:width="250dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="@string/firstName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/role" />
 
     <Button
         android:id="@+id/loginButton"
@@ -115,16 +73,91 @@
         android:text="@string/accountAlreadyMessage"
         app:layout_constraintEnd_toStartOf="@+id/loginButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/registerButton" />
+        app:layout_constraintTop_toBottomOf="@+id/registerButton" />
+
+    <EditText
+        android:id="@+id/firstName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="101dp"
+        android:width="250dp"
+        android:ems="10"
+        android:hint="@string/firstName"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="101dp"
+        android:width="250dp"
+        android:ems="10"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastName" />
+
+    <EditText
+        android:id="@+id/lastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="101dp"
+        android:width="250dp"
+        android:ems="10"
+        android:hint="@string/lastName"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstName" />
+
+    <Spinner
+        android:id="@+id/role"
+        android:layout_width="250dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="81dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="80dp"
+        android:entries="@array/roles_array"
+        android:hint="@string/role_spinner_prompt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rolePrompt" />
 
     <TextView
         android:id="@+id/rolePrompt"
         android:layout_width="119dp"
         android:layout_height="23dp"
         android:layout_marginStart="81dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="211dp"
         android:text="@string/roleSelectPrompt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirmPassword" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="101dp"
+        android:width="250dp"
+        android:ems="10"
+        android:hint="@string/password"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />

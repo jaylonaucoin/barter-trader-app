@@ -9,7 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDB;
-    private DatabaseReference firebaseDBRef;
+    private DatabaseReference userNode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,10 +19,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void connectToFirebase(){
         firebaseDB = FirebaseDatabase.getInstance("https://barter-app-50729-default-rtdb.firebaseio.com/");
-        firebaseDBRef = firebaseDB.getReference("test");
+        userNode = firebaseDB.getReference("Users");
     }
 
     private void writeToFirebase(){
-        firebaseDBRef.setValue("Hello World");
+        userNode.setValue("Hello World");
     }
 }
