@@ -45,7 +45,7 @@
         android:width="250dp"
         android:ems="10"
         android:inputType="text"
-        android:prompt="@string/loginEmail"
+        android:hint="@string/loginEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -59,7 +59,7 @@
         android:layout_marginEnd="58dp"
         android:width="250dp"
         android:ems="10"
-        android:prompt="@string/loginPassword"
+        android:hint="@string/loginPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
