@@ -13,5 +13,16 @@ public class PasswordRecoveryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password);
+
+        Button loginReturnButton = findViewById(R.id.loginReturnButton);
+        loginReturnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle the click event and navigate back to the LoginActivity.
+                Intent loginIntent = new Intent(PasswordRecoveryActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+            }
+        });
+
     }
 }

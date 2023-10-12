@@ -16,19 +16,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main);
         connectToFirebase();
         writeToFirebase();
 
-        Button passwordRecoverButton = findViewById(R.id.passwordRecoverButton);
-        passwordRecoverButton.setOnClickListener(new View.OnClickListener() {
+        Button loginPageButton = findViewById(R.id.loginPage);
+        loginPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle the click event and navigate to the PasswordRecovery activity.
-                Intent passwordRecoveryIntent = new Intent(MainActivity.this, PasswordRecoveryActivity.class);
-                startActivity(passwordRecoveryIntent);
+                // Handle the click event and navigate to the LoginActivity.
+                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
             }
         });
+
+
     }
 
     private void connectToFirebase(){
