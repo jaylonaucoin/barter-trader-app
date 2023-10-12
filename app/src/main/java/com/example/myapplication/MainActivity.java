@@ -39,6 +39,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeToFirebase(){
-        firebaseDBRef.setValue("Hello///");
+        firebaseDBRef.setValue("Hello/");
     }
 }
