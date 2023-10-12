@@ -4,4 +4,5 @@
     <string name="loginEmail">Email</string>
     <string name="loginPassword">Password</string>
     <string name="loginRegister">Register</string>
+    <string name="passwordRecovery">Forgot Password</string>
 </resources>

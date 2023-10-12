@@ -12,28 +12,28 @@
         android:layout_width="129dp"
         android:layout_height="48dp"
         android:layout_marginStart="141dp"
-        android:layout_marginTop="121dp"
+        android:layout_marginTop="76dp"
         android:layout_marginEnd="141dp"
         android:text="@string/login"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/loginButton"
-        android:layout_width="191dp"
-        android:layout_height="69dp"
-        android:layout_marginStart="155dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="156dp"
+        android:layout_width="298dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="57dp"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordRecoverButton" />
 
     <EditText
         android:id="@+id/email"
@@ -55,7 +55,7 @@
         android:layout_width="295dp"
         android:layout_height="55dp"
         android:layout_marginStart="58dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="35dp"
         android:layout_marginEnd="58dp"
         android:width="250dp"
         android:ems="10"
@@ -71,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="66dp"
+        android:layout_marginTop="114dp"
         android:layout_marginEnd="93dp"
         android:text="@string/loginRegister"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,11 +83,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
-        android:layout_marginTop="79dp"
+        android:layout_marginTop="127dp"
         android:layout_marginEnd="1dp"
         android:text="Don't have an account?"
         app:layout_constraintEnd_toStartOf="@+id/registerButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
+    <Button
+        android:id="@+id/passwordRecoverButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="273dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="58dp"
+        android:text="@string/passwordRecovery"
+        app:layout_constraintEnd_toStartOf="@+id/password"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
 </androidx.constraintlayout.widget.ConstraintLayout>
