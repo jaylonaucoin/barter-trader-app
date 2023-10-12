@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void connectToFirebase(){
-        firebaseDB = FirebaseDatabase.getInstance("https://barter-app-50729-default-rtdb.firebaseio.com/");
+        firebaseDB = FirebaseDatabase.getInstance();
         firebaseDBRef = firebaseDB.getReference("test");
     }
 }
