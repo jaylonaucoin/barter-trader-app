@@ -1,7 +1,6 @@
 package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,8 +49,23 @@ public class LoginActivity extends AppCompatActivity {
                 String userEmail = emailEditText.getText().toString();
                 String userPassword = passwordEditText.getText().toString();
 
-                // attempting to login with provided info using the auth methods
-                firebaseAuth.signInWithEmailAndPassword(userEmail, userPassword);
+                // Attempt to login with provided info using the authentication methods
+                firebaseAuth.signInWithEmailAndPassword(userEmail, userPassword)
+                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Login was successful
+                                    Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                                    // You can navigate to the next activity or perform other actions here.
+                                    Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(mainIntent);
+                                } else {
+                                    // Login failed
+                                    Toast.makeText(LoginActivity.this, "Login failed. Check your credentials.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
     }
