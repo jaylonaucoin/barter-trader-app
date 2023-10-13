@@ -28,38 +28,49 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         firebaseAuth = FirebaseAuth.getInstance();
 
+        // retrieving the password recovery button
         Button passwordRecoverButton = findViewById(R.id.passwordRecoverButton);
         passwordRecoverButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            // on click for when password retrieved is clicked
             public void onClick(View v) {
+                // bringing you to password recover page
                 Intent passwordRecoveryIntent = new Intent(LoginActivity.this, PasswordRecoveryActivity.class);
                 startActivity(passwordRecoveryIntent);
             }
         });
 
+        // retrieving the login button
         Button loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(new View.OnClickListener() {
+            // on click for when login is clicked
             public void onClick(View v) {
+                // grabbing the users inputted information (email and password)
                 EditText emailEditText = findViewById(R.id.email);
                 EditText passwordEditText = findViewById(R.id.password);
                 String userEmail = emailEditText.getText().toString();
                 String userPassword = passwordEditText.getText().toString();
 
+                // checking if either the password or email is empty
                 if (TextUtils.isEmpty(userEmail) || TextUtils.isEmpty(userPassword)) {
-                    // Ensure both fields are filled in.
+                    // message to inform user to fill out both
                     Toast.makeText(LoginActivity.this, "Both email and password are required.", Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                // if both filled out then conduct firebase auth pre-made sign in method
+                else {
                     firebaseAuth.signInWithEmailAndPassword(userEmail, userPassword)
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
+                                    // if users credentials match from the database then display success and bring them to login success page
                                     if (task.isSuccessful()) {
-                                        // Login was successful
+                                        // login was completed
                                         Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
                                         Intent loginSuccessIntent = new Intent(LoginActivity.this, LoginSuccessActivity.class);
                                         startActivity(loginSuccessIntent);
-                                    } else {
-                                        // Login failed
+                                    }
+                                    // if the credentials do not match any from the firebase then inform user and keep them on login page
+                                    else {
                                         Toast.makeText(LoginActivity.this, "Login failed. Check your credentials.", Toast.LENGTH_SHORT).show();
                                     }
                                 }
