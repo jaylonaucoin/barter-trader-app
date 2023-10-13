@@ -12,12 +12,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.user_profile_page.RatingViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,13 +35,6 @@ public class RatingsFragment extends Fragment {
 
     private final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("user_reviews");
 
-    private RatingViewModel viewModel;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(requireActivity()).get(RatingViewModel.class);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,11 +59,6 @@ public class RatingsFragment extends Fragment {
         ImageButton reviewButton = view.findViewById(R.id.reviewButton);
         reviewButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), ReviewPage.class)));
 
-        // Observe LiveData for average rating
-        viewModel.getAverageRating().observe(getViewLifecycleOwner(), averageRating -> {
-            // If needed, update UI elements based on averageRating
-            // for example: someTextView.setText(String.valueOf(averageRating));
-        });
     }
 
     private void initializeProgressBarAndTextView(View view) {
@@ -100,6 +86,7 @@ public class RatingsFragment extends Fragment {
                     reviewList.add(review);
                 }
                 updateUIElements();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -162,15 +149,13 @@ public class RatingsFragment extends Fragment {
         twoStarProgressBar.setProgress(twoStarPercentage);
         oneStarProgressBar.setProgress(oneStarPercentage);
 
-        ratingBar.setRating(averageRating);
-
         fiveStarCount.setText(String.valueOf(fiveStar));
         fourStarCount.setText(String.valueOf(fourStar));
         threeStarCount.setText(String.valueOf(threeStar));
         twoStarCount.setText(String.valueOf(twoStar));
         oneStarCount.setText(String.valueOf(oneStar));
 
-        viewModel.setAverageRating(averageRating);
+        ratingBar.setRating(averageRating);
         decimalRatingText.setText(String.format("%.2f out of 5", averageRating));
     }
 
