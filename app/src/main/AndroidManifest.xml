@@ -23,10 +23,12 @@
         </activity>
         <activity
             android:name=".user_profile_page.user_profile_fragments.ReviewPage"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:label="Review"
+            android:parentActivityName=".user_profile_page.UserProfile"/>
         <activity
             android:name=".user_profile_page.UserProfile"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>
