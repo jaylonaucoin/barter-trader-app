@@ -47,11 +47,12 @@ public class PasswordRecoveryActivity extends AppCompatActivity {
             }
         });
 
+        // grabbing the return to login page button
         Button loginReturnButton = findViewById(R.id.loginReturnButton);
         loginReturnButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            // when clicked it will bring user back to the login page
             public void onClick(View v) {
-                // Handle the click event and navigate back to the LoginActivity.
                 Intent loginIntent = new Intent(PasswordRecoveryActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
 
