@@ -12,46 +12,70 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
-// com.google.firebase.database.DatabaseReference;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-
-/*
-import com.google.firebase.database.DatabaseReference;
+import com.example.myapplication.user_profile_page.RatingViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-*/
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RatingsFragment extends Fragment {
 
     private RatingBar ratingBar;
     private ProgressBar fiveStarProgressBar, fourStarProgressBar, threeStarProgressBar, twoStarProgressBar, oneStarProgressBar;
-    private TextView fiveStarCount, fourStarCount, threeStarCount, twoStarCount, oneStarCount;
+    private TextView fiveStarCount, fourStarCount, threeStarCount, twoStarCount, oneStarCount, decimalRatingText;
+    private List<Review> reviewList = new ArrayList<>();
+    private ReviewsAdapter adapter;
 
-    // private DatabaseReference databaseReference;
+    private final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("user_reviews");
+
+    private RatingViewModel viewModel;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(RatingViewModel.class);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_user_profile_ratings, container, false);
-        ImageButton reviewButton = view.findViewById(R.id.reviewButton);
+        initUI(view);
+        fetchReviewsFromFirebase();
+        return view;
+    }
 
-        reviewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    private void initUI(View view) {
+        // Initialize RecyclerView and adapter
+        RecyclerView recyclerView = view.findViewById(R.id.reviewsRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        adapter = new ReviewsAdapter(reviewList);
+        recyclerView.setAdapter(adapter);
 
-                Intent intent = new Intent(getActivity(), ReviewPage.class);
-                startActivity(intent);
-            }
-        });
-
-        /*
+        // Initialize other UI elements
         ratingBar = view.findViewById(R.id.ratingBar);
+        initializeProgressBarAndTextView(view);
+
+        ImageButton reviewButton = view.findViewById(R.id.reviewButton);
+        reviewButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), ReviewPage.class)));
+
+        // Observe LiveData for average rating
+        viewModel.getAverageRating().observe(getViewLifecycleOwner(), averageRating -> {
+            // If needed, update UI elements based on averageRating
+            // for example: someTextView.setText(String.valueOf(averageRating));
+        });
+    }
+
+    private void initializeProgressBarAndTextView(View view) {
         fiveStarProgressBar = view.findViewById(R.id.fiveStarProgressBar);
         fourStarProgressBar = view.findViewById(R.id.fourStarProgressBar);
         threeStarProgressBar = view.findViewById(R.id.threeStarProgressBar);
@@ -63,41 +87,19 @@ public class RatingsFragment extends Fragment {
         threeStarCount = view.findViewById(R.id.threeStarCount);
         twoStarCount = view.findViewById(R.id.twoStarCount);
         oneStarCount = view.findViewById(R.id.oneStarCount);
+        decimalRatingText = view.findViewById(R.id.decimalRatingText);
+    }
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("user_reviews");
-
-        // Assuming userId is the unique identifier for the user whose reviews you want to retrieve
-        String userId = "user123"; // Replace this with the actual user ID
-
-        // Retrieve reviews data from Firebase
-        databaseReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+    private void fetchReviewsFromFirebase() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Assuming the data structure in Firebase is like this:
-                // "user_reviews" -> "userId" -> "fiveStar", "fourStar", "threeStar", "twoStar", "oneStar"
-                long fiveStar = dataSnapshot.child("fiveStar").getValue(Long.class);
-                long fourStar = dataSnapshot.child("fourStar").getValue(Long.class);
-                long threeStar = dataSnapshot.child("threeStar").getValue(Long.class);
-                long twoStar = dataSnapshot.child("twoStar").getValue(Long.class);
-                long oneStar = dataSnapshot.child("oneStar").getValue(Long.class);
-
-                // Update RatingBar and ProgressBar values
-                long totalRatings = fiveStar + fourStar + threeStar + twoStar + oneStar;
-                float averageRating = (5 * fiveStar + 4 * fourStar + 3 * threeStar + 2 * twoStar + oneStar) / (float) totalRatings;
-
-                ratingBar.setRating(averageRating);
-                fiveStarProgressBar.setProgress((int) (fiveStar * 100 / totalRatings));
-                fourStarProgressBar.setProgress((int) (fourStar * 100 / totalRatings));
-                threeStarProgressBar.setProgress((int) (threeStar * 100 / totalRatings));
-                twoStarProgressBar.setProgress((int) (twoStar * 100 / totalRatings));
-                oneStarProgressBar.setProgress((int) (oneStar * 100 / totalRatings));
-
-                // Update TextViews
-                fiveStarCount.setText(String.valueOf(fiveStar));
-                fourStarCount.setText(String.valueOf(fourStar));
-                threeStarCount.setText(String.valueOf(threeStar));
-                twoStarCount.setText(String.valueOf(twoStar));
-                oneStarCount.setText(String.valueOf(oneStar));
+                reviewList.clear();
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Review review = extractReviewFromSnapshot(userSnapshot);
+                    reviewList.add(review);
+                }
+                updateUIElements();
             }
 
             @Override
@@ -105,7 +107,71 @@ public class RatingsFragment extends Fragment {
                 // Handle error
             }
         });
-    */
-        return view;
     }
+
+    private Review extractReviewFromSnapshot(DataSnapshot userSnapshot) {
+        String userId = userSnapshot.getKey();
+        String userName = userSnapshot.child("username").getValue(String.class);
+        float rating = userSnapshot.child("rating").getValue(Float.class);
+        String feedback = userSnapshot.child("feedback").getValue(String.class);
+        return new Review(userId, userName, rating, feedback);
+    }
+
+
+    private void updateUIElements() {
+        long totalRatings = 0;
+        long fiveStar = 0, fourStar = 0, threeStar = 0, twoStar = 0, oneStar = 0;
+
+        for (Review review : reviewList) {
+            // Count each star rating
+            float rating = review.getRating();
+            if (rating == 5) {
+                fiveStar++;
+            } else if (rating == 4) {
+                fourStar++;
+            } else if (rating == 3) {
+                threeStar++;
+            } else if (rating == 2) {
+                twoStar++;
+            } else if (rating == 1) {
+                oneStar++;
+            }
+            // Calculate total ratings
+            totalRatings += rating;
+        }
+
+        // Calculate average rating
+        float averageRating = totalRatings / (float) reviewList.size();
+
+        if (Float.isNaN(averageRating)) {
+            averageRating = 0;
+        }
+
+
+        int totalStarRatings = (int) (fiveStar + fourStar + threeStar + twoStar + oneStar);
+        int fiveStarPercentage = totalStarRatings > 0 ? (int) ((fiveStar / (float) totalStarRatings) * 100) : 0;
+        int fourStarPercentage = totalStarRatings > 0 ? (int) ((fourStar / (float) totalStarRatings) * 100) : 0;
+        int threeStarPercentage = totalStarRatings > 0 ? (int) ((threeStar / (float) totalStarRatings) * 100) : 0;
+        int twoStarPercentage = totalStarRatings > 0 ? (int) ((twoStar / (float) totalStarRatings) * 100) : 0;
+        int oneStarPercentage = totalStarRatings > 0 ? (int) ((oneStar / (float) totalStarRatings) * 100) : 0;
+
+        // Update progress bars
+        fiveStarProgressBar.setProgress(fiveStarPercentage);
+        fourStarProgressBar.setProgress(fourStarPercentage);
+        threeStarProgressBar.setProgress(threeStarPercentage);
+        twoStarProgressBar.setProgress(twoStarPercentage);
+        oneStarProgressBar.setProgress(oneStarPercentage);
+
+        ratingBar.setRating(averageRating);
+
+        fiveStarCount.setText(String.valueOf(fiveStar));
+        fourStarCount.setText(String.valueOf(fourStar));
+        threeStarCount.setText(String.valueOf(threeStar));
+        twoStarCount.setText(String.valueOf(twoStar));
+        oneStarCount.setText(String.valueOf(oneStar));
+
+        viewModel.setAverageRating(averageRating);
+        decimalRatingText.setText(String.format("%.2f out of 5", averageRating));
+    }
+
 }

@@ -40,7 +40,8 @@
         android:numStars="5"
         android:scaleX="1.5"
         android:scaleY="1.5"
-        android:stepSize="1"
+        android:stepSize="0.5"
+        android:rating="0"
         android:transformPivotX="0dp"
         android:transformPivotY="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -212,6 +213,19 @@
         android:text="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/twoStarCount" />
+
+    <TextView
+        android:id="@+id/noReviewsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="No Reviews"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reviewsRecyclerView"

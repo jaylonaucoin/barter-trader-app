@@ -1,11 +1,15 @@
 package com.example.myapplication.user_profile_page;
 
 import android.os.Bundle;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.myapplication.R;
+import com.example.myapplication.user_profile_page.user_profile_fragments.RatingsFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
@@ -23,6 +27,12 @@ public class UserProfile extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+        RatingViewModel viewModel = new ViewModelProvider(this).get(RatingViewModel.class);
+        RatingBar ratingBar = findViewById(R.id.ratingBar);
+
+        // Observe the LiveData to update the RatingBar
+        viewModel.getAverageRating().observe(this, ratingBar::setRating);
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager2 = findViewById(R.id.view_pager);
