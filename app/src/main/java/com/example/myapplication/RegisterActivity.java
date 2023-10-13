@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String lnameEntered = lname.getText().toString();
                 Spinner role = findViewById(R.id.role);
                 String roleEntered = role.getSelectedItem().toString();
+                String errorMessage = "";
 
                 boolean allDataEntered = !passwordEntered.isEmpty() && !confirmPasswordEntered.isEmpty()
                         && !emailEntered.isEmpty() && !fnameEntered.isEmpty() && !lnameEntered.isEmpty()
@@ -48,18 +50,27 @@ public class RegisterActivity extends AppCompatActivity {
                 if(allDataEntered) {
                     if(passwordEntered.equals(confirmPasswordEntered)){
                         auth.createUserWithEmailAndPassword(emailEntered, passwordEntered);
-                        DatabaseReference user = firebaseDB.getReference("User/" + auth.getCurrentUser().getUid());
-                        user.child("firstName").setValue(fnameEntered);
-                        user.child("lastName").setValue(lnameEntered);
-                        user.child("role").setValue(roleEntered);
+                        if(auth.getCurrentUser() != null){
+                            DatabaseReference user = firebaseDB.getReference("User/" + auth.getCurrentUser().getUid());
+                            user.child("firstName").setValue(fnameEntered);
+                            user.child("lastName").setValue(lnameEntered);
+                            user.child("role").setValue(roleEntered);
+                            Intent intent = new Intent(RegisterActivity.this, RegisterSuccessActivity.class);
+                            intent.putExtra("name", fnameEntered);
+                            startActivity(intent);
+                        }
+                        else {
+                            errorMessage = "Unknown error occurred. Please try again.";
+                        }
                     }
                     else {
-                        String errorMessage = "Passwords do not match!";
-                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                        errorMessage = "Passwords do not match!";
                     }
                 }
                 else {
-                    String errorMessage = "Please fill out all fields!";
+                    errorMessage = "Please fill out all fields!";
+                }
+                if(!errorMessage.equals("")){
                     Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -71,5 +82,4 @@ public class RegisterActivity extends AppCompatActivity {
         firebaseDBRef = firebaseDB.getReference("User");
         auth = FirebaseAuth.getInstance();
     }
-
 }
