@@ -99,7 +99,8 @@ public class UserProfile extends AppCompatActivity {
     private Review extractReviewFromSnapshot(DataSnapshot userSnapshot) {
         String userId = userSnapshot.getKey();
         String userName = userSnapshot.child("username").getValue(String.class);
-        float rating = userSnapshot.child("rating").getValue(Float.class);
+        Float ratingValue = userSnapshot.child("rating").getValue(Float.class);
+        float rating = (ratingValue != null) ? ratingValue.floatValue() : 0.0f;
         String feedback = userSnapshot.child("feedback").getValue(String.class);
         return new Review(userId, userName, rating, feedback);
     }
