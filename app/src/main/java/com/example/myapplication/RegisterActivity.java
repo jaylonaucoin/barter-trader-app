@@ -1,29 +1,75 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDB;
-    private DatabaseReference userNode;
+    private DatabaseReference firebaseDBRef;
+    private FirebaseAuth auth;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         connectToFirebase();
-        writeToFirebase();
+        Button registerButton = findViewById(R.id.registerButton);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText password = findViewById(R.id.password);
+                String passwordEntered = password.getText().toString();
+                EditText confirmPassword = findViewById(R.id.confirmPassword);
+                String confirmPasswordEntered = confirmPassword.getText().toString();
+                EditText email = findViewById(R.id.email);
+                String emailEntered = email.getText().toString();
+                EditText fname = findViewById(R.id.firstName);
+                String fnameEntered = fname.getText().toString();
+                EditText lname = findViewById(R.id.lastName);
+                String lnameEntered = lname.getText().toString();
+                Spinner role = findViewById(R.id.role);
+                String roleEntered = role.getSelectedItem().toString();
+
+                boolean allDataEntered = !passwordEntered.isEmpty() && !confirmPasswordEntered.isEmpty()
+                        && !emailEntered.isEmpty() && !fnameEntered.isEmpty() && !lnameEntered.isEmpty()
+                        && !roleEntered.isEmpty();
+
+                if(allDataEntered) {
+                    if(passwordEntered.equals(confirmPasswordEntered)){
+                        auth.createUserWithEmailAndPassword(emailEntered, passwordEntered);
+                        DatabaseReference user = firebaseDB.getReference("User/" + auth.getCurrentUser().getUid());
+                        user.child("firstName").setValue(fnameEntered);
+                        user.child("lastName").setValue(lnameEntered);
+                        user.child("role").setValue(roleEntered);
+                    }
+                    else {
+                        String errorMessage = "Passwords do not match!";
+                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    String errorMessage = "Please fill out all fields!";
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void connectToFirebase(){
         firebaseDB = FirebaseDatabase.getInstance();
-        userNode = firebaseDB.getReference("user");
+        firebaseDBRef = firebaseDB.getReference("User");
+        auth = FirebaseAuth.getInstance();
     }
 
-    private void writeToFirebase(){
-       userNode.child("id").push().setValue("2");
-    }
 }
