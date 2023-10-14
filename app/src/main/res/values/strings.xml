@@ -15,4 +15,12 @@
     <string name="confirmPassword">Confirm Password</string>
     <string name="password">Password</string>
     <string name="passwordRequirement">Password must be at least 6 characters.</string>
+    <string name="login">Login</string>
+    <string name="loginEmail">Email</string>
+    <string name="loginPassword">Password</string>
+    <string name="loginRegister">Register</string>
+    <string name="passwordRecovery">Forgot Password</string>
+    <string name="recoverPage">Password Recovery</string>
+    <string name="returnLogin">Return to Login</string>
+    <string name="logout">Logout</string>
 </resources>
