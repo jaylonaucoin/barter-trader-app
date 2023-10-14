@@ -189,5 +189,4 @@ public class RatingsFragment extends Fragment {
         ratingBar.setRating(averageRating);
         decimalRatingText.setText(String.format(Locale.US, "%.2f out of 5", averageRating));
     }
-
 }

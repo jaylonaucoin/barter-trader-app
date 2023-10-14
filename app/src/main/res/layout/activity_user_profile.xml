@@ -21,11 +21,12 @@
             android:contentDescription="@string/user_profile_picture"/>
 
         <!-- User's name TextView -->
+        <!-- HardCoded Username, Will Update once account systems are implemented -->
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/user_name_default"
+            android:text="Christopher Hage"
             android:textSize="18sp"
             android:paddingTop="8dp"
             android:layout_toEndOf="@id/profilePicture"/>
