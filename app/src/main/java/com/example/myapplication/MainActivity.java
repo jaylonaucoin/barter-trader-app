@@ -21,16 +21,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         connectToFirebase();
 
-//        // grabbing the login button
-//        Button loginPageButton = findViewById(R.id.loginPage);
-//        loginPageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            // when clicked bring user to login page
-//            public void onClick(View v) {
-//                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-//                startActivity(loginIntent);
-//            }
-//        });
+        // grabbing the login button
+        Button loginPageButton = findViewById(R.id.loginPage);
+        loginPageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to login page
+            public void onClick(View v) {
+                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+            }
+        });
 
 
         // grabbing the login button

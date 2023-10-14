@@ -40,6 +40,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // retrieving the register button
+        Button registerButton = findViewById(R.id.registerButton);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // on click for when register is clicked
+            public void onClick(View v) {
+                // bringing you to register page
+                Intent registerButtonIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(registerButtonIntent);
+            }
+        });
+
         // retrieving the login button
         Button loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(new View.OnClickListener() {

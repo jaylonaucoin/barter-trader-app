@@ -120,6 +120,17 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+        // grabbing the return to login page button
+        Button loginReturnButton = findViewById(R.id.loginButton);
+        loginReturnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked it will bring user back to the login page
+            public void onClick(View v) {
+                Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+
+            }
+        });
     }
 
     private void connectToFirebase() {
