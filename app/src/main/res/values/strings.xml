@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="user_profile_picture">User Profile Picture</string>
+    <string name="user_name_default">User Name</string>
+    <string name="listings">Listings</string>
+    <string name="ratings">Ratings</string>
+    <string name="about">About</string>
+    <string name="no_reviews">No Reviews</string>
+    <string name="enter_review">Enter your Review</string>
+    <string name="submit_review_button_text">Submit Review</string>
+    <string name="rating_summary">Rating Summary</string>
+    <string name="decimal_rating_default">0 out of 5</string>
+    <string name="five_stars">5 Stars</string>
+    <string name="four_stars">4 Stars</string>
+    <string name="three_stars">3 Stars</string>
+    <string name="two_stars">2 Stars</string>
+    <string name="one_star">1 Star</string>
+    <string name="default_star_count">0</string>
 </resources>

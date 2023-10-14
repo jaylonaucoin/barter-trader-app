@@ -18,14 +18,14 @@
             android:layout_height="100dp"
             android:scaleType="centerCrop"
             android:src="@drawable/empty_user_icon"
-            android:contentDescription="User Profile Picture"/>
+            android:contentDescription="@string/user_profile_picture"/>
 
         <!-- User's name TextView -->
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User Name"
+            android:text="@string/user_name_default"
             android:textSize="18sp"
             android:paddingTop="8dp"
             android:layout_toEndOf="@id/profilePicture"/>
@@ -40,7 +40,7 @@
             android:layout_toEndOf="@id/profilePicture"
             android:numStars="5"
             android:stepSize="0.5"
-            android:rating="4.5"
+            android:rating="5"
             android:scaleX="0.75"
             android:scaleY="0.75"
             android:transformPivotX="0dp"
@@ -58,17 +58,17 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Listings" />
+            android:text="@string/listings" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ratings" />
+            android:text="@string/ratings" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="About" />
+            android:text="@string/about" />
 
     </com.google.android.material.tabs.TabLayout>
 

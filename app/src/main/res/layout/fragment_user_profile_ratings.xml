@@ -13,7 +13,7 @@
         android:id="@+id/ratingSummaryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rating Summary"
+        android:text="@string/rating_summary"
         android:textSize="18sp"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginTop="4dp"
-        android:text="0 out of 5"
+        android:text="@string/decimal_rating_default"
         app:layout_constraintStart_toEndOf="@id/ratingBar"
         app:layout_constraintTop_toTopOf="@id/ratingBar" />
 
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="22dp"
-        android:text="5 Stars"
+        android:text="@string/five_stars"
         app:layout_constraintStart_toStartOf="@id/ratingBar"
         app:layout_constraintTop_toBottomOf="@id/ratingBar" />
 
@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="4 Stars"
+        android:text="@string/four_stars"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.065"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="3 Stars"
+        android:text="@string/three_stars"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.065"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="2 Stars"
+        android:text="@string/two_stars"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.065"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="1 Star"
+        android:text="@string/one_star"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.064"
         app:layout_constraintStart_toStartOf="parent"
@@ -170,7 +170,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="348dp"
         android:layout_marginTop="100dp"
-        android:text="0"
+        android:text="@string/default_star_count"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -180,7 +180,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="348dp"
         android:layout_marginTop="4dp"
-        android:text="0"
+        android:text="@string/default_star_count"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fiveStarCount" />
 
@@ -190,7 +190,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="348dp"
         android:layout_marginTop="4dp"
-        android:text="0"
+        android:text="@string/default_star_count"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fourStarCount" />
 
@@ -200,7 +200,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="348dp"
         android:layout_marginTop="4dp"
-        android:text="0"
+        android:text="@string/default_star_count"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/threeStarCount" />
 
@@ -210,7 +210,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="348dp"
         android:layout_marginTop="4dp"
-        android:text="0"
+        android:text="@string/default_star_count"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/twoStarCount" />
 
@@ -219,7 +219,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="No Reviews"
+        android:text="@string/no_reviews"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -239,6 +239,7 @@
 
     <ImageButton
         android:id="@+id/reviewButton"
+        android:contentDescription="@string/enter_review"
         android:layout_width="55dp"
         android:layout_height="47dp"
         android:background="#0000"
