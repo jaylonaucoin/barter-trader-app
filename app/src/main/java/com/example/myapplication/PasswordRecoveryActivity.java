@@ -39,6 +39,7 @@ public class PasswordRecoveryActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(userEmail)) {
                     // calling the method to send the reset button
                     sendPasswordResetEmail(userEmail);
+                    emailEditText.setText("");
                 }
                 // if email is empty display toast
                 else {
@@ -58,7 +59,6 @@ public class PasswordRecoveryActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     // method for a user to reset their password
