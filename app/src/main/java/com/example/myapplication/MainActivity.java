@@ -1,29 +1,49 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import android.widget.Toast;
+
+import com.example.myapplication.messaging.MessagingActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
+
 
 public class MainActivity extends AppCompatActivity {
-    private FirebaseDatabase firebaseDB;
-    private DatabaseReference firebaseDBRef;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        connectToFirebase();
-        writeToFirebase();
+
+
+        String email = "testuser@email.com";
+        String password = "testPassword123";
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+                        Intent intent = new Intent(MainActivity.this, MessagingActivity.class);
+                        startActivity(intent);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
     }
 
-    private void connectToFirebase(){
-        firebaseDB = FirebaseDatabase.getInstance("https://barter-app-50729-default-rtdb.firebaseio.com/");
-        firebaseDBRef = firebaseDB.getReference("test");
-    }
 
-    private void writeToFirebase(){
-        firebaseDBRef.setValue("Hello World");
-    }
 }
