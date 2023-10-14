@@ -84,6 +84,8 @@ public class RegisterActivity extends AppCompatActivity {
                                                         userRef.child("lastName").setValue(lnameEntered);
                                                         userRef.child("role").setValue(roleEntered);
 
+                                                        Toast.makeText(RegisterActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
+
                                                         // Proceed to the login page
                                                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                                         startActivity(intent);

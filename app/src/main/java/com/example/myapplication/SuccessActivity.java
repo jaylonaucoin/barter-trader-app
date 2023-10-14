@@ -57,6 +57,24 @@ public class SuccessActivity extends AppCompatActivity {
                 welcomeMessage.setText("Welcome " + name + "!");
             }
         });
+
+        // grabbing the logout button to add an on-click listener
+        Button logoutButton = findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // on click for when logout is clicked
+            public void onClick(View v) {
+                // signing out the user
+                auth.signOut();
+                Toast.makeText(SuccessActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+                // going back to the login page
+                Intent loginIntent = new Intent(SuccessActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+                finish();
+            }
+        });
+
     }
 
     private void connectToFirebase(){
