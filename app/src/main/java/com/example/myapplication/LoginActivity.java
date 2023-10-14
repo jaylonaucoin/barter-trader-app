@@ -17,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDB;
     private DatabaseReference firebaseDBRef;
@@ -78,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // login was completed
                                         Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                                        Intent loginSuccessIntent = new Intent(LoginActivity.this, LoginSuccessActivity.class);
+                                        Intent loginSuccessIntent = new Intent(LoginActivity.this, SuccessActivity.class);
                                         startActivity(loginSuccessIntent);
                                     }
                                     // if the credentials do not match any from the firebase then inform user and keep them on login page

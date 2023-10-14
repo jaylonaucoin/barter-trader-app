@@ -3,23 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".SuccessActivity">
 
     <TextView
         android:id="@+id/welcomeMessage"
-        android:layout_width="210dp"
-        android:layout_height="71dp"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="292dp"
-        android:layout_marginEnd="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="155dp"
+        android:layout_marginTop="63dp"
+        android:layout_marginEnd="155dp"
         android:text="Welcome"
         android:textAlignment="center"
-        android:textSize="34sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="75dp"
+        android:layout_marginTop="78dp"
+        android:layout_marginEnd="76dp"
+        android:text="Below are some things to get you started."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcomeMessage" />
 
     <Button
         android:id="@+id/logoutButton"
@@ -27,12 +39,11 @@
         android:layout_width="166dp"
         android:layout_height="56dp"
         android:layout_marginStart="122dp"
-        android:layout_marginTop="66dp"
+        android:layout_marginTop="452dp"
         android:layout_marginEnd="123dp"
         android:text="@string/logout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcomeMessage" />
+        app:layout_constraintTop_toBottomOf="@+id/instructions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

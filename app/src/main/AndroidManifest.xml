@@ -23,9 +23,8 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".PasswordRecoveryActivity" />
-        <activity android:name=".LoginSuccessActivity"/>
         <activity android:name=".RegisterActivity"/>
-        <activity android:name=".RegisterSuccessActivity"/>
+        <activity android:name=".SuccessActivity"/>
     </application>
 
 </manifest>

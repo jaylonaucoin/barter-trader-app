@@ -84,9 +84,8 @@ public class RegisterActivity extends AppCompatActivity {
                                                         userRef.child("lastName").setValue(lnameEntered);
                                                         userRef.child("role").setValue(roleEntered);
 
-                                                        // Proceed to the success page
-                                                        Intent intent = new Intent(RegisterActivity.this, RegisterSuccessActivity.class);
-                                                        intent.putExtra("name", fnameEntered);
+                                                        // Proceed to the login page
+                                                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                                         startActivity(intent);
                                                     }
                                                 } else {
