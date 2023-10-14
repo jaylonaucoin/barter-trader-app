@@ -8,11 +8,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -20,10 +20,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.myapplication.user_profile_page.UserProfile;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.ChildEventListener;
@@ -34,17 +32,15 @@ import com.google.firebase.database.FirebaseDatabase;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 public class MessagingActivity extends AppCompatActivity {
-    private FirebaseAuth dbAuth;
-    private FirebaseDatabase db;
     private DatabaseReference dbReference;
     private String userId;
-    private String receiverId = "8VZgWEx1PYgn9zdfqkHhPloCsop1"; //Hardcoded has to be the persons UID
+    private final String receiverId = "8VZgWEx1PYgn9zdfqkHhPloCsop1"; //Hardcoded has to be the persons UID
     private MessageAdapter adapter;
     private RecyclerView messageRecyclerView;
     private List<Message> messageList;
@@ -61,12 +57,10 @@ public class MessagingActivity extends AppCompatActivity {
             PopupMenu popupMenu = new PopupMenu(MessagingActivity.this, findViewById(R.id.action_settings));
 
             popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    Toast.makeText(MessagingActivity.this, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
-                    return true;
-                }
+            popupMenu.setOnMenuItemClickListener(menuItem -> {
+                Intent intent = new Intent(MessagingActivity.this, UserProfile.class);
+                startActivity(intent);
+                return true;
             });
 
             popupMenu.show();
@@ -85,8 +79,8 @@ public class MessagingActivity extends AppCompatActivity {
 
         setOptionsMenu();
 
-        dbAuth = FirebaseAuth.getInstance();
-        db = FirebaseDatabase.getInstance();
+        FirebaseAuth dbAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
         dbReference = db.getReference("chats");
 
         userId = Objects.requireNonNull(dbAuth.getCurrentUser()).getUid();
@@ -128,18 +122,8 @@ public class MessagingActivity extends AppCompatActivity {
             Message message = new Message(userId, receiverId, input.getText().toString(),System.currentTimeMillis() );
 
             chatRef.push().setValue(message)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            messageRecyclerView.scrollToPosition(messageList.size() -1);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "Could not send message: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> messageRecyclerView.scrollToPosition(messageList.size() -1))
+                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Could not send message: " + e.getMessage(), Toast.LENGTH_SHORT).show());
 
             input.setText("");
 
@@ -207,7 +191,7 @@ public class MessagingActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle errors here
             }
         });
@@ -216,13 +200,7 @@ public class MessagingActivity extends AppCompatActivity {
     }
 
     private void displayMessages(List<Message> messageList) {
-        messageList.sort(new Comparator<Message>() {
-            @Override
-            public int compare(Message m1, Message m2) {
-                return Long.compare(m1.getTimestamp(), m2.getTimestamp());
-            }
-
-        });
+        messageList.sort(Comparator.comparingLong(Message::getTimestamp));
         messageRecyclerView.scrollToPosition(messageList.size()-1);
         adapter.notifyDataSetChanged();
 
