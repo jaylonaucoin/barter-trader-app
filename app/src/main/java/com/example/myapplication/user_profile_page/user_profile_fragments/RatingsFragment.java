@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,26 +26,35 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment displaying user reviews and ratings.
+ */
 public class RatingsFragment extends Fragment {
 
+    // UI elements for showing ratings and reviews
     private RatingBar ratingBar;
     private ProgressBar fiveStarProgressBar, fourStarProgressBar, threeStarProgressBar, twoStarProgressBar, oneStarProgressBar;
     private TextView fiveStarCount, fourStarCount, threeStarCount, twoStarCount, oneStarCount, decimalRatingText;
-    private List<Review> reviewList = new ArrayList<>();
+    private final List<Review> reviewList = new ArrayList<>();
     private ReviewsAdapter adapter;
 
+    // Reference to the Firebase database where reviews are stored
     private final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("user_reviews");
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_profile_ratings, container, false);
-        initUI(view);
-        fetchReviewsFromFirebase();
+        initUI(view); // Initialize UI elements
+        fetchReviewsFromFirebase(); // Fetch and display reviews from Firebase
         return view;
     }
 
+    /**
+     * Initializes UI elements.
+     *
+     * @param view The root view of the fragment.
+     */
     private void initUI(View view) {
         // Initialize RecyclerView and adapter
         RecyclerView recyclerView = view.findViewById(R.id.reviewsRecyclerView);
@@ -56,11 +66,17 @@ public class RatingsFragment extends Fragment {
         ratingBar = view.findViewById(R.id.ratingBar);
         initializeProgressBarAndTextView(view);
 
+        // Set click listener for the review button to navigate to the review page
         ImageButton reviewButton = view.findViewById(R.id.reviewButton);
         reviewButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), ReviewPage.class)));
 
     }
 
+    /**
+     * Initializes progress bars and text views related to star ratings.
+     *
+     * @param view The root view of the fragment.
+     */
     private void initializeProgressBarAndTextView(View view) {
         fiveStarProgressBar = view.findViewById(R.id.fiveStarProgressBar);
         fourStarProgressBar = view.findViewById(R.id.fourStarProgressBar);
@@ -76,6 +92,9 @@ public class RatingsFragment extends Fragment {
         decimalRatingText = view.findViewById(R.id.decimalRatingText);
     }
 
+    /**
+     * Fetch reviews from Firebase and update the UI.
+     */
     private void fetchReviewsFromFirebase() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -96,6 +115,12 @@ public class RatingsFragment extends Fragment {
         });
     }
 
+    /**
+     * Extracts a Review object from a Firebase snapshot.
+     *
+     * @param userSnapshot DataSnapshot containing review information.
+     * @return A Review object populated with data from the snapshot.
+     */
     private Review extractReviewFromSnapshot(DataSnapshot userSnapshot) {
         String userId = userSnapshot.getKey();
         String userName = userSnapshot.child("username").getValue(String.class);
@@ -106,6 +131,9 @@ public class RatingsFragment extends Fragment {
     }
 
 
+    /**
+     * Updates UI elements like progress bars, text views, and average rating based on fetched reviews.
+     */
     private void updateUIElements() {
         long totalRatings = 0;
         long fiveStar = 0, fourStar = 0, threeStar = 0, twoStar = 0, oneStar = 0;
@@ -135,7 +163,7 @@ public class RatingsFragment extends Fragment {
             averageRating = 0;
         }
 
-
+        // calculates progressbar percentages
         int totalStarRatings = (int) (fiveStar + fourStar + threeStar + twoStar + oneStar);
         int fiveStarPercentage = totalStarRatings > 0 ? (int) ((fiveStar / (float) totalStarRatings) * 100) : 0;
         int fourStarPercentage = totalStarRatings > 0 ? (int) ((fourStar / (float) totalStarRatings) * 100) : 0;
@@ -150,14 +178,16 @@ public class RatingsFragment extends Fragment {
         twoStarProgressBar.setProgress(twoStarPercentage);
         oneStarProgressBar.setProgress(oneStarPercentage);
 
+        // sets star counts
         fiveStarCount.setText(String.valueOf(fiveStar));
         fourStarCount.setText(String.valueOf(fourStar));
         threeStarCount.setText(String.valueOf(threeStar));
         twoStarCount.setText(String.valueOf(twoStar));
         oneStarCount.setText(String.valueOf(oneStar));
 
+        // sets rating bar and decimal rating textview
         ratingBar.setRating(averageRating);
-        decimalRatingText.setText(String.format("%.2f out of 5", averageRating));
+        decimalRatingText.setText(String.format(Locale.US, "%.2f out of 5", averageRating));
     }
 
 }
