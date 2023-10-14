@@ -57,40 +57,44 @@ public class RegisterActivity extends AppCompatActivity {
                         && !roleEntered.isEmpty();
 
                 if (allDataEntered) {
-                    if(Patterns.EMAIL_ADDRESS.matcher(emailEntered).matches()){
-                        if (passwordEntered.equals(confirmPasswordEntered)) {
-                            auth.createUserWithEmailAndPassword(emailEntered, passwordEntered)
-                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if (task.isSuccessful()) {
-                                                FirebaseUser user = auth.getCurrentUser();
-                                                if (user != null) {
-                                                    DatabaseReference userRef = firebaseDB.getReference("User/" + user.getUid());
-                                                    userRef.child("firstName").setValue(fnameEntered);
-                                                    userRef.child("lastName").setValue(lnameEntered);
-                                                    userRef.child("role").setValue(roleEntered);
+                    if(Patterns.EMAIL_ADDRESS.matcher(emailEntered).matches()) {
+                        if(passwordEntered.equals(confirmPasswordEntered)) {
+                            if(passwordEntered.length() >= 6) {
+                                auth.createUserWithEmailAndPassword(emailEntered, passwordEntered)
+                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                if (task.isSuccessful()) {
+                                                    FirebaseUser user = auth.getCurrentUser();
+                                                    if (user != null) {
+                                                        DatabaseReference userRef = firebaseDB.getReference("User/" + user.getUid());
+                                                        userRef.child("firstName").setValue(fnameEntered);
+                                                        userRef.child("lastName").setValue(lnameEntered);
+                                                        userRef.child("role").setValue(roleEntered);
 
-                                                    Intent intent = new Intent(RegisterActivity.this, RegisterSuccessActivity.class);
-                                                    intent.putExtra("name", fnameEntered);
-                                                    startActivity(intent);
-                                                }
-                                            } else {
-                                                try {
-                                                    throw Objects.requireNonNull(task.getException());
-                                                } catch (FirebaseAuthUserCollisionException e) {
-                                                    errorMessage[0] = "Email is already in use.";
-                                                } catch (Exception e) {
-                                                    errorMessage[0] = "Unknown error occurred. Please try again.";
+                                                        Intent intent = new Intent(RegisterActivity.this, RegisterSuccessActivity.class);
+                                                        intent.putExtra("name", fnameEntered);
+                                                        startActivity(intent);
+                                                    }
+                                                } else {
+                                                    try {
+                                                        throw Objects.requireNonNull(task.getException());
+                                                    } catch (FirebaseAuthUserCollisionException e) {
+                                                        errorMessage[0] = "Email is already in use!";
+                                                    } catch (Exception e) {
+                                                        errorMessage[0] = "Unknown error occurred. Please try again.";
+                                                    }
                                                 }
                                             }
-                                        }
-                                    });
+                                        });
+                            } else {
+                                errorMessage[0] = "Password must be at least 6 characters!";
+                            }
                         } else {
                             errorMessage[0] = "Passwords do not match!";
                         }
                     } else {
-                        errorMessage[0] = "Please enter a valid email address";
+                        errorMessage[0] = "Please enter a valid email address!";
                     }
                 } else {
                     errorMessage[0] = "Please fill out all fields!";
