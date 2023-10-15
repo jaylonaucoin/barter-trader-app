@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile_post);
+        setContentView(R.layout.activity_main);
         connectToFirebase();
 
         // grabbing the login button
