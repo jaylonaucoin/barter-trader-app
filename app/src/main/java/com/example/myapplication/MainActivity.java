@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void connectToFirebase(){
+    protected void connectToFirebase(){
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDB = FirebaseDatabase.getInstance();
         firebaseDBRef = firebaseDB.getReference("test");

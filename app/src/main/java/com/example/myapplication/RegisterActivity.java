@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,8 @@ public class RegisterActivity extends AppCompatActivity {
         // Connect to Firebase DB
         connectToFirebase();
 
+        TextView errorMessageTextView = findViewById(R.id.errorMessage);
+
         // Find and configure the register button
         Button registerButton = findViewById(R.id.registerButton);
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String lnameEntered = lname.getText().toString();
                 Spinner role = findViewById(R.id.role);
                 String roleEntered = role.getSelectedItem().toString();
-                final String[] errorMessage = {""}; // Initialize an error message
+                String[] errorMessage = {""}; // Initialize an error message
 
                 // Check if all required fields are entered
                 boolean allDataEntered = !passwordEntered.isEmpty() && !confirmPasswordEntered.isEmpty()
@@ -92,13 +95,15 @@ public class RegisterActivity extends AppCompatActivity {
                                                     }
                                                 } else {
                                                     // Handle different error cases starting here
-                                                    try {
-                                                        throw Objects.requireNonNull(task.getException());
-                                                    } catch (FirebaseAuthUserCollisionException e) {
+                                                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                                         errorMessage[0] = "Email is already in use!";
-                                                    } catch (Exception e) {
+                                                    } else {
                                                         errorMessage[0] = "Unknown error occurred. Please try again.";
                                                     }
+
+                                                    // Set the error message here
+                                                    errorMessageTextView.setText(errorMessage[0]);
+                                                    errorMessageTextView.setVisibility(View.VISIBLE);
                                                 }
                                             }
                                         });
@@ -117,7 +122,10 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // Display the error message if any
                 if (!errorMessage[0].isEmpty()) {
-                    Toast.makeText(getApplicationContext(), errorMessage[0], Toast.LENGTH_SHORT).show();
+                    errorMessageTextView.setText(errorMessage[0]);
+                    errorMessageTextView.setVisibility(View.VISIBLE);
+                } else {
+                    errorMessageTextView.setVisibility(View.GONE);
                 }
             }
         });
@@ -134,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void connectToFirebase() {
+    protected void connectToFirebase() {
         // Initialize Firebase instances
         firebaseDB = FirebaseDatabase.getInstance();
         firebaseDBRef = firebaseDB.getReference("User");
