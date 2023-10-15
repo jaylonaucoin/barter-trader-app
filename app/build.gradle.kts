@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.arch.core:core-common:2.2.0")
 
 
     implementation("androidx.appcompat:appcompat:1.6.1")
