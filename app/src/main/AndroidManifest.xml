@@ -13,6 +13,31 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".messaging.MessagingActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".user_profile_page.user_profile_fragments.ReviewPage"
+            android:exported="true"
+            android:label="Review"
+            android:parentActivityName=".user_profile_page.UserProfile"/>
+        <activity
+            android:name=".user_profile_page.UserProfile"
+            android:exported="true" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".PasswordRecoveryActivity" />
+        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".SuccessActivity"/>
+        <activity
             android:name="com.example.myapplication.PostGoods"
             android:exported="true">
             <intent-filter>
@@ -25,5 +50,4 @@
             android:name=".ItemDescriptionActivity"
             android:exported="true" />
     </application>
-
 </manifest>
