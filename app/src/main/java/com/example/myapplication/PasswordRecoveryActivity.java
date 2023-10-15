@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,6 +26,8 @@ public class PasswordRecoveryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_password);
         connectToFirebase();
 
+        TextView errorMessageTextView = findViewById(R.id.errorMessage);
+
         // grabbing the reset password button
         Button resetPasswordButton = findViewById(R.id.sendResetLinkButton);
         EditText emailEditText = findViewById(R.id.emailEditText);
@@ -43,7 +46,8 @@ public class PasswordRecoveryActivity extends AppCompatActivity {
                 }
                 // if email is empty display toast
                 else {
-                    Toast.makeText(PasswordRecoveryActivity.this, "Please enter your email address", Toast.LENGTH_SHORT).show();
+                    errorMessageTextView.setText("Please enter your email address");
+                    errorMessageTextView.setVisibility(View.VISIBLE);
                 }
             }
         });

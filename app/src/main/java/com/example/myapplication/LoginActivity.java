@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         firebaseAuth = FirebaseAuth.getInstance();
+
+        TextView errorMessageTextView = findViewById(R.id.errorMessage);
 
         // retrieving the password recovery button
         Button passwordRecoverButton = findViewById(R.id.passwordRecoverButton);
@@ -65,27 +68,24 @@ public class LoginActivity extends AppCompatActivity {
                 String userEmail = emailEditText.getText().toString();
                 String userPassword = passwordEditText.getText().toString();
 
-                // checking if either the password or email is empty
                 if (TextUtils.isEmpty(userEmail) || TextUtils.isEmpty(userPassword)) {
-                    // message to inform user to fill out both
-                    Toast.makeText(LoginActivity.this, "Both email and password are required.", Toast.LENGTH_SHORT).show();
-                }
-                // if both filled out then conduct firebase auth pre-made sign in method
-                else {
+                    // Update the errorMessage TextView with an error message
+                    errorMessageTextView.setText("Both email and password are required");
+                    errorMessageTextView.setVisibility(View.VISIBLE);
+                } else {
                     firebaseAuth.signInWithEmailAndPassword(userEmail, userPassword)
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    // if users credentials match from the database then display success and bring them to login success page
                                     if (task.isSuccessful()) {
-                                        // login was completed
-                                        Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                                        // Login was successful
+                                        errorMessageTextView.setVisibility(View.GONE); // Hide error message
                                         Intent loginSuccessIntent = new Intent(LoginActivity.this, SuccessActivity.class);
                                         startActivity(loginSuccessIntent);
-                                    }
-                                    // if the credentials do not match any from the firebase then inform user and keep them on login page
-                                    else {
-                                        Toast.makeText(LoginActivity.this, "Login failed. Check your credentials.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Login failed
+                                        errorMessageTextView.setText("Login failed. Check your credentials");
+                                        errorMessageTextView.setVisibility(View.VISIBLE);
                                     }
                                 }
                             });
