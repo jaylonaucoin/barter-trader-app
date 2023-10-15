@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Barter Trader</string>
     <string name="user_profile_picture">User Profile Picture</string>
     <string name="user_name_default">User Name</string>
     <string name="listings">Listings</string>
@@ -16,4 +16,28 @@
     <string name="two_stars">2 Stars</string>
     <string name="one_star">1 Star</string>
     <string name="default_star_count">0</string>
+    <string name="register">Register</string>
+    <string-array name="roles_array">
+        <item>Provider</item>
+        <item>Receiver</item>
+    </string-array>
+    <string name="role_spinner_prompt">Select a Role</string>
+    <string name="register_login_btn"><u>Login</u></string>
+    <string name="firstName">First Name</string>
+    <string name="email">Email</string>
+    <string name="accountAlreadyMessage">Already have an account?</string>
+    <string name="lastName">Last Name</string>
+    <string name="roleSelectPrompt">Select a Role:</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="password">Password</string>
+    <string name="passwordRequirement">Password must be at least 6 characters.</string>
+    <string name="login">Login</string>
+    <string name="loginEmail">Email</string>
+    <string name="loginPassword">Password</string>
+    <string name="loginRegister">Register</string>
+    <string name="passwordRecovery">Forgot Password</string>
+    <string name="recoverPage">Password Recovery</string>
+    <string name="returnLogin">Return to Login</string>
+    <string name="logout">Logout</string>
+    <string name="no_account">Don\'t have an account?</string>
 </resources>

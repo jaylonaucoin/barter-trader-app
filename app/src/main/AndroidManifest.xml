@@ -33,6 +33,10 @@
         <activity
             android:name=".user_profile_page.UserProfile"
             android:exported="true" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".PasswordRecoveryActivity" />
+        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".SuccessActivity"/>
     </application>
 
 </manifest>

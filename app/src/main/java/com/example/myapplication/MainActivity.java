@@ -20,6 +20,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         connectToFirebase();
+
+        // grabbing the login button
+        Button loginPageButton = findViewById(R.id.loginPage);
+        loginPageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to login page
+            public void onClick(View v) {
+                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+            }
+        });
+
+
+        // grabbing the login button
+        Button registerPageButton = findViewById(R.id.registerPage);
+        registerPageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to login page
+            public void onClick(View v) {
+                Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(registerIntent);
+            }
+        });
     }
 
     protected void connectToFirebase(){
@@ -28,3 +51,5 @@ public class MainActivity extends AppCompatActivity {
         firebaseDBRef = firebaseDB.getReference("test");
     }
 }
+
+
