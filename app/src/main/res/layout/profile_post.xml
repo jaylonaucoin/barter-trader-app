@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="167dp"
+        android:layout_height="167dp"
+        android:layout_marginStart="125dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="125dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topAppBar_profile"
+        app:srcCompat="@drawable/user_profile"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textView_profile"
+        android:layout_width="275dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="69dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="67dp"
+        android:layout_marginBottom="25dp"
+        android:text="User_name"
+        app:layout_constraintBottom_toTopOf="@+id/role_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/role_profile"
+        android:layout_width="277dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="67dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="67dp"
+        android:layout_marginBottom="20dp"
+        android:text="Role"
+        app:layout_constraintBottom_toTopOf="@+id/post_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_profile"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/post_button"
+        android:layout_width="150dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="131dp"
+        android:layout_marginBottom="50dp"
+        android:text="Post"
+        app:layout_constraintBottom_toTopOf="@+id/bottomAppBar_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/role_profile" />
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/topAppBar_profile"
+        android:layout_width="411dp"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="BottomAppBar" />
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar_profile"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_button"
+        tools:ignore="BottomAppBar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
