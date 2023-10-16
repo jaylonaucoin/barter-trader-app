@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "697993851371",
-    "project_id": "my-application-d814a",
-    "storage_bucket": "my-application-d814a.appspot.com"
+    "project_number": "1012079209460",
+    "firebase_url": "https://barter-app-project-default-rtdb.firebaseio.com",
+    "project_id": "barter-app-project",
+    "storage_bucket": "barter-app-project.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:697993851371:android:c7810f6fc2cac739a529ae",
+        "mobilesdk_app_id": "1:1012079209460:android:69bedfb5cd13ad544927a1",
         "android_client_info": {
           "package_name": "com.example.myapplication"
         }
@@ -15,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBdEPGovSU7-G3QFllL7SKAY96S3Meuv0w"
+          "current_key": "AIzaSyCLtu8Gl6-7eihKzWQzOgivBRa5r-cz8ts"
         }
       ],
       "services": {
