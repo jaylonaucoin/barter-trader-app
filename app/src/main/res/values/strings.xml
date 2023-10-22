@@ -1,4 +1,19 @@
 <resources>
+
+    <string-array name="type_options">
+    <item>tools</item>
+    <item>transportation</item>
+    <item>clothes</item>
+    <item>etc</item>
+    </string-array>
+
+    <string-array name="color_options">
+    <item>black</item>
+    <item>white</item>
+    <item>blue</item>
+    <item>red</item>
+    </string-array>
+
     <string name="postal_address">Postal Address</string>
     <string name="app_name">Barter Trader</string>
     <string name="user_profile_picture">User Profile Picture</string>
