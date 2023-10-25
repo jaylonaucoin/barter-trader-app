@@ -71,10 +71,22 @@ public class SuccessActivity extends AppCompatActivity {
                 // going back to the login page
                 Intent loginIntent = new Intent(SuccessActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
-                finish();
             }
         });
 
+        // grabbing the listing button to add an on-click listener
+        Button listingButton = findViewById(R.id.userListing);
+        listingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // on click for when user listings is clicked
+            public void onClick(View v) {
+                Toast.makeText(SuccessActivity.this, "User Listings Page", Toast.LENGTH_SHORT).show();
+
+                // going back to the listing page
+                Intent listingIntent = new Intent(SuccessActivity.this, UserListingActivity.class);
+                startActivity(listingIntent);
+            }
+        });
     }
 
     private void connectToFirebase(){

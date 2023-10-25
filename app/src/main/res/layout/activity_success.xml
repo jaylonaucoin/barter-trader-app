@@ -47,4 +47,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instructions" />
 
+    <Button
+        android:id="@+id/userListing"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="166dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="122dp"
+        android:layout_marginTop="157dp"
+        android:layout_marginEnd="123dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/listings"
+        app:layout_constraintBottom_toTopOf="@+id/logoutButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/instructions" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
