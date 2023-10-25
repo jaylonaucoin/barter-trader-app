@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.messaging.MessagingActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -87,6 +88,29 @@ public class SuccessActivity extends AppCompatActivity {
                 startActivity(listingIntent);
             }
         });
+
+        // grabbing the postGoods button
+        Button postGoodsButton = findViewById(R.id.postGoodsButton);
+        postGoodsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to post page
+            public void onClick(View v) {
+                Intent postIntent = new Intent(SuccessActivity.this, PostGoods.class);
+                startActivity(postIntent);
+            }
+        });
+
+        // grabbing the message button
+        Button messageButton = findViewById(R.id.messageButton);
+        messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to messaging page
+            public void onClick(View v) {
+                Intent messageIntent = new Intent(SuccessActivity.this, MessagingActivity.class);
+                startActivity(messageIntent);
+            }
+        });
+
     }
 
     private void connectToFirebase(){

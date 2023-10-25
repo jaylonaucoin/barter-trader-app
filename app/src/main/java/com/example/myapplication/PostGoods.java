@@ -16,9 +16,9 @@ public class PostGoods extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile_post);
+        setContentView(R.layout.post_goods);
 
-        Button submitButton = (Button) findViewById(R.id.post_button);
+        Button submitButton = (Button) findViewById(R.id.submit_button);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
