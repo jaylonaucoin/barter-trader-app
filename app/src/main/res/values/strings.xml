@@ -55,5 +55,9 @@
     <string name="recoverPage">Password Recovery</string>
     <string name="returnLogin">Return to Login</string>
     <string name="logout">Logout</string>
+    <string name="postGoods">Post Goods</string>
+    <string name="preferences">User Preferences</string>
+    <string name="messages">Messages</string>
+    <string name="profile">User Profile</string>
     <string name="no_account">Don\'t have an account?</string>
 </resources>

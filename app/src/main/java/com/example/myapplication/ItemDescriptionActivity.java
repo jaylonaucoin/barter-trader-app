@@ -4,16 +4,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class ItemDescriptionActivity extends AppCompatActivity {
@@ -21,11 +18,12 @@ public class ItemDescriptionActivity extends AppCompatActivity {
 
     private FirebaseDatabase firebaseDB;
     private DatabaseReference firebaseDBRef;
+    private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_goods);
-
+        connectToDBase();
 
         Button submitButton = (Button) findViewById(R.id.submit_button);
 
@@ -50,8 +48,7 @@ public class ItemDescriptionActivity extends AppCompatActivity {
 
                 if(!prodValue.isEmpty() && !addressValue.isEmpty() && !conditionValue.isEmpty() && !descriptionValue.isEmpty() && !preferenceValue.isEmpty()){
                     successToast.show();
-                    connectToDBase(prodValue);
-                    writeToFireDB(addressValue, conditionValue, descriptionValue, preferenceValue);
+                    writeToFireDB(prodValue, addressValue, conditionValue, descriptionValue, preferenceValue);
                 }else{
                     failToast.show();
                 }
@@ -60,17 +57,21 @@ public class ItemDescriptionActivity extends AppCompatActivity {
 
     }
 
-    private void connectToDBase(String productName){
-        firebaseDB = FirebaseDatabase.getInstance("https://my-application-89cfb-default-rtdb.firebaseio.com/");
-        firebaseDBRef = firebaseDB.getReference(productName);
+    private void connectToDBase(){
+        firebaseDB = FirebaseDatabase.getInstance();
+        firebaseDBRef = firebaseDB.getReference("Listings");
+        auth = FirebaseAuth.getInstance();
     }
-    private void writeToFireDB(String address, String condition, String description, String preference){
-        Map<String, String> details = new HashMap<>();
-        details.put("Address", address);
-        details.put("Condition", condition);
-        details.put("Description", description);
-        details.put("Exchange preference", preference);
-        firebaseDBRef.setValue(details);
+    private void writeToFireDB(String name, String address, String condition, String description, String preference){
+        String id = firebaseDBRef.push().getKey();
+
+        firebaseDBRef = firebaseDB.getReference("Listings/" + id);
+        firebaseDBRef.child("User ID").setValue(auth.getCurrentUser().getUid());
+        firebaseDBRef.child("Product Name").setValue(name);
+        firebaseDBRef.child("Description").setValue(description);
+        firebaseDBRef.child("Address").setValue(address);
+        firebaseDBRef.child("Condition").setValue(condition);
+        firebaseDBRef.child("Exchange Preference").setValue(preference);
     }
 
 }

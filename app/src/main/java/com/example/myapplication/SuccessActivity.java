@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.messaging.MessagingActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,6 +57,28 @@ public class SuccessActivity extends AppCompatActivity {
                 // Find the welcome message TextView and set it with the default name
                 TextView welcomeMessage = findViewById(R.id.welcomeMessage);
                 welcomeMessage.setText("Welcome " + name + "!");
+            }
+        });
+
+        // grabbing the postGoods button
+        Button postGoodsButton = findViewById(R.id.postGoodsButton);
+        postGoodsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to post page
+            public void onClick(View v) {
+                Intent postIntent = new Intent(SuccessActivity.this, PostGoods.class);
+                startActivity(postIntent);
+            }
+        });
+
+        // grabbing the message button
+        Button messageButton = findViewById(R.id.messageButton);
+        messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to messaging page
+            public void onClick(View v) {
+                Intent messageIntent = new Intent(SuccessActivity.this, MessagingActivity.class);
+                startActivity(messageIntent);
             }
         });
 
