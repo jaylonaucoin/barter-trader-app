@@ -1,17 +1,17 @@
 <resources>
 
     <string-array name="type_options">
-    <item>tools</item>
-    <item>transportation</item>
-    <item>clothes</item>
-    <item>etc</item>
+        <item>tools</item>
+        <item>transportation</item>
+        <item>clothes</item>
+        <item>etc</item>
     </string-array>
 
     <string-array name="color_options">
-    <item>black</item>
-    <item>white</item>
-    <item>blue</item>
-    <item>red</item>
+        <item>black</item>
+        <item>white</item>
+        <item>blue</item>
+        <item>red</item>
     </string-array>
 
     <string name="postal_address">Postal Address</string>
@@ -56,4 +56,5 @@
     <string name="returnLogin">Return to Login</string>
     <string name="logout">Logout</string>
     <string name="no_account">Don\'t have an account?</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

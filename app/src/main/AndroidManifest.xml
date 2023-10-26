@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -13,10 +14,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDqCJ4dSQzQX8lSTyIva4hWX-7lqqVFS_Y" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_maps" />
         <activity
             android:name=".messaging.MessagingActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -31,16 +40,16 @@
             android:name=".user_profile_page.user_profile_fragments.ReviewPage"
             android:exported="true"
             android:label="Review"
-            android:parentActivityName=".user_profile_page.UserProfile"/>
+            android:parentActivityName=".user_profile_page.UserProfile" />
         <activity
             android:name=".user_profile_page.UserProfile"
             android:exported="true" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".PasswordRecoveryActivity" />
-        <activity android:name=".RegisterActivity"/>
-        <activity android:name=".SuccessActivity"/>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".SuccessActivity" />
         <activity
-            android:name="com.example.myapplication.PostGoods"
+            android:name=".PostGoods"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,4 +61,5 @@
             android:name=".ItemDescriptionActivity"
             android:exported="true" />
     </application>
+
 </manifest>
