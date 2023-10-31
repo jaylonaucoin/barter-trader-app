@@ -1,95 +1,58 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
+import java.util.Arrays;
+import java.util.List;
 
 public class FirstLoginLocation extends AppCompatActivity {
-
-    AutoCompleteTextView autoCompleteTextView;
-    PlacesClient placesClient;
-    ArrayAdapter<String> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_time_location);
+        setContentView(R.layout.activity_first_login_location);
 
         // Initialize the SDK
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), "AIzaSyDqCJ4dSQzQX8lSTyIva4hWX-7lqqVFS_Y");
         }
 
-        // Create a new Places client instance
-        placesClient = Places.createClient(this);
+        // Setup Autocomplete Support Fragment
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
-        autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line);
-        autoCompleteTextView.setAdapter(arrayAdapter);
 
-        autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedPlace = arrayAdapter.getItem(position);
-            if (selectedPlace != null) {
-                Log.i("PlacesApi", "Place selected: " + selectedPlace);
-                // You can use selectedPlace for further actions such as fetching details about the place
-            }
-        });
+        // Specify the types of place data to return after the user has made a selection.
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+        assert autocompleteFragment != null;
+        autocompleteFragment.setPlaceFields(fields);
 
-        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
-                // and once again when the user makes a selection (for example when calling fetchPlace()).
-                AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-
-                // Use the builder to create a FindAutocompletePredictionsRequest.
-                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                        // Call either setLocationBias() OR setLocationRestriction().
-                        .setLocationBias(RectangularBounds.newInstance(
-                                new LatLng(-85, -180),
-                                new LatLng(85, 180)))
-                        .setOrigin(new LatLng(56.1304, -106.3468)) // Canada
-                        .setCountries("CA") // Canada
-                        .setSessionToken(token)
-                        .setQuery(charSequence.toString())
-                        .build();
-
-                placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
-                    arrayAdapter.clear();
-                    for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                        arrayAdapter.add(prediction.getFullText(null).toString());
-                    }
-                    arrayAdapter.notifyDataSetChanged();
-                }).addOnFailureListener((exception) -> {
-                    if (exception instanceof ApiException) {
-                        Log.e("PlacesApi", "Error getting suggestions: " + exception.getMessage());
-                    }
-                });
+            public void onPlaceSelected(@NonNull Place place) {
+                // Handle the selected place
+                Log.i("PlacesApi", "Place: " + place.getName() + ", " + place.getId() + ", " + place.getLatLng());
+                // Start MapsActivity and pass the selected address
+                Intent intent = new Intent(FirstLoginLocation.this, MapsActivity.class);
+                intent.putExtra("address", place.getName());
+                intent.putExtra("location", place.getLatLng());
+                startActivity(intent);
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void onError(@NonNull Status status) {
+                Log.i("PlacesApi", "An error occurred: " + status);
             }
         });
     }
 }
-
-

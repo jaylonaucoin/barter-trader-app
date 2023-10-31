@@ -12,20 +12,18 @@
         android:layout_height="wrap_content"
         android:text="Where are You Located?"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/autoCompleteTextView"
+        app:layout_constraintBottom_toTopOf="@+id/autocomplete_fragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.791" />
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/autocomplete_fragment"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="@drawable/searchview_background"
-        android:hint="Type your address"
-        android:padding="12dp"
-        android:textSize="16sp"
+        android:background="@drawable/address_search_border"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
