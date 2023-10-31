@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -166,6 +167,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.e("PlacesApi", "Error finding address: " + exception.getMessage());
                 }
             });
+        }
+        else if (intent != null && intent.hasExtra("location")) {
+            Location location = intent.getParcelableExtra("location");
+            if (location != null) {
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
+            }
         }
     }
 }
