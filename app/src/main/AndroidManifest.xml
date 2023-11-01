@@ -44,6 +44,9 @@
             android:exported="true"
             android:label="Review"
             android:parentActivityName=".user_profile_page.UserProfile" />
+        <activity android:name=".SavedAddresses"
+            android:exported="true"
+            android:label="Search an Address" />
         <activity
             android:name=".user_profile_page.UserProfile"
             android:exported="true" />

@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
+import android.location.Geocoder;
+import java.io.IOException;
+import java.util.List;
+import android.location.Address;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -97,24 +101,44 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void saveLocationToRealtimeDatabase(LatLng latLng) {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show();
-            return;
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                String addressString = addresses.get(0).getAddressLine(0);
+
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if (currentUser == null) {
+                    Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String userId = currentUser.getUid();
+                DatabaseReference userAddressRef = mDatabase.child("User").child(userId).child("addresses");
+
+                userAddressRef.get().addOnCompleteListener(task -> {
+                    long nextIndex = 0;  // default index if there are no addresses yet
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        nextIndex = task.getResult().getChildrenCount();
+                    }
+                    Map<String, Object> address = new HashMap<>();
+                    address.put("latitude", latLng.latitude);
+                    address.put("longitude", latLng.longitude);
+                    address.put("address", addressString);
+
+                    userAddressRef.child(String.valueOf(nextIndex)).setValue(address)
+                            .addOnSuccessListener(aVoid -> Toast.makeText(this, "Location saved successfully!", Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e -> Toast.makeText(this, "Error saving location: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                });
+            } else {
+                Toast.makeText(this, "Unable to get address from the location.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "Geocoder failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        String userId = currentUser.getUid();
-
-        // Store address under the user's ID
-        DatabaseReference userAddressRef = mDatabase.child("User").child(userId).child("addresses");
-
-        Map<String, Object> address = new HashMap<>();
-        address.put("latitude", latLng.latitude);
-        address.put("longitude", latLng.longitude);
-
-        userAddressRef.push().setValue(address)
-                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Location saved successfully!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(this, "Error saving location: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        Intent intent = new Intent(this, SavedAddresses.class);
+        startActivity(intent);
     }
 
 
