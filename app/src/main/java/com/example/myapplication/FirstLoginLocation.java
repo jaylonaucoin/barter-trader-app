@@ -19,18 +19,36 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class FirstLoginLocation extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+    private DatabaseReference mUserAddressesRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_login_location);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+
+        // Get the user ID from FirebaseAuth
+        String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+
+        mUserAddressesRef = mDatabase.getReference("User").child(userId).child("addresses");
+
+        checkIf0thAddressExists();
 
         ImageView locationIcon = findViewById(R.id.ic_location);
         locationIcon.setOnClickListener(view -> {
@@ -71,6 +89,26 @@ public class FirstLoginLocation extends AppCompatActivity {
             @Override
             public void onError(@NonNull Status status) {
                 Log.i("PlacesApi", "An error occurred: " + status);
+            }
+        });
+    }
+
+    private void checkIf0thAddressExists() {
+        mUserAddressesRef.child("0").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // 0th address exists, intent to SavedAddress activity
+                    Intent intent = new Intent(FirstLoginLocation.this, SavedAddresses.class);
+                    startActivity(intent);
+                    finish();  // To prevent coming back to this activity on back press
+                }
+                // If 0th address doesn't exist, continue with the rest of your code
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle database error
             }
         });
     }

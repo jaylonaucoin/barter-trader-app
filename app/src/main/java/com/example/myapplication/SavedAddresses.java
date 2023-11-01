@@ -223,7 +223,7 @@ public class SavedAddresses extends AppCompatActivity {
         private void updateAddressesInDatabase() {
             DatabaseReference userAddressRef = mDatabase.child("User").child(userId).child("addresses");
             userAddressRef.setValue(addresses)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(SavedAddresses.this, "Addresses updated!", Toast.LENGTH_SHORT).show())
+                    .addOnSuccessListener(aVoid -> Toast.makeText(SavedAddresses.this, "Address updated!", Toast.LENGTH_SHORT).show())
                     .addOnFailureListener(e -> Toast.makeText(SavedAddresses.this, "Error updating addresses: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
 
