@@ -6,10 +6,11 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/review_page_toolbar"
+        android:id="@+id/savedaddress_page_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:title="Search your Location"
         app:titleTextColor="@android:color/white"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintBottom_toBottomOf="parent"

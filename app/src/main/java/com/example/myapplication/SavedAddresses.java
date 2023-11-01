@@ -1,6 +1,13 @@
 package com.example.myapplication;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +17,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,12 +58,34 @@ public class SavedAddresses extends AppCompatActivity {
             return;
         }
 
+        setupToolbar();
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(); // Assuming you're using Firebase Auth
 
         recyclerView = findViewById(R.id.address_recycler);
 
         fetchAddresses();
+        setupAutocompleteSupportFragment();
+        setupLocationIcon();
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.savedaddress_page_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        // Tint the default back arrow icon to white
+        Drawable upArrow = ContextCompat.getDrawable(this, androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        if (upArrow != null) {
+            upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+            toolbar.setNavigationIcon(upArrow);
+        }
+
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void fetchAddresses() {
@@ -71,6 +107,58 @@ public class SavedAddresses extends AppCompatActivity {
                 // Handle errors here
             }
         });
+    }
+
+    private void setupAutocompleteSupportFragment() {
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+        assert autocompleteFragment != null;
+        autocompleteFragment.setPlaceFields(fields);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                Log.i("PlacesApi", "Place: " + place.getName() + ", " + place.getId() + ", " + place.getLatLng());
+                Intent intent = new Intent(SavedAddresses.this, MapsActivity.class);
+                intent.putExtra("address", place.getName());
+                intent.putExtra("location", place.getLatLng());
+                intent.putExtra("sourceActivity", "SavedAddresses");
+                startActivity(intent);
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.i("PlacesApi", "An error occurred: " + status);
+            }
+        });
+    }
+
+    private void setupLocationIcon() {
+        ImageView locationIcon = findViewById(R.id.ic_location);
+        locationIcon.setOnClickListener(v -> getCurrentLocation());
+    }
+
+    private void getCurrentLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (locationManager != null) {
+            try {
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    startMapsActivity(location);
+                }
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void startMapsActivity(Location location) {
+        Intent intent = new Intent(SavedAddresses.this, MapsActivity.class);
+        intent.putExtra("location", location);
+        intent.putExtra("sourceActivity", "SavedAddresses");
+        startActivity(intent);
     }
 
     private void setupRecyclerView() {

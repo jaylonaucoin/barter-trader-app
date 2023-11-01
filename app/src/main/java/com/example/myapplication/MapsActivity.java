@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -137,8 +138,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, "Geocoder failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        Intent intent = new Intent(this, SavedAddresses.class);
-        startActivity(intent);
+        if(getIntent().getStringExtra("sourceActivity") != null && Objects.equals(getIntent().getStringExtra("sourceActivity"), "SavedAddresses")) {
+             finish();
+        }
+        else {
+            Intent intent = new Intent(this, SavedAddresses.class);
+            startActivity(intent);
+        }
     }
 
 
