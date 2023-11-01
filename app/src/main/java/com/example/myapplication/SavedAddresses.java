@@ -136,7 +136,7 @@ public class SavedAddresses extends AppCompatActivity {
     }
 
     private void setupLocationIcon() {
-        ImageView locationIcon = findViewById(R.id.ic_location);
+        ImageView locationIcon = findViewById(R.id.automatic_location_icon);
         locationIcon.setOnClickListener(v -> getCurrentLocation());
     }
 
