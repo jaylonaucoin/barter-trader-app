@@ -68,12 +68,11 @@ public class UserListingActivity extends AppCompatActivity {
                         String productName = listingSnapshot.child("Product Name").getValue(String.class);
 
                         // Use the listing ID in your display or any other logic
-                        listings.append("Listing ID: ").append(listingId).append("\n");
-                        listings.append("Address: ").append(address).append("\n");
-                        listings.append("Condition: ").append(condition).append("\n");
-                        listings.append("Description: ").append(description).append("\n");
-                        listings.append("Exchange Preference: ").append(exchangePreference).append("\n");
                         listings.append("Product Name: ").append(productName).append("\n");
+                        listings.append("Description: ").append(description).append("\n");
+                        listings.append("Condition: ").append(condition).append("\n");
+                        listings.append("Exchange Preference: ").append(exchangePreference).append("\n");
+                        listings.append("Address: ").append(address).append("\n");
                     }
                 }
                 listingsTextView.setText(listings.toString()); // Display listings in the TextView
