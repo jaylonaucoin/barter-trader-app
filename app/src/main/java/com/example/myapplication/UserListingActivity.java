@@ -54,13 +54,13 @@ public class UserListingActivity extends AppCompatActivity {
             }
         });
 
-        // grabbing the logout button to add an on-click listener
-        Button logoutButton = findViewById(R.id.returnSuccess);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
+        // grabbing the return to success button to add an on-click listener
+        Button returnSuccess = findViewById(R.id.returnSuccess);
+        returnSuccess.setOnClickListener(new View.OnClickListener() {
             @Override
-            // on click for when logout is clicked
+            // on click for when return is clicked
             public void onClick(View v) {
-                // going back to the login page
+                // going back to the success page
                 Intent loginIntent = new Intent(UserListingActivity.this, SuccessActivity.class);
                 startActivity(loginIntent);
             }
