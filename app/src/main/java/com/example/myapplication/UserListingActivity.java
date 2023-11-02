@@ -38,7 +38,7 @@ public class UserListingActivity extends AppCompatActivity {
     private void connectToFirebase() {
         // Initialize Firebase instances
         firebaseDB = FirebaseDatabase.getInstance();
-        firebaseDBRef = firebaseDB.getReference("User");
+        firebaseDBRef = firebaseDB.getReference("Listings");
         auth = FirebaseAuth.getInstance();
         fetchAndDisplayListings();
     }
