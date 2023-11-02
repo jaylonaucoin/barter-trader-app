@@ -7,32 +7,30 @@
     tools:context=".SuccessActivity">
 
     <Button
+        android:id="@+id/searchBtn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="166dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="122dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="123dp"
+        android:text="@string/search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postGoodsButton" />
+
+    <Button
         android:id="@+id/postGoodsButton"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="166dp"
         android:layout_height="56dp"
         android:layout_marginStart="122dp"
-        android:layout_marginTop="105dp"
+        android:layout_marginTop="72dp"
         android:layout_marginEnd="123dp"
         android:text="@string/postGoods"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instructions" />
-
-    <Button
-        android:id="@+id/profileButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="123dp"
-        android:text="@string/profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/preferenceButton" />
 
     <Button
         android:id="@+id/messageButton"
@@ -40,13 +38,25 @@
         android:layout_width="166dp"
         android:layout_height="56dp"
         android:layout_marginStart="122dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="123dp"
         android:text="@string/messages"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postGoodsButton" />
+        app:layout_constraintTop_toBottomOf="@+id/searchBtn" />
+
+    <Button
+        android:id="@+id/profileButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="166dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="122dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="123dp"
+        android:text="@string/profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferenceButton" />
 
     <Button
         android:id="@+id/preferenceButton"
@@ -54,11 +64,10 @@
         android:layout_width="166dp"
         android:layout_height="56dp"
         android:layout_marginStart="122dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="123dp"
         android:text="@string/preferences"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/messageButton" />
 
@@ -68,7 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="156dp"
         android:layout_marginTop="63dp"
-        android:layout_marginEnd="155dp"
+        android:layout_marginEnd="154dp"
         android:text="Welcome"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -95,7 +104,7 @@
         android:layout_width="166dp"
         android:layout_height="56dp"
         android:layout_marginStart="122dp"
-        android:layout_marginTop="101dp"
+        android:layout_marginTop="76dp"
         android:layout_marginEnd="123dp"
         android:text="@string/logout"
         app:layout_constraintEnd_toEndOf="parent"

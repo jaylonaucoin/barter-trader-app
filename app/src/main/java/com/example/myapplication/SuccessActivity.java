@@ -99,6 +99,18 @@ public class SuccessActivity extends AppCompatActivity {
             }
         });
 
+        // grabbing the search button to add an on-click listener
+        Button searchButton = findViewById(R.id.searchBtn);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // on click for when search is clicked
+            public void onClick(View v) {
+                // going to the search page
+                Intent searchIntent = new Intent(SuccessActivity.this, SearchActivity.class);
+                startActivity(searchIntent);
+            }
+        });
+
     }
 
     private void connectToFirebase(){

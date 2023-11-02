@@ -59,5 +59,8 @@
     <string name="preferences">User Preferences</string>
     <string name="messages">Messages</string>
     <string name="profile">User Profile</string>
+    <string name="search">Search</string>
     <string name="no_account">Don\'t have an account?</string>
+    <string name="location">Location</string>
+    <string name="product_type">Product Type</string>
 </resources>
