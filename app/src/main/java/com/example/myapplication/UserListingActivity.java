@@ -43,46 +43,61 @@ public class UserListingActivity extends AppCompatActivity {
         fetchAndDisplayListings();
     }
 
+
     private void fetchAndDisplayListings() {
-        // Get the currently logged-in user's ID
         String currentUserId = auth.getCurrentUser().getUid();
 
-        // Listen for changes in the database
         firebaseDBRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 StringBuilder listings = new StringBuilder();
+
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
-                    // Get the unique listing ID for each listing
-                    String listingId = listingSnapshot.getKey();
-
-                    // Parse listing data
-                    String userId = listingSnapshot.child("User ID").getValue(String.class);
-
-                    // Check if the listing belongs to the currently logged-in user
-                    if (userId != null && userId.equals(currentUserId)) {
-                        String address = listingSnapshot.child("Address").getValue(String.class);
-                        String condition = listingSnapshot.child("Condition").getValue(String.class);
-                        String description = listingSnapshot.child("Description").getValue(String.class);
-                        String exchangePreference = listingSnapshot.child("Exchange Preference").getValue(String.class);
-                        String productName = listingSnapshot.child("Product Name").getValue(String.class);
-
-                        // Use the listing ID in your display or any other logic
-                        listings.append("Product Name: ").append(productName).append("\n");
-                        listings.append("Description: ").append(description).append("\n");
-                        listings.append("Condition: ").append(condition).append("\n");
-                        listings.append("Exchange Preference: ").append(exchangePreference).append("\n");
-                        listings.append("Address: ").append(address).append("\n");
+                    if (isCurrentUserListing(listingSnapshot, currentUserId)) {
+                        String listingDetails = getListingDetails(listingSnapshot);
+                        listings.append(listingDetails);
                     }
                 }
-                listingsTextView.setText(listings.toString()); // Display listings in the TextView
+
+                displayListings(listings.toString());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                String errorMessage = "An error occurred while retrieving data.";
-                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                handleDataRetrievalError();
             }
         });
     }
+
+    private boolean isCurrentUserListing(DataSnapshot listingSnapshot, String currentUserId) {
+        String userId = listingSnapshot.child("User ID").getValue(String.class);
+        return userId != null && userId.equals(currentUserId);
+    }
+
+    private String getListingDetails(DataSnapshot listingSnapshot) {
+        String productName = listingSnapshot.child("Product Name").getValue(String.class);
+        String description = listingSnapshot.child("Description").getValue(String.class);
+        String condition = listingSnapshot.child("Condition").getValue(String.class);
+        String exchangePreference = listingSnapshot.child("Exchange Preference").getValue(String.class);
+        String address = listingSnapshot.child("Address").getValue(String.class);
+
+        StringBuilder listingDetails = new StringBuilder();
+        listingDetails.append("Product Name: ").append(productName).append("\n");
+        listingDetails.append("Description: ").append(description).append("\n");
+        listingDetails.append("Condition: ").append(condition).append("\n");
+        listingDetails.append("Exchange Preference: ").append(exchangePreference).append("\n");
+        listingDetails.append("Address: ").append(address).append("\n");
+
+        return listingDetails.toString();
+    }
+
+    private void displayListings(String listings) {
+        listingsTextView.setText(listings);
+    }
+
+    private void handleDataRetrievalError() {
+        String errorMessage = "An error occurred while retrieving data.";
+        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
 }
