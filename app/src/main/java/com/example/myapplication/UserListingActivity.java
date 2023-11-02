@@ -76,8 +76,10 @@ public class UserListingActivity extends AppCompatActivity {
     }
 
     private void fetchAndDisplayListings() {
+        // Get the currently logged-in user's ID
         String currentUserId = auth.getCurrentUser().getUid();
 
+        // Listen for changes in the database
         firebaseDBRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -85,26 +87,31 @@ public class UserListingActivity extends AppCompatActivity {
 
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
                     if (isCurrentUserListing(listingSnapshot, currentUserId)) {
+                        // Retrieve listing details
                         String listingDetails = getListingDetails(listingSnapshot);
                         listings.add(listingDetails);
                     }
                 }
 
+                // Update the UI with the fetched listings
                 displayListings(listings);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors during data retrieval
                 handleDataRetrievalError();
             }
         });
     }
 
+    // Check if a listing belongs to the currently logged-in user
     private boolean isCurrentUserListing(DataSnapshot listingSnapshot, String currentUserId) {
         String userId = listingSnapshot.child("User ID").getValue(String.class);
         return userId != null && userId.equals(currentUserId);
     }
 
+    // Extract listing details from a DataSnapshot
     private String getListingDetails(DataSnapshot listingSnapshot) {
         String productName = listingSnapshot.child("Product Name").getValue(String.class);
         String description = listingSnapshot.child("Description").getValue(String.class);
@@ -112,6 +119,7 @@ public class UserListingActivity extends AppCompatActivity {
         String exchangePreference = listingSnapshot.child("Exchange Preference").getValue(String.class);
         String address = listingSnapshot.child("Address").getValue(String.class);
 
+        // Create a formatted listing details string
         StringBuilder listingDetails = new StringBuilder();
         listingDetails.append("Product Name: ").append(productName).append("\n");
         listingDetails.append("Description: ").append(description).append("\n");
@@ -122,14 +130,18 @@ public class UserListingActivity extends AppCompatActivity {
         return listingDetails.toString();
     }
 
+    // Display the fetched listings in the UI
     private void displayListings(ArrayList<String> listings) {
+        // Clear the existing data and update with the new listings
         listingsAdapter.clear();
         listingsAdapter.addAll(listings);
     }
 
+    // Handle errors during data retrieval
     private void handleDataRetrievalError() {
         String errorMessage = "An error occurred while retrieving data.";
         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
+
 }
 
