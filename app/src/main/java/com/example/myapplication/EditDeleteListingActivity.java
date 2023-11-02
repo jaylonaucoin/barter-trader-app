@@ -2,10 +2,14 @@ package com.example.myapplication;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 
 public class EditDeleteListingActivity extends AppCompatActivity {
     @Override
@@ -16,15 +20,17 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         // Retrieve listing details from the intent
         String listingDetails = getIntent().getStringExtra("listingDetails");
 
-        // Populate the UI fields with the listing details
-        TextView editListingDetailsTextView = findViewById(R.id.editProductName);
-        editListingDetailsTextView.setText(listingDetails);
+        // Get the TextView within the CardView
+        TextView listingDetailsTextView = findViewById(R.id.listingDetailsTextView);
+
+        // Set the listing details text
+        listingDetailsTextView.setText(listingDetails);
 
         // Implement the edit and delete functionality
-        Button editButton = findViewById(R.id.editButton);
+        Button saveButton = findViewById(R.id.saveButton);
         Button deleteButton = findViewById(R.id.deleteButton);
 
-        editButton.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Handle the edit action
