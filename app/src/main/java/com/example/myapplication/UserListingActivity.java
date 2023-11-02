@@ -4,35 +4,67 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import java.util.ArrayList;
 
 public class UserListingActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDB;
     private DatabaseReference firebaseDBRef;
     private FirebaseAuth auth;
-    private TextView listingsTextView;
+    private ListView listingsListView;
+    private ArrayAdapter<String> listingsAdapter;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listings);
-        listingsTextView = findViewById(R.id.listingsTextView);
+        listingsListView = findViewById(R.id.listingsListView);
 
         // Initialize Firebase components
         connectToFirebase();
+
+        // Create an adapter for the ListView
+        listingsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        listingsListView.setAdapter(listingsAdapter);
+
+        // Set a click listener for the ListView items
+        listingsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get the clicked item's listing details
+                String listingDetails = listingsAdapter.getItem(position);
+
+                // Start the EditListingActivity with the listing details
+                Intent intent = new Intent(UserListingActivity.this, EditDeleteListingActivity.class);
+                intent.putExtra("listingDetails", listingDetails);
+                startActivity(intent);
+            }
+        });
+
+        // grabbing the logout button to add an on-click listener
+        Button logoutButton = findViewById(R.id.returnSuccess);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // on click for when logout is clicked
+            public void onClick(View v) {
+                // going back to the login page
+                Intent loginIntent = new Intent(UserListingActivity.this, SuccessActivity.class);
+                startActivity(loginIntent);
+            }
+        });
     }
 
     private void connectToFirebase() {
@@ -43,23 +75,22 @@ public class UserListingActivity extends AppCompatActivity {
         fetchAndDisplayListings();
     }
 
-
     private void fetchAndDisplayListings() {
         String currentUserId = auth.getCurrentUser().getUid();
 
         firebaseDBRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                StringBuilder listings = new StringBuilder();
+                ArrayList<String> listings = new ArrayList<>();
 
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
                     if (isCurrentUserListing(listingSnapshot, currentUserId)) {
                         String listingDetails = getListingDetails(listingSnapshot);
-                        listings.append(listingDetails);
+                        listings.add(listingDetails);
                     }
                 }
 
-                displayListings(listings.toString());
+                displayListings(listings);
             }
 
             @Override
@@ -91,13 +122,14 @@ public class UserListingActivity extends AppCompatActivity {
         return listingDetails.toString();
     }
 
-    private void displayListings(String listings) {
-        listingsTextView.setText(listings);
+    private void displayListings(ArrayList<String> listings) {
+        listingsAdapter.clear();
+        listingsAdapter.addAll(listings);
     }
 
     private void handleDataRetrievalError() {
         String errorMessage = "An error occurred while retrieving data.";
         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
-
 }
+
