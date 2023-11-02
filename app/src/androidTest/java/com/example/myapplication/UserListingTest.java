@@ -49,4 +49,28 @@ public class UserListingTest {
         scenario.onActivity(activity -> {
         });
     }
+
+    @Test
+    public void testUIElementsExist() {
+        // Verify that UI elements like buttons, text fields, or labels exist
+        onView(withId(R.id.someButtonId)).check(matches(isDisplayed()));
+        onView(withId(R.id.someEditTextId)).check(matches(isDisplayed()));
+        onView(withId(R.id.someTextViewId)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testButtonClick() {
+        // Click on a button and verify the result
+        onView(withId(R.id.someButtonId)).perform(click());
+        onView(withId(R.id.someTextViewId)).check(matches(withText("Button Clicked"));
+    }
+
+    @Test
+    public void testEditTextInput() {
+        // Input text into an EditText and verify the result
+        String inputText = "Test Input";
+        onView(withId(R.id.someEditTextId)).perform(typeText(inputText));
+        onView(withId(R.id.someEditTextId)).check(matches(withText(inputText));
+    }
+
 }
