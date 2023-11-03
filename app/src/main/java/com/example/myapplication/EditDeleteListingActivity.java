@@ -11,13 +11,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.ktx.Firebase;
 
 import java.util.ArrayList;
@@ -34,6 +37,10 @@ public class EditDeleteListingActivity extends AppCompatActivity {
 
         // Retrieve listing details from the intent
         String listingDetails = getIntent().getStringExtra("listingDetails");
+
+        String listingKeys = getIntent().getStringExtra("listingKeys");
+        Toast.makeText(EditDeleteListingActivity.this, listingKeys, Toast.LENGTH_SHORT).show();
+
 
         // Get the TextView within the CardView
         TextView listingDetailsTextView = findViewById(R.id.listingDetailsTextView);
@@ -64,8 +71,6 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         editCondition.setText(condition);
         editExchangePreference.setText(exchangePreference);
         editAddress.setText(address);
-
-        String listingId = getIntent().getStringExtra("listingId");
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +90,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
 
                 if (hasChanges) {
                     // Update the database with the new data
-                    DatabaseReference listingRef = firebaseDB.getReference("Listings").child(listingId);
+                    DatabaseReference listingRef = firebaseDBRef.child(listingKeys);
 
                     // Update the database fields with the new data
                     listingRef.child("Product Name").setValue(updatedProductName);
@@ -110,8 +115,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
                 }
             }
         });
-
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+                    deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Show a confirmation dialog
@@ -125,15 +129,15 @@ public class EditDeleteListingActivity extends AppCompatActivity {
                         String listingId = getIntent().getStringExtra("listingId");
 
                         // Delete the listing using the listingId
-                        firebaseDBRef.child(listingId).removeValue(new DatabaseReference.CompletionListener() {
+                        firebaseDBRef.child(listingKeys).removeValue(new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                 if (databaseError == null) {
                                     // Deletion was successful
                                     finish();
                                 } else {
-                                    // Deletion failed, handle the error (e.g., show an error message)
-                                    // You can also log the error using databaseError.toException()
+                                    // Notify the user that listing could not be deleted
+                                    Toast.makeText(EditDeleteListingActivity.this, "Deletion was unsuccessful", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -150,7 +154,6 @@ public class EditDeleteListingActivity extends AppCompatActivity {
             }
         });
     }
-
     private void connectToFirebase() {
         // Initialize Firebase instances
         firebaseDB = FirebaseDatabase.getInstance();

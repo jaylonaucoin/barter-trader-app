@@ -26,6 +26,8 @@ public class UserListingActivity extends AppCompatActivity {
     private ListView listingsListView;
     private ArrayAdapter<String> listingsAdapter;
 
+    private String listingKey;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class UserListingActivity extends AppCompatActivity {
 
                 // Start the EditDeleteListingActivity with the listing details and ID
                 Intent intent = new Intent(UserListingActivity.this, EditDeleteListingActivity.class);
+                intent.putExtra("listingKeys", listingKey);
                 intent.putExtra("listingDetails", listingDetails);
                 startActivity(intent);
             }
@@ -111,13 +114,10 @@ public class UserListingActivity extends AppCompatActivity {
         return userId != null && userId.equals(currentUserId);
     }
 
-    private String getListingId(DataSnapshot listingIdSnapshot) {
-            String listingId = listingIdSnapshot.getKey();
-            return listingId;
-    }
 
     // Extract listing details from a DataSnapshot
     private String getListingDetails(DataSnapshot listingSnapshot) {
+        listingKey = listingSnapshot.getKey();
         String productName = listingSnapshot.child("Product Name").getValue(String.class);
         String description = listingSnapshot.child("Description").getValue(String.class);
         String condition = listingSnapshot.child("Condition").getValue(String.class);
