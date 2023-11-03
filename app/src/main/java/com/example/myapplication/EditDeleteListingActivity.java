@@ -38,9 +38,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         // Retrieve listing details from the intent
         String listingDetails = getIntent().getStringExtra("listingDetails");
 
-        String listingKeys = getIntent().getStringExtra("listingKeys");
-        Toast.makeText(EditDeleteListingActivity.this, listingKeys, Toast.LENGTH_SHORT).show();
-
+        String listingKey = getIntent().getStringExtra("listingKey");
 
         // Get the TextView within the CardView
         TextView listingDetailsTextView = findViewById(R.id.listingDetailsTextView);
@@ -52,13 +50,16 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.saveButton);
         Button deleteButton = findViewById(R.id.deleteButton);
 
+
         // Retrieve listing details from the intent
         String[] listingDetailsLines = listingDetails.split("\n");
-        String productName = listingDetailsLines[0].replace("Product Name: ", "");
-        String description = listingDetailsLines[1].replace("Description: ", "");
-        String condition = listingDetailsLines[2].replace("Condition: ", "");
-        String exchangePreference = listingDetailsLines[3].replace("Exchange Preference: ", "");
-        String address = listingDetailsLines[4].replace("Address: ", "");
+        String listingKeys = listingDetailsLines[0];
+
+        String productName = listingDetailsLines[1].replace("Product Name: ", "");
+        String description = listingDetailsLines[2].replace("Description: ", "");
+        String condition = listingDetailsLines[3].replace("Condition: ", "");
+        String exchangePreference = listingDetailsLines[4].replace("Exchange Preference: ", "");
+        String address = listingDetailsLines[5].replace("Address: ", "");
 
         EditText editProductName = findViewById(R.id.editProductName);
         EditText editDescription = findViewById(R.id.editDescription);
@@ -90,7 +91,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
 
                 if (hasChanges) {
                     // Update the database with the new data
-                    DatabaseReference listingRef = firebaseDBRef.child(listingKeys);
+                    DatabaseReference listingRef = firebaseDBRef.child(listingKey);
 
                     // Update the database fields with the new data
                     listingRef.child("Product Name").setValue(updatedProductName);
@@ -129,7 +130,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
                         String listingId = getIntent().getStringExtra("listingId");
 
                         // Delete the listing using the listingId
-                        firebaseDBRef.child(listingKeys).removeValue(new DatabaseReference.CompletionListener() {
+                        firebaseDBRef.child(listingKey).removeValue(new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                 if (databaseError == null) {

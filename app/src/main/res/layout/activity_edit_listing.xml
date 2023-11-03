@@ -17,7 +17,7 @@
         <TextView
             android:id="@+id/listingDetailsTextView"
             android:layout_width="match_parent"
-            android:layout_height="123dp"
+            android:layout_height="match_parent"
             android:padding="16dp"
             android:text="Listing Details Go Here" />
     </androidx.cardview.widget.CardView>

@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,8 +26,6 @@ public class UserListingActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private ListView listingsListView;
     private ArrayAdapter<String> listingsAdapter;
-
-    private String listingKey;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -49,10 +48,13 @@ public class UserListingActivity extends AppCompatActivity {
                 // Get the clicked item's listing details
                 String listingDetails = listingsAdapter.getItem(position);
 
+                String[] listingDetailsLines = listingDetails.split("\n");
+                String listingKey = listingDetailsLines[0];
+
                 // Start the EditDeleteListingActivity with the listing details and ID
                 Intent intent = new Intent(UserListingActivity.this, EditDeleteListingActivity.class);
-                intent.putExtra("listingKeys", listingKey);
                 intent.putExtra("listingDetails", listingDetails);
+                intent.putExtra("listingKey", listingKey);
                 startActivity(intent);
             }
         });
@@ -114,10 +116,9 @@ public class UserListingActivity extends AppCompatActivity {
         return userId != null && userId.equals(currentUserId);
     }
 
-
     // Extract listing details from a DataSnapshot
     private String getListingDetails(DataSnapshot listingSnapshot) {
-        listingKey = listingSnapshot.getKey();
+        String listingKey = listingSnapshot.getKey();
         String productName = listingSnapshot.child("Product Name").getValue(String.class);
         String description = listingSnapshot.child("Description").getValue(String.class);
         String condition = listingSnapshot.child("Condition").getValue(String.class);
@@ -126,6 +127,7 @@ public class UserListingActivity extends AppCompatActivity {
 
         // Create a formatted listing details string
         StringBuilder listingDetails = new StringBuilder();
+        listingDetails.append(listingKey).append("\n");
         listingDetails.append("Product Name: ").append(productName).append("\n");
         listingDetails.append("Description: ").append(description).append("\n");
         listingDetails.append("Condition: ").append(condition).append("\n");
