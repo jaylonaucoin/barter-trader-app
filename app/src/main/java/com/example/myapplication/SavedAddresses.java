@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -304,28 +303,6 @@ public class SavedAddresses extends AppCompatActivity {
 
                 updateAddressesInDatabase();
             });
-        }
-
-        public String getFirstAddress() {
-            if (!addressList.isEmpty()) {
-                Map<String, Object> addressData = addressList.get(0);
-                if (addressData.containsKey("address")) {
-                    return Objects.requireNonNull(addressData.get("address")).toString();
-                }
-            }
-            return null;
-        }
-
-        public LatLng getFirstAddressLatLng() {
-            if (!addressList.isEmpty()) {
-                Map<String, Object> addressData = addressList.get(0);
-                if (addressData.containsKey("latitude") && addressData.containsKey("longitude")) {
-                    double lat = Double.parseDouble(Objects.requireNonNull(addressData.get("latitude")).toString());
-                    double lng = Double.parseDouble(Objects.requireNonNull(addressData.get("longitude")).toString());
-                    return new LatLng(lat, lng);
-                }
-            }
-            return null;
         }
 
         @Override
