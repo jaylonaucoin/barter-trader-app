@@ -1,39 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/nameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/product_name"
+        android:layout_width="370dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="21dp"
         android:autofillHints="Name"
-        android:inputType="textAutoComplete" />
-
-    <Spinner
-        android:id="@+id/conditionSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/condition"
-        android:entries="@array/condition_array" />
+        android:hint="@string/product_name"
+        android:inputType="textAutoComplete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/exchangePreferenceEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/exchange_preference"
+        android:layout_width="370dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginEnd="21dp"
         android:autofillHints="Exchange Preference"
-        android:inputType="textAutoComplete" />
+        android:hint="@string/exchange_preference"
+        android:inputType="textAutoComplete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conditionSpinner" />
+
+    <Spinner
+        android:id="@+id/conditionSpinner"
+        android:layout_width="373dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="23dp"
+        android:entries="@array/condition_array"
+        android:hint="@string/condition"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="275dp"
+        android:text="@string/condition"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
 
     <Button
         android:id="@+id/searchButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/search" />
+        android:layout_width="158dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="126dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="127dp"
+        android:text="@string/search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/exchangePreferenceEditText" />
 
     <TextView
         android:id="@+id/errorMessageTextView"
@@ -46,21 +80,27 @@
 
     <ListView
         android:id="@+id/searchResultsListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="395dp"
+        android:layout_height="496dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchButton" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true">
+    <!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:fillViewport="true">-->
 
-        <LinearLayout
-            android:id="@+id/searchResultsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
+<!--        <LinearLayout-->
+<!--            android:id="@+id/searchResultsLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical" />-->
 
-    </ScrollView>
+<!--    </ScrollView>-->
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

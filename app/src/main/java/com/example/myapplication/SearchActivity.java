@@ -123,11 +123,15 @@ public class SearchActivity extends AppCompatActivity {
                                 String itemCondition = itemSnapshot.child("Condition").getValue(String.class);
                                 String itemDescription = itemSnapshot.child("Description").getValue(String.class);
                                 String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
+                                String seller = itemSnapshot.child("Seller").getValue(String.class);
+                                String address = itemSnapshot.child("Address").getValue(String.class);
 
                                 // Perform client-side filtering
                                 if (matchesCriteria(itemName, itemCondition, itemExchangePref, name, condition, exchangePreference)) {
                                     // Item matches the criteria, add it to the results
-                                    String item = itemName + "<br>" + "Condition: " + itemCondition + "\n" + "Description: " + itemDescription + "\n" + "Exchange Preference: " + itemExchangePref;
+                                    String item = itemName + "<br>" + "Condition: " + itemCondition + "\n" +
+                                            "Description: " + itemDescription + "\n" + "Exchange Preference: " + itemExchangePref + "\n" + "Address: "
+                                            + address + "\n" + "Seller: " + seller;
                                     searchResultsData.add(item);
                                 }
                             }
@@ -155,9 +159,9 @@ public class SearchActivity extends AppCompatActivity {
             String name, String condition, String exchangePref,
             String nameCriteria, String conditionCriteria, String exchangePrefCriteria
     ) {
-        boolean nameMatch = nameCriteria.isEmpty() || name.contains(nameCriteria);
-        boolean conditionMatch = conditionCriteria.equals("Any") || condition.equals(conditionCriteria);
-        boolean exchangePrefMatch = exchangePrefCriteria.isEmpty() || exchangePref.contains(exchangePrefCriteria);
+        boolean nameMatch = nameCriteria.trim().isEmpty() || name.toLowerCase().contains(nameCriteria.toLowerCase().trim());
+        boolean conditionMatch = conditionCriteria.equals("Any") || condition.toLowerCase().contains(conditionCriteria.toLowerCase().trim());
+        boolean exchangePrefMatch = exchangePrefCriteria.trim().isEmpty() || exchangePref.toLowerCase().contains(exchangePrefCriteria.toLowerCase().trim());
         return nameMatch && conditionMatch && exchangePrefMatch;
     }
 }
