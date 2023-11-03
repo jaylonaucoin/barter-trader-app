@@ -160,7 +160,7 @@ public class SearchActivity extends AppCompatActivity {
             String nameCriteria, String conditionCriteria, String exchangePrefCriteria
     ) {
         boolean nameMatch = nameCriteria.trim().isEmpty() || name.toLowerCase().contains(nameCriteria.toLowerCase().trim());
-        boolean conditionMatch = conditionCriteria.equals("Any") || condition.toLowerCase().contains(conditionCriteria.toLowerCase().trim());
+        boolean conditionMatch = conditionCriteria.equals("Any") || condition.equals(conditionCriteria);
         boolean exchangePrefMatch = exchangePrefCriteria.trim().isEmpty() || exchangePref.toLowerCase().contains(exchangePrefCriteria.toLowerCase().trim());
         return nameMatch && conditionMatch && exchangePrefMatch;
     }
