@@ -111,6 +111,16 @@ public class SuccessActivity extends AppCompatActivity {
             }
         });
 
+        // grabs the saved address button and adds a listener to it
+        Button savedAddresses = findViewById(R.id.savedAddresses);
+        savedAddresses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // goes to saved addresses page
+                Intent savedAddresses = new Intent(SuccessActivity.this, SavedAddresses.class);
+                startActivity(savedAddresses);
+            }
+        });
     }
 
     private void connectToFirebase(){

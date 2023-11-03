@@ -124,6 +124,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // Get the current map camera position and save it to Firebase Realtime Database
             LatLng currentLatLng = mMap.getCameraPosition().target;
             saveLocationToRealtimeDatabase(currentLatLng);
+
+            // goes to success page
+            Intent intent = new Intent(MapsActivity.this, SuccessActivity.class);
+            startActivity(intent);
         });
     }
 
