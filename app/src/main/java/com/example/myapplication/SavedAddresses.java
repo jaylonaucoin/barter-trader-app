@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -15,10 +16,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,11 +44,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+// The SavedAddresses activity is responsible for displaying and managing a list of saved addresses for a user.
 public class SavedAddresses extends AppCompatActivity {
 
+    // Constants for permissions
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+    // Firebase database reference and the ID of the current user.
     private DatabaseReference mDatabase;
     private String userId;
+
+    // The RecyclerView for displaying the list of saved addresses.
     private RecyclerView recyclerView;
+
+    // A list to hold maps of the address details fetched from Firebase.
     private final List<Map<String, Object>> addressList = new ArrayList<>();
 
     @Override
@@ -53,64 +65,80 @@ public class SavedAddresses extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_addresses); // Replace with the name of your layout XML
 
-        // Check if user is logged in
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Toast.makeText(this, "Please log in to view saved addresses.", Toast.LENGTH_SHORT).show();
-            finish();  // Exit this activity
-            return;
-        }
+        // Checks if the user is logged in and exits if not.
+        verifyUserLoggedIn();
 
+        // Sets up the custom toolbar with back navigation.
         setupToolbar();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(); // Assuming you're using Firebase Auth
+        // Initialize Firebase references and user ID, and fetch addresses from the database.
+        initializeDatabaseAndUserId();
 
-        recyclerView = findViewById(R.id.address_recycler);
+        // Initialize RecyclerView.
+        setupRecyclerView();
 
-        fetchAddresses();
+        // Set up the autocomplete fragment for address search.
         setupAutocompleteSupportFragment();
+
+        // Set up the location icon for fetching the current location.
         setupLocationIcon();
     }
 
+    // Verifies if the user is logged in and exits if not
+    private void verifyUserLoggedIn() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            showToastAndFinish();
+        }
+    }
+
+    // Initializes Firebase database references and gets the current user ID
+    private void initializeDatabaseAndUserId() {
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        fetchAddresses();
+    }
+
+    // Sets up the toolbar with back navigation
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.savedaddress_page_toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-
-        // Tint the default back arrow icon to white
-        Drawable upArrow = ContextCompat.getDrawable(this, androidx.appcompat.R.drawable.abc_ic_ab_back_material);
-        if (upArrow != null) {
-            upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-            toolbar.setNavigationIcon(upArrow);
-        }
-
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        tintToolbarNavigationIcon(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
+    // Fetches saved addresses from Firebase and updates the RecyclerView
     private void fetchAddresses() {
         DatabaseReference userAddressRef = mDatabase.child("User").child(userId).child("addresses");
         userAddressRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                addressList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> address = (Map<String, Object>) snapshot.getValue();
-                    addressList.add(address);
-                }
-                setupRecyclerView();
+                populateAddressList(dataSnapshot);
+                if (recyclerView.getAdapter() != null)
+                    recyclerView.getAdapter().notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle errors here
+                Log.e("Firebase", "Failed to read addresses", databaseError.toException());
             }
         });
     }
 
+    // Parses and populates the address list from the Firebase snapshot
+    private void populateAddressList(DataSnapshot dataSnapshot) {
+        addressList.clear();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> address = (Map<String, Object>) snapshot.getValue();
+            if (address != null) {
+                addressList.add(address);
+            }
+        }
+    }
+
+    // Sets up the AutocompleteSupportFragment for location search
     private void setupAutocompleteSupportFragment() {
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -137,11 +165,13 @@ public class SavedAddresses extends AppCompatActivity {
         });
     }
 
+    // Sets up the location icon for fetching current location
     private void setupLocationIcon() {
         ImageView locationIcon = findViewById(R.id.automatic_location_icon);
         locationIcon.setOnClickListener(v -> getCurrentLocation());
     }
 
+    // Clears the search input from the AutocompleteSupportFragment
     private void clearAutocompleteSearchInput() {
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -154,8 +184,19 @@ public class SavedAddresses extends AppCompatActivity {
             }
         }
     }
-
+    // Gets the current location from the LocationManager
     private void getCurrentLocation() {
+        // Check for location permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request the permission
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            // Permission has already been granted
+            fetchLastKnownLocation();
+        }
+    }
+
+    private void fetchLastKnownLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (locationManager != null) {
             try {
@@ -169,6 +210,21 @@ public class SavedAddresses extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted
+                fetchLastKnownLocation();
+            } else {
+                // Permission was denied. Disable the functionality that depends on this permission.
+                Toast.makeText(this, "Location permission is needed to use this feature", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // Starts the MapsActivity with the given location
     private void startMapsActivity(Location location) {
         Intent intent = new Intent(SavedAddresses.this, MapsActivity.class);
         intent.putExtra("location", location);
@@ -176,10 +232,26 @@ public class SavedAddresses extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Sets up the RecyclerView with the AddressAdapter
     private void setupRecyclerView() {
-        AddressAdapter addressAdapter = new AddressAdapter(addressList);
-        recyclerView.setAdapter(addressAdapter);
+        recyclerView = findViewById(R.id.address_recycler);
+        recyclerView.setAdapter(new AddressAdapter(addressList));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    // Helper method to tint the toolbar navigation icon
+    private void tintToolbarNavigationIcon(Toolbar toolbar) {
+        Drawable upArrow = ContextCompat.getDrawable(this, androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        if (upArrow != null) {
+            upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+            toolbar.setNavigationIcon(upArrow);
+        }
+    }
+
+    // Helper method to show a toast and finish the activity
+    private void showToastAndFinish() {
+        Toast.makeText(this, "Please log in to view saved addresses.", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder> {
@@ -193,7 +265,6 @@ public class SavedAddresses extends AppCompatActivity {
         @NonNull
         @Override
         public AddressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // You need to create an XML layout for each address item in the RecyclerView
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.address_item_layout, parent, false);
             return new AddressViewHolder(view);
         }
@@ -269,8 +340,8 @@ public class SavedAddresses extends AppCompatActivity {
                     .addOnFailureListener(e -> Toast.makeText(SavedAddresses.this, "Error updating addresses: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
 
+        // ViewHolder class for each item in the RecyclerView
         class AddressViewHolder extends RecyclerView.ViewHolder {
-
             TextView addressText;
             ImageView removeIcon;
 
