@@ -1,17 +1,17 @@
 <resources>
 
     <string-array name="type_options">
-    <item>tools</item>
-    <item>transportation</item>
-    <item>clothes</item>
-    <item>etc</item>
+        <item>tools</item>
+        <item>transportation</item>
+        <item>clothes</item>
+        <item>etc</item>
     </string-array>
 
     <string-array name="color_options">
-    <item>black</item>
-    <item>white</item>
-    <item>blue</item>
-    <item>red</item>
+        <item>black</item>
+        <item>white</item>
+        <item>blue</item>
+        <item>red</item>
     </string-array>
 
     <string name="postal_address">Postal Address</string>
@@ -74,4 +74,11 @@
         <item>Used (Good)</item>
         <item>Used (Acceptable)</item>
     </string-array>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="google_maps_key">AIzaSyDqCJ4dSQzQX8lSTyIva4hWX-7lqqVFS_Y</string>
+    <string name="confirm_location">Confirm Location</string>
+    <string name="location_icon">Location Icon</string>
+    <string name="where_are_you_located">Where are You Located?</string>
+    <string name="search_your_location">Search your Location</string>
+    <string name="saved_addresses">Saved Addresses</string>
 </resources>
