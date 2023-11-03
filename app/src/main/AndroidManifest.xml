@@ -52,8 +52,9 @@
             android:exported="true" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".PasswordRecoveryActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".SuccessActivity" />
+        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".SuccessActivity"/>
+        <activity android:name=".SearchActivity"/>
         <activity
             android:name=".PostGoods"
             android:exported="true">

@@ -55,7 +55,25 @@
     <string name="recoverPage">Password Recovery</string>
     <string name="returnLogin">Return to Login</string>
     <string name="logout">Logout</string>
+    <string name="postGoods">Post Goods</string>
+    <string name="preferences">User Preferences</string>
+    <string name="messages">Messages</string>
+    <string name="profile">User Profile</string>
+    <string name="search">Search</string>
     <string name="no_account">Don\'t have an account?</string>
+    <string name="location">Location</string>
+    <string name="product_name">Product Name</string>
+    <string name="condition">Product Condition:</string>
+    <string name="exchange_preference">Exchange Preference</string>
+    <!-- Array resource for Condition -->
+    <string-array name="condition_array">
+        <item>Any</item>
+        <item>New</item>
+        <item>Used (Like New)</item>
+        <item>Used (Very Good)</item>
+        <item>Used (Good)</item>
+        <item>Used (Acceptable)</item>
+    </string-array>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="google_maps_key">AIzaSyDqCJ4dSQzQX8lSTyIva4hWX-7lqqVFS_Y</string>
     <string name="confirm_location">Confirm Location</string>
