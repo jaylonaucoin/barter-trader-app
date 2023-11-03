@@ -65,7 +65,8 @@ public class FirstLoginLocation extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // if it exists, close the activity
                 if (dataSnapshot.exists()) {
-                    finish();
+                    Intent successPage = new Intent(FirstLoginLocation.this, SuccessActivity.class);
+                    startActivity(successPage);
                 }
             }
 
