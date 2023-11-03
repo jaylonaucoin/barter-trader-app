@@ -2,8 +2,12 @@ package com.example.myapplication;
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 public class ValuationService {
 =======
+=======
+import android.app.AlertDialog;
+>>>>>>> Stashed changes
 =======
 import android.app.AlertDialog;
 >>>>>>> Stashed changes
@@ -14,10 +18,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 import androidx.appcompat.app.AppCompatActivity;
 
 =======
+=======
+>>>>>>> Stashed changes
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +32,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 import java.util.ArrayList;
 
@@ -35,6 +45,7 @@ public class ValuationService extends AppCompatActivity {
     private ListView listView;
     private ArrayList<String> items;
     private ArrayAdapter<String> adapter;
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
     @Override
@@ -63,6 +74,12 @@ public class ValuationService extends AppCompatActivity {
 =======
     private ExchangeCalculate calculate;
 
+=======
+    private ExchangeCalculate calculate;
+
+    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+
+>>>>>>> Stashed changes
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +121,12 @@ public class ValuationService extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     Toast.makeText(ValuationService.this, "Great you sell " + itemName + " !", Toast.LENGTH_SHORT).show();
 
+<<<<<<< Updated upstream
 
+=======
+                    databaseRef.child("totalValue").setValue(calculate.getTotalValue());
+                    databaseRef.child("items").setValue(items);
+>>>>>>> Stashed changes
                 });
                 //if chose no
                 builder.setNegativeButton("Cancel", null);
@@ -127,6 +149,11 @@ public class ValuationService extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                                 Toast.makeText(ValuationService.this, "Great! you got " + itemName + " !", Toast.LENGTH_SHORT).show();
 
+<<<<<<< Updated upstream
+=======
+                                databaseRef.child("totalValue").setValue(calculate.getTotalValue());
+                                databaseRef.child("items").setValue(items);
+>>>>>>> Stashed changes
 
                             })
                             .setNegativeButton("Cancel", null)
@@ -136,4 +163,7 @@ public class ValuationService extends AppCompatActivity {
         }
 }
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
