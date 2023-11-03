@@ -105,7 +105,7 @@ public class FirstLoginLocation extends AppCompatActivity {
         // Check if the Places API is already initialized
         if (!Places.isInitialized()) {
             // Initialize with the API key from resources
-            Places.initialize(getApplicationContext(), "AIzaSyDqCJ4dSQzQX8lSTyIva4hWX-7lqqVFS_Y");
+            Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
         }
     }
 
