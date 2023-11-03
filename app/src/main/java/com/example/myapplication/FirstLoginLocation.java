@@ -63,8 +63,9 @@ public class FirstLoginLocation extends AppCompatActivity {
         mUserAddressesRef.child("0").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // if it exists, close the activity
                 if (dataSnapshot.exists()) {
-                    redirectToSavedAddresses();
+                    finish();
                 }
             }
 
@@ -76,12 +77,6 @@ public class FirstLoginLocation extends AppCompatActivity {
         });
     }
 
-    // Redirects to the SavedAddresses activity
-    private void redirectToSavedAddresses() {
-        Intent intent = new Intent(FirstLoginLocation.this, SavedAddresses.class);
-        startActivity(intent);
-        finish(); // Finish current activity to prevent returning to it
-    }
 
     // Setup click listener for location icon
     private void setupLocationIcon() {

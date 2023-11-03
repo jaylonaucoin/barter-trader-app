@@ -40,7 +40,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 // This activity handles map interactions using Google Maps and the Google Places API for selecting locations.
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -172,15 +171,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, "Geocoder failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        // Redirect the user based on the source activity
-        if(getIntent().getStringExtra("sourceActivity") != null && Objects.equals(getIntent().getStringExtra("sourceActivity"), "SavedAddresses")) {
-            finish(); // Close activity if coming from SavedAddresses
-        }
-        else {
-            // Otherwise, start the SavedAddresses activity
-            Intent intent = new Intent(this, SavedAddresses.class);
-            startActivity(intent);
-        }
+        // Closes activity
+        finish();
     }
 
     @Override
