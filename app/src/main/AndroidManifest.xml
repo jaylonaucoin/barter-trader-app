@@ -51,5 +51,7 @@
         <activity
             android:name=".ItemDescriptionActivity"
             android:exported="true" />
+        <activity android:name=".transactions.transactions"
+            android:exported="true"/>
     </application>
 </manifest>
