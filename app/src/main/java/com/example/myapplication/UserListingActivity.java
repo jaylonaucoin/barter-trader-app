@@ -47,7 +47,7 @@ public class UserListingActivity extends AppCompatActivity {
                 // Get the clicked item's listing details
                 String listingDetails = listingsAdapter.getItem(position);
 
-                // Start the EditListingActivity with the listing details
+                // Start the EditDeleteListingActivity with the listing details and ID
                 Intent intent = new Intent(UserListingActivity.this, EditDeleteListingActivity.class);
                 intent.putExtra("listingDetails", listingDetails);
                 startActivity(intent);
@@ -111,6 +111,11 @@ public class UserListingActivity extends AppCompatActivity {
         return userId != null && userId.equals(currentUserId);
     }
 
+    private String getListingId(DataSnapshot listingIdSnapshot) {
+            String listingId = listingIdSnapshot.getKey();
+            return listingId;
+    }
+
     // Extract listing details from a DataSnapshot
     private String getListingDetails(DataSnapshot listingSnapshot) {
         String productName = listingSnapshot.child("Product Name").getValue(String.class);
@@ -142,6 +147,5 @@ public class UserListingActivity extends AppCompatActivity {
         String errorMessage = "An error occurred while retrieving data.";
         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
-
 }
 
