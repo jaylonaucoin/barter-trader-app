@@ -75,6 +75,15 @@ public class SuccessActivity extends AppCompatActivity {
             }
         });
 
+        Button ValueServiceButton = findViewById(R.id.ValueSerButton);
+        ValueServiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ValueIntent = new Intent(SuccessActivity.this, ValuationService.class);
+                startActivity(ValueIntent);
+            }
+        });
+
     }
 
     private void connectToFirebase(){

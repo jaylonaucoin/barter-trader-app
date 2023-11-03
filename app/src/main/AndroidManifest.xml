@@ -39,6 +39,7 @@
         <activity android:name=".PasswordRecoveryActivity" />
         <activity android:name=".RegisterActivity"/>
         <activity android:name=".SuccessActivity"/>
+        <activity android:name=".ValuationService"/>
         <activity
             android:name="com.example.myapplication.PostGoods"
             android:exported="true">
