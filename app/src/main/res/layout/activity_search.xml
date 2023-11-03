@@ -7,20 +7,27 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/productTypeEditText"
+        android:id="@+id/nameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/product_type"
-        android:autofillHints="Product Type"
+        android:hint="@string/product_name"
+        android:autofillHints="Name"
         android:inputType="textAutoComplete" />
 
-    <EditText
-        android:id="@+id/locationEditText"
+    <Spinner
+        android:id="@+id/conditionSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/location"
-        android:autofillHints="Location"
-        android:inputType="textPostalAddress" />
+        android:hint="@string/condition"
+        android:entries="@array/condition_array" />
+
+    <EditText
+        android:id="@+id/exchangePreferenceEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/exchange_preference"
+        android:autofillHints="Exchange Preference"
+        android:inputType="textAutoComplete" />
 
     <Button
         android:id="@+id/searchButton"
@@ -37,11 +44,23 @@
         android:gravity="center"
         android:visibility="gone" />
 
-    <!-- activity_search.xml -->
     <ListView
         android:id="@+id/searchResultsListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/searchResultsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
 
 </LinearLayout>

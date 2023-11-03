@@ -62,5 +62,16 @@
     <string name="search">Search</string>
     <string name="no_account">Don\'t have an account?</string>
     <string name="location">Location</string>
-    <string name="product_type">Product Type</string>
+    <string name="product_name">Product Name</string>
+    <string name="condition">Product Condition:</string>
+    <string name="exchange_preference">Exchange Preference</string>
+    <!-- Array resource for Condition -->
+    <string-array name="condition_array">
+        <item>Any</item>
+        <item>New</item>
+        <item>Used (Like New)</item>
+        <item>Used (Very Good)</item>
+        <item>Used (Good)</item>
+        <item>Used (Acceptable)</item>
+    </string-array>
 </resources>
