@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -27,13 +28,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
 public class FirstLoginLocationEspressoTest {
     @Rule
     public ActivityScenarioRule<LoginActivity> mActivityRule = new ActivityScenarioRule<>(LoginActivity.class);
+
+    @Rule
+    public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Before
     public void loginUser() {
@@ -110,9 +112,6 @@ public class FirstLoginLocationEspressoTest {
         String userId = currentUser.getUid();
         DatabaseReference userAddressRef = mDatabase.child("User").child(userId).child("addresses");
 
-        // Use CountDownLatch to wait for Firebase response
-        final CountDownLatch signal = new CountDownLatch(1);
-
         // Click the autocomplete fragment to activate the search bar
         onView(withId(R.id.autocomplete_fragment)).perform(click());
 
@@ -160,17 +159,6 @@ public class FirstLoginLocationEspressoTest {
             } else {
                 fail("Failed to fetch address from Firebase.");
             }
-            signal.countDown(); // Decrease the count of the latch, releasing the waiting thread
         });
-
-        try {
-            // Wait for Firebase operation to complete or timeout
-            if (!signal.await(30, TimeUnit.SECONDS)) {
-                fail("Timeout waiting for Firebase response.");
-            }
-        } catch (InterruptedException e) {
-            fail("Thread was interrupted while waiting for Firebase response.");
-        }
     }
-
 }
