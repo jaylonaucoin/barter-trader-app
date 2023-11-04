@@ -4,13 +4,7 @@ package com.example.myapplication;
 //import static org.mockito.Mockito.when;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import org.junit.Before;
-import org.junit.Test;
+
 import org.junit.runner.RunWith;
 //import org.mockito.Mock;
 //import org.mockito.MockitoAnnotations;
@@ -18,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 @RunWith(AndroidJUnit4.class)
-public class UserListingActivityTest {
+public class UserListingUnitTest {
 
 //    @Mock
 //    FirebaseAuth mockAuth;
