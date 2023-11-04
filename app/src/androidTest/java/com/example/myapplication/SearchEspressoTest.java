@@ -33,8 +33,6 @@ public class SearchEspressoTest {
 
     @Test
     public void testSearchByName() {
-        // Given that the user is on the SearchActivity
-
         // When the user enters a name (e.g., "Laptop") and initiates the search
         onView(withId(R.id.nameEditText)).perform(ViewActions.typeText("Laptop"));
         onView(withId(R.id.searchButton)).perform(ViewActions.click());
@@ -48,9 +46,36 @@ public class SearchEspressoTest {
     }
 
     @Test
-    public void testSearchWithMultipleCriteria() {
-        // Given that the user is on the SearchActivity
+    public void testSearchByExchangePreference() {
+        // When the user enters an exchange preference (e.g., "TV") and initiates the search
+        onView(withId(R.id.exchangePreferenceEditText)).perform(ViewActions.typeText("TV"));
+        onView(withId(R.id.searchButton)).perform(ViewActions.click());
 
+        // Then verify that the search results activity is displayed
+        onView(withId(R.id.searchResultsListView)).check(matches(isDisplayed()));
+
+        // And verify that the search results match the specified exchange preference
+        onView(withId(R.id.searchResultsListView))
+                .check(matches(hasDescendant(withText(containsString("TV")))));
+    }
+
+    @Test
+    public void testSearchByCondition() {
+        // When the user enters a condition (e.g., "Used (Very Good)") and initiates the search
+        onView(withId(R.id.conditionSpinner)).perform(ViewActions.click());
+        onView(ViewMatchers.withText("Used (Very Good)")).perform(ViewActions.click());
+        onView(withId(R.id.searchButton)).perform(ViewActions.click());
+
+        // Then verify that the search results activity is displayed
+        onView(withId(R.id.searchResultsListView)).check(matches(isDisplayed()));
+
+        // And verify that the search results match the specified condition
+        onView(withId(R.id.searchResultsListView))
+                .check(matches(hasDescendant(withText(containsString("Used (Very Good)")))));
+    }
+
+    @Test
+    public void testSearchWithMultipleCriteria() {
         // When the user sets various search criteria (e.g., name, condition, exchange preference) and initiates the search
         onView(withId(R.id.nameEditText)).perform(ViewActions.typeText("Laptop"));
         onView(withId(R.id.conditionSpinner)).perform(ViewActions.click());
@@ -75,8 +100,6 @@ public class SearchEspressoTest {
 
     @Test
     public void testEmptySearch() {
-        // Given that the user is on the SearchActivity
-
         // When the user initiates a search without entering any search criteria
         onView(withId(R.id.searchButton)).perform(ViewActions.click());
 
@@ -86,8 +109,6 @@ public class SearchEspressoTest {
 
     @Test
     public void testNoMatchingResults() {
-        // Given that the user is on the SearchActivity
-
         // When the user enters a name (e.g., "Laptop") and initiates the search
         onView(withId(R.id.nameEditText)).perform(ViewActions.typeText("abcdefghijklmnop"));
         onView(withId(R.id.searchButton)).perform(ViewActions.click());
