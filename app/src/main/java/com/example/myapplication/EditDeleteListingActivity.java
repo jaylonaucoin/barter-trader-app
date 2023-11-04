@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,35 +60,30 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         String description = listingDetailsLines[2].replace("Description: ", "");
         String condition = listingDetailsLines[3].replace("Condition: ", "");
         String exchangePreference = listingDetailsLines[4].replace("Exchange Preference: ", "");
-        String address = listingDetailsLines[5].replace("Address: ", "");
 
         EditText editProductName = findViewById(R.id.editProductName);
         EditText editDescription = findViewById(R.id.editDescription);
-        EditText editCondition = findViewById(R.id.editCondition);
+        Spinner editCondition = findViewById(R.id.editCondition);
         EditText editExchangePreference = findViewById(R.id.editExchangePreference);
-        EditText editAddress = findViewById(R.id.editAddress);
 
         editProductName.setText(productName);
         editDescription.setText(description);
-        editCondition.setText(condition);
+        editCondition.getSelectedItem().toString().trim();
         editExchangePreference.setText(exchangePreference);
-        editAddress.setText(address);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Get the updated data from EditText fields
                 String updatedProductName = editProductName.getText().toString();
                 String updatedDescription = editDescription.getText().toString();
-                String updatedCondition = editCondition.getText().toString();
+                String updatedCondition = editCondition.getSelectedItem().toString().trim();
                 String updatedExchangePreference = editExchangePreference.getText().toString();
-                String updatedAddress = editAddress.getText().toString();
 
                 // Check if any of the fields have changed
                 boolean hasChanges = !updatedProductName.equals(productName) ||
                         !updatedDescription.equals(description) ||
                         !updatedCondition.equals(condition) ||
-                        !updatedExchangePreference.equals(exchangePreference) ||
-                        !updatedAddress.equals(address);
+                        !updatedExchangePreference.equals(exchangePreference);
 
                 if (hasChanges) {
                     // Update the database with the new data
@@ -98,7 +94,6 @@ public class EditDeleteListingActivity extends AppCompatActivity {
                     listingRef.child("Description").setValue(updatedDescription);
                     listingRef.child("Condition").setValue(updatedCondition);
                     listingRef.child("Exchange Preference").setValue(updatedExchangePreference);
-                    listingRef.child("Address").setValue(updatedAddress);
 
                     // Notify the user that changes have been saved
                     Toast.makeText(EditDeleteListingActivity.this, "Changes saved", Toast.LENGTH_SHORT).show();

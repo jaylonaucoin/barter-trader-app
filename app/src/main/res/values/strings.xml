@@ -64,4 +64,14 @@
     <string name="editListing">Edit Listing</string>
     <string name="saveListing">Save Changes</string>
     <string name="deleteListing">Delete Listing</string>
+    <string-array name="condition_array">
+        <item>Any</item>
+        <item>New</item>
+        <item>Used (Like New)</item>
+        <item>Used (Very Good)</item>
+        <item>Used (Good)</item>
+        <item>Used (Acceptable)</item>
+    </string-array>
+    <string name="condition">Product Condition:</string>
+
 </resources>

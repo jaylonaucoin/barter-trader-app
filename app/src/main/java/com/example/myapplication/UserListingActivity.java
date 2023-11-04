@@ -123,7 +123,6 @@ public class UserListingActivity extends AppCompatActivity {
         String description = listingSnapshot.child("Description").getValue(String.class);
         String condition = listingSnapshot.child("Condition").getValue(String.class);
         String exchangePreference = listingSnapshot.child("Exchange Preference").getValue(String.class);
-        String address = listingSnapshot.child("Address").getValue(String.class);
 
         // Create a formatted listing details string
         StringBuilder listingDetails = new StringBuilder();
@@ -132,7 +131,6 @@ public class UserListingActivity extends AppCompatActivity {
         listingDetails.append("Description: ").append(description).append("\n");
         listingDetails.append("Condition: ").append(condition).append("\n");
         listingDetails.append("Exchange Preference: ").append(exchangePreference).append("\n");
-        listingDetails.append("Address: ").append(address).append("\n");
 
         return listingDetails.toString();
     }
@@ -150,4 +148,3 @@ public class UserListingActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 }
-
