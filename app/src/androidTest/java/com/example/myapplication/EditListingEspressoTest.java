@@ -8,6 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +36,31 @@ public class EditListingEspressoTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        // Verify that the SuccessActivity is displayed
+        // Verify that the SuccessActivity is displayed then click listings page
         Espresso.onView(ViewMatchers.withId(R.id.instructions)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+        Espresso.onView(ViewMatchers.withId(R.id.userListing)).perform(ViewActions.click());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Espresso.onView(ViewMatchers.withId(R.id.listingsListView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+    }
+
+    @Test
+    public void testClickedListing() {
+        login();
+        Espresso.onData(Matchers.anything()) // This matches any data in the adapter
+                .inAdapterView(ViewMatchers.withId(R.id.listingsListView)) // Use the ID of your ListView
+                .atPosition(0) // Change this to the desired position
+                .perform(ViewActions.click());
+
+        // Introduce a delay to allow the EditDeleteListingActivity to load
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Espresso.onView(ViewMatchers.withId(R.id.saveButton)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 }
