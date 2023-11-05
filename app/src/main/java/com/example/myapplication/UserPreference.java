@@ -4,12 +4,9 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RemoteViews;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,10 +22,7 @@ import java.util.Map;
 public class UserPreference extends AppCompatActivity {
 
 
-
-    private FirebaseDatabase firebaseDB;
     private DatabaseReference firebaseDBRef;
-    private String textContent = "";
 
     Spinner typeSpinner, colorSpinner;
     EditText customerPreference;
@@ -39,8 +33,7 @@ public class UserPreference extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        //work here
+        setContentView(R.layout.userpreferencelayout);
 
 
         typeSpinner = findViewById(R.id.type);
@@ -113,7 +106,7 @@ public class UserPreference extends AppCompatActivity {
     }
 
     public void connectToFirebase() {
-        firebaseDB = FirebaseDatabase.getInstance("https://my-application-d814a-default-rtdb.firebaseio.com/");
+        FirebaseDatabase firebaseDB = FirebaseDatabase.getInstance("https://my-application-d814a-default-rtdb.firebaseio.com/");
         firebaseDBRef = firebaseDB.getReference("Profile");
     }
 

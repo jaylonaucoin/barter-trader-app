@@ -2,20 +2,16 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -32,14 +28,17 @@ import java.util.List;
 import java.util.Objects;
 
 // Activity to handle first login location functionality
-public class FirstLoginLocation extends AppCompatActivity {
+public class FirstLoginLocation extends AppCompatActivity implements LocationHelper.LocationCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private DatabaseReference mUserAddressesRef;
-    private FusedLocationProviderClient locationClient;
+
+    private LocationHelper locationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_first_login_location);
 
         // Initialize Firebase auth and database references
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -47,14 +46,11 @@ public class FirstLoginLocation extends AppCompatActivity {
         String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         mUserAddressesRef = mDatabase.getReference("User").child(userId).child("addresses");
 
+        // Initialize LocationHelper instead of FusedLocationProviderClient
+        locationHelper = new LocationHelper(this, this);
+
         // Check if the user's 0th address already exists
         checkIf0thAddressExists();
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_login_location);
-
-        locationClient = LocationServices.getFusedLocationProviderClient(this);
-
         // Setup click listener for the location icon
         setupLocationIcon();
         // Initialize Places API
@@ -87,19 +83,8 @@ public class FirstLoginLocation extends AppCompatActivity {
 
     // Setup click listener for location icon
     private void setupLocationIcon() {
-        // Get the location icon view from the layout
         ImageView locationIcon = findViewById(R.id.automatic_location_icon);
-        // Set an onclick listener
-        locationIcon.setOnClickListener(view -> {
-            // Check for location permission
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // Request permission if not granted
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-            } else {
-                // Get current location if permission is granted
-                getCurrentLocation();
-            }
-        });
+        locationIcon.setOnClickListener(view -> getCurrentLocation());
     }
 
     // Initialize Google Places API
@@ -140,22 +125,14 @@ public class FirstLoginLocation extends AppCompatActivity {
         }
     }
 
-    // Retrieve the current location of the device
+    @Override
+    public void onLocationRetrieved(Location location) {
+        startMapsActivityWithLocation(location);
+    }
+
+    // Modified getCurrentLocation method to use LocationHelper
     private void getCurrentLocation() {
-        try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            locationClient.getLastLocation()
-                    .addOnSuccessListener(this, location -> {
-                        if (location != null) {
-                            startMapsActivityWithLocation(location);
-                        }
-                    })
-                    .addOnFailureListener(this, e -> Log.e("LocationError", "Error trying to get last GPS location", e));
-        } catch (SecurityException e) {
-            Log.e("LocationError", "SecurityException", e);
-        }
+        locationHelper.getCurrentLocation();
     }
 
     // Start MapsActivity with a given Location object
@@ -181,7 +158,9 @@ public class FirstLoginLocation extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
+                locationHelper.getCurrentLocation();
+            } else {
+                Toast.makeText(this, "Location permission needed", Toast.LENGTH_SHORT).show();
             }
         }
     }
