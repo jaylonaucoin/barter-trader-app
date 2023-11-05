@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Login was successful
                                         errorMessageTextView.setVisibility(View.GONE); // Hide error message
-                                        Intent loginSuccessIntent = new Intent(LoginActivity.this, SuccessActivity.class);
+                                        Intent loginSuccessIntent = new Intent(LoginActivity.this, FirstLoginLocation.class);
                                         startActivity(loginSuccessIntent);
                                     } else {
                                         // Login failed

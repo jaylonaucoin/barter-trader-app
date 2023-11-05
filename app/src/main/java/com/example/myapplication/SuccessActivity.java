@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -59,6 +60,28 @@ public class SuccessActivity extends AppCompatActivity {
             }
         });
 
+        // grabbing the postGoods button
+        Button postGoodsButton = findViewById(R.id.postGoodsButton);
+        postGoodsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to post page
+            public void onClick(View v) {
+                Intent postIntent = new Intent(SuccessActivity.this, PostGoods.class);
+                startActivity(postIntent);
+            }
+        });
+
+        // grabbing the message button
+        Button messageButton = findViewById(R.id.messageButton);
+        messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to messaging page
+            public void onClick(View v) {
+                Intent messageIntent = new Intent(SuccessActivity.this, MessagingActivity.class);
+                startActivity(messageIntent);
+            }
+        });
+
         // grabbing the logout button to add an on-click listener
         Button logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -89,28 +112,28 @@ public class SuccessActivity extends AppCompatActivity {
             }
         });
 
-        // grabbing the postGoods button
-        Button postGoodsButton = findViewById(R.id.postGoodsButton);
-        postGoodsButton.setOnClickListener(new View.OnClickListener() {
+        // grabbing the search button to add an on-click listener
+        Button searchButton = findViewById(R.id.searchBtn);
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            // when clicked bring user to post page
+            // on click for when search is clicked
             public void onClick(View v) {
-                Intent postIntent = new Intent(SuccessActivity.this, PostGoods.class);
-                startActivity(postIntent);
+                // going to the search page
+                Intent searchIntent = new Intent(SuccessActivity.this, SearchActivity.class);
+                startActivity(searchIntent);
             }
         });
 
-        // grabbing the message button
-        Button messageButton = findViewById(R.id.messageButton);
-        messageButton.setOnClickListener(new View.OnClickListener() {
+        // grabs the saved address button and adds a listener to it
+        Button savedAddresses = findViewById(R.id.savedAddresses);
+        savedAddresses.setOnClickListener(new View.OnClickListener() {
             @Override
-            // when clicked bring user to messaging page
-            public void onClick(View v) {
-                Intent messageIntent = new Intent(SuccessActivity.this, MessagingActivity.class);
-                startActivity(messageIntent);
+            public void onClick(View view) {
+                // goes to saved addresses page
+                Intent savedAddresses = new Intent(SuccessActivity.this, SavedAddresses.class);
+                startActivity(savedAddresses);
             }
         });
-
     }
 
     private void connectToFirebase(){

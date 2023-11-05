@@ -59,6 +59,7 @@
     <string name="preferences">User Preferences</string>
     <string name="messages">Messages</string>
     <string name="profile">User Profile</string>
+    <string name="search">Search</string>
     <string name="no_account">Don\'t have an account?</string>
     <string name="returnSuccess">Return</string>
     <string name="editListing">Edit Listing</string>
@@ -73,5 +74,14 @@
         <item>Used (Acceptable)</item>
     </string-array>
     <string name="condition">Product Condition:</string>
-
+    <string name="location">Location</string>
+    <string name="product_name">Product Name</string>
+    <string name="exchange_preference">Exchange Preference</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="google_maps_key">AIzaSyDqCJ4dSQzQX8lSTyIva4hWX-7lqqVFS_Y</string>
+    <string name="confirm_location">Confirm Location</string>
+    <string name="location_icon">Location Icon</string>
+    <string name="where_are_you_located">Where are You Located?</string>
+    <string name="search_your_location">Search your Location</string>
+    <string name="saved_addresses">Saved Addresses</string>
 </resources>
