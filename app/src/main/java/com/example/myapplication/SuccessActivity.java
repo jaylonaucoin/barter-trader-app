@@ -134,6 +134,16 @@ public class SuccessActivity extends AppCompatActivity {
                 startActivity(savedAddresses);
             }
         });
+        Button ValueServiceButton = findViewById(R.id.ValueSerButton);
+        ValueServiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ValueIntent = new Intent(SuccessActivity.this, ValuationService.class);
+                ValueIntent.putExtra("USER_ID", auth.getCurrentUser().getUid());
+                startActivity(ValueIntent);
+            }
+        });
+
     }
 
     private void connectToFirebase(){

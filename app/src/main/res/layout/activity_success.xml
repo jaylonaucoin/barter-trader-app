@@ -12,38 +12,13 @@
         android:layout_width="166dp"
         android:layout_height="56dp"
         android:layout_marginStart="122dp"
-        android:layout_marginTop="39dp"
+        android:layout_marginTop="14dp"
         android:layout_marginEnd="123dp"
         android:text="@string/postGoods"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instructions" />
-
-    <Button
-        android:id="@+id/savedAddresses"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
-        android:text="@string/saved_addresses"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileButton" />
-
-    <Button
-        android:id="@+id/preferenceButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
-        android:text="@string/preferences"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/messageButton" />
 
     <Button
         android:id="@+id/profileButton"
@@ -55,21 +30,9 @@
         android:layout_marginEnd="123dp"
         android:text="@string/profile"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/preferenceButton" />
-
-    <Button
-        android:id="@+id/userListing"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
-        android:text="@string/listings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchBtn" />
 
     <Button
         android:id="@+id/searchBtn"
@@ -81,6 +44,7 @@
         android:layout_marginEnd="123dp"
         android:text="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/postGoodsButton" />
 
@@ -94,8 +58,51 @@
         android:layout_marginEnd="123dp"
         android:text="@string/messages"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userListing" />
+
+    <Button
+        android:id="@+id/userListing"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="166dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="122dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="123dp"
+        android:text="@string/listings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBtn" />
+
+    <Button
+        android:id="@+id/preferenceButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="166dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="122dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="123dp"
+        android:text="@string/preferences"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messageButton" />
+
+    <Button
+        android:id="@+id/savedAddresses"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="166dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="122dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="123dp"
+        android:text="@string/saved_addresses"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileButton" />
 
     <TextView
         android:id="@+id/welcomeMessage"
@@ -131,9 +138,23 @@
         android:layout_width="166dp"
         android:layout_height="56dp"
         android:layout_marginStart="122dp"
-        android:layout_marginTop="53dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="123dp"
         android:text="@string/logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ValueSerButton" />
+
+    <Button
+        android:id="@+id/ValueSerButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="166dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="122dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="123dp"
+        android:text="Valuation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/savedAddresses" />
