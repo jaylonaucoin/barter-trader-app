@@ -1,17 +1,17 @@
 <resources>
 
     <string-array name="type_options">
-    <item>tools</item>
-    <item>transportation</item>
-    <item>clothes</item>
-    <item>etc</item>
+        <item>tools</item>
+        <item>transportation</item>
+        <item>clothes</item>
+        <item>etc</item>
     </string-array>
 
     <string-array name="color_options">
-    <item>black</item>
-    <item>white</item>
-    <item>blue</item>
-    <item>red</item>
+        <item>black</item>
+        <item>white</item>
+        <item>blue</item>
+        <item>red</item>
     </string-array>
 
     <string name="postal_address">Postal Address</string>
@@ -55,6 +55,34 @@
     <string name="recoverPage">Password Recovery</string>
     <string name="returnLogin">Return to Login</string>
     <string name="logout">Logout</string>
+    <string name="postGoods">Post Goods</string>
+    <string name="preferences">User Preferences</string>
+    <string name="messages">Messages</string>
+    <string name="profile">User Profile</string>
+    <string name="search">Search</string>
     <string name="no_account">Don\'t have an account?</string>
     <string name="default_notification_channel_id">notification</string>
+    <string name="returnSuccess">Return</string>
+    <string name="editListing">Edit Listing</string>
+    <string name="saveListing">Save Changes</string>
+    <string name="deleteListing">Delete Listing</string>
+    <string-array name="condition_array">
+        <item>Any</item>
+        <item>New</item>
+        <item>Used (Like New)</item>
+        <item>Used (Very Good)</item>
+        <item>Used (Good)</item>
+        <item>Used (Acceptable)</item>
+    </string-array>
+    <string name="condition">Product Condition:</string>
+    <string name="location">Location</string>
+    <string name="product_name">Product Name</string>
+    <string name="exchange_preference">Exchange Preference</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="google_maps_key">AIzaSyDqCJ4dSQzQX8lSTyIva4hWX-7lqqVFS_Y</string>
+    <string name="confirm_location">Confirm Location</string>
+    <string name="location_icon">Location Icon</string>
+    <string name="where_are_you_located">Where are You Located?</string>
+    <string name="search_your_location">Search your Location</string>
+    <string name="saved_addresses">Saved Addresses</string>
 </resources>

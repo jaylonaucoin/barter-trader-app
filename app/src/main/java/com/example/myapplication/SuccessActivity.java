@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.messaging.MessagingActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -58,6 +60,28 @@ public class SuccessActivity extends AppCompatActivity {
             }
         });
 
+        // grabbing the postGoods button
+        Button postGoodsButton = findViewById(R.id.postGoodsButton);
+        postGoodsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to post page
+            public void onClick(View v) {
+                Intent postIntent = new Intent(SuccessActivity.this, PostGoods.class);
+                startActivity(postIntent);
+            }
+        });
+
+        // grabbing the message button
+        Button messageButton = findViewById(R.id.messageButton);
+        messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // when clicked bring user to messaging page
+            public void onClick(View v) {
+                Intent messageIntent = new Intent(SuccessActivity.this, MessagingActivity.class);
+                startActivity(messageIntent);
+            }
+        });
+
         // grabbing the logout button to add an on-click listener
         Button logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -71,10 +95,45 @@ public class SuccessActivity extends AppCompatActivity {
                 // going back to the login page
                 Intent loginIntent = new Intent(SuccessActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
-                finish();
             }
         });
 
+        // grabbing the listing button to add an on-click listener
+        Button listingButton = findViewById(R.id.userListing);
+        listingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // on click for when user listings is clicked
+            public void onClick(View v) {
+                Toast.makeText(SuccessActivity.this, "User Listings Page", Toast.LENGTH_SHORT).show();
+
+                // going back to the listing page
+                Intent listingIntent = new Intent(SuccessActivity.this, UserListingActivity.class);
+                startActivity(listingIntent);
+            }
+        });
+
+        // grabbing the search button to add an on-click listener
+        Button searchButton = findViewById(R.id.searchBtn);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // on click for when search is clicked
+            public void onClick(View v) {
+                // going to the search page
+                Intent searchIntent = new Intent(SuccessActivity.this, SearchActivity.class);
+                startActivity(searchIntent);
+            }
+        });
+
+        // grabs the saved address button and adds a listener to it
+        Button savedAddresses = findViewById(R.id.savedAddresses);
+        savedAddresses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // goes to saved addresses page
+                Intent savedAddresses = new Intent(SuccessActivity.this, SavedAddresses.class);
+                startActivity(savedAddresses);
+            }
+        });
     }
 
     private void connectToFirebase(){
