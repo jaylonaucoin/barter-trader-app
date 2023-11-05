@@ -46,7 +46,7 @@ public class transactions extends AppCompatActivity {
                 // considering it is the reference to the provider
                 provider = firebaseDB.getReference("providerUserName");
                 retrieveData(provider);
-                addRequest(provider, receiver);
+                requestAdded(provider, receiver);
             }
         });
 
@@ -71,7 +71,7 @@ public class transactions extends AppCompatActivity {
         req.put(providerName,listingName);
 
         Map<String, String> status = new HashMap<>();
-        req.put("Status","Pending");
+        status.put("Status","Pending");
         receiver = firebaseDB.getReference("receiverUserName");
         receiver.child("Requests").setValue(req);
         receiver.child("Requests").child(providerName).setValue(status);
@@ -98,7 +98,7 @@ public class transactions extends AppCompatActivity {
     }
 
     // this method will add the receiver name and listing Name to provider
-    private void addRequest(DatabaseReference provider, DatabaseReference receiver){
+    private void requestAdded(DatabaseReference provider, DatabaseReference receiver){
         String receiverName = receiver.child("UserName").toString();
         String productName = receiver.child("Requests").child(provider.child("Name").toString()).toString();
         Map<String, String > itemReq = new HashMap<>();
