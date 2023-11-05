@@ -34,7 +34,7 @@ public class NotificationWorker extends Worker {
     @Override
     public Result doWork(){
         token = getInputData().getString("token");
-        sendMessage("Hello");
+        sendMessage("Hello"); //for now it sends a notification every hour
         return Result.success();
     }
 
@@ -61,11 +61,12 @@ public class NotificationWorker extends Worker {
     }
 
     public void callAPI(JSONObject jsonObject){
+        //sends api call to firebase to send a message
         MediaType JSON = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
         String URL = "https://fcm.googleapis.com/fcm/send";
         RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
-        Request request = new Request.Builder().url(URL).post(body).header("Authorization", "API_KEY").build();
+        Request request = new Request.Builder().url(URL).post(body).header("Authorization", "Bearer AAAA66SfK_Q:APA91bGnptafWF1eotnS01oc7VJJmrvXeyxj5o2lxPWKLFSFCEoQIcSLXJYaFIoR-oA1l5xhHmloAXJ01iisIZf9ij9fL7gOvwHQv7jdOOgMMDqK3NqNQXzoxi1DsQ3Z8_eAkYGmuaLW").build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
