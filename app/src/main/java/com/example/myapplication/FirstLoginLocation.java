@@ -38,8 +38,6 @@ public class FirstLoginLocation extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_login_location);
 
         // Initialize Firebase auth and database references
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -49,6 +47,11 @@ public class FirstLoginLocation extends AppCompatActivity {
 
         // Check if the user's 0th address already exists
         checkIf0thAddressExists();
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_first_login_location);
+
+
         // Setup click listener for the location icon
         setupLocationIcon();
         // Initialize Places API
