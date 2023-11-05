@@ -41,8 +41,12 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        initializeUIElements();
+        setupSearchButton();
+        initializeFirebase();
+    }
 
-        // Initialize UI elements
+    private void initializeUIElements() {
         nameEditText = findViewById(R.id.nameEditText);
         conditionSpinner = findViewById(R.id.conditionSpinner);
         exchangePreferenceEditText = findViewById(R.id.exchangePreferenceEditText);
@@ -51,117 +55,150 @@ public class SearchActivity extends AppCompatActivity {
         errorMessageTextView = findViewById(R.id.errorMessageTextView);
 
         searchResultsData = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(this, R.layout.list_item, searchResultsData) {
+        adapter = createListAdapter();
+        searchResultsList.setAdapter(adapter);
+    }
+
+    private ArrayAdapter<String> createListAdapter() {
+        return new ArrayAdapter<String>(this, R.layout.list_item, searchResultsData) {
             @NonNull
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-                View view = convertView;
-                if (view == null) {
-                    LayoutInflater inflater = getLayoutInflater();
-                    view = inflater.inflate(R.layout.list_item, parent, false);
-                }
-
+                View view = createOrReuseView(convertView, parent);
                 TextView nameTextView = view.findViewById(R.id.nameTextView);
                 TextView detailsTextView = view.findViewById(R.id.detailsTextView);
-
                 String item = searchResultsData.get(position);
-
-                // Separate the name from other details
-                String[] parts = item.split("<br>");
-                if (parts.length >= 1) {
-                    String name = parts[0];
-                    String details = "";
-
-                    if (parts.length > 1) {
-                        details = parts[1];
-                    }
-
-                    // Set the name as bold text
-                    Spannable spannable = new SpannableString(name);
-                    spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    nameTextView.setText(spannable);
-                    detailsTextView.setText(details);
-                } else {
-                    nameTextView.setText(item);
-                    detailsTextView.setText("");
-                }
-
+                displayItemDetails(nameTextView, detailsTextView, item);
                 return view;
             }
         };
+    }
 
-        searchResultsList.setAdapter(adapter);
+    private View createOrReuseView(View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            LayoutInflater inflater = getLayoutInflater();
+            return inflater.inflate(R.layout.list_item, parent, false);
+        }
+        return convertView;
+    }
 
-        listingNode = FirebaseDatabase.getInstance().getReference("Listings"); // Replace with your Firebase path
+    private void displayItemDetails(TextView nameTextView, TextView detailsTextView, String item) {
+        String[] parts = item.split("<br>");
+        if (parts.length >= 1) {
+            String name = parts[0];
+            String details = (parts.length > 1) ? parts[1] : "";
+            Spannable spannable = makeNameTextBold(name);
+            nameTextView.setText(spannable);
+            detailsTextView.setText(details);
+        } else {
+            nameTextView.setText(item);
+            detailsTextView.setText("");
+        }
+    }
 
+    private Spannable makeNameTextBold(String name) {
+        Spannable spannable = new SpannableString(name);
+        spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
+    }
+
+    private void setupSearchButton() {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Retrieve user input
                 String name = nameEditText.getText().toString();
                 String condition = conditionSpinner.getSelectedItem().toString();
                 String exchangePreference = exchangePreferenceEditText.getText().toString();
-
-                if (name.isEmpty() && condition.equals("Any") && exchangePreference.isEmpty()) {
-                    // Display an error message if all criteria are missing
-                    errorMessageTextView.setText("Please enter search criteria");
-                    errorMessageTextView.setVisibility(View.VISIBLE);
-                    searchResultsData.clear();
-                    adapter.notifyDataSetChanged();
+                if (hasNoSearchCriteria(name, condition, exchangePreference)) {
+                    displayNoCriteriaError();
                 } else {
-                    // Clear existing results
-                    searchResultsData.clear();
-                    adapter.notifyDataSetChanged();
-
-                    // Query the data
-                    listingNode.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-                                String itemName = itemSnapshot.child("Product Name").getValue(String.class);
-                                String itemCondition = itemSnapshot.child("Condition").getValue(String.class);
-                                String itemDescription = itemSnapshot.child("Description").getValue(String.class);
-                                String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
-                                String seller = itemSnapshot.child("Seller").getValue(String.class);
-                                String address = itemSnapshot.child("Address").getValue(String.class);
-
-                                // Perform client-side filtering
-                                if (matchesCriteria(itemName, itemCondition, itemExchangePref, name, condition, exchangePreference)) {
-                                    // Item matches the criteria, add it to the results
-                                    String item = itemName + "<br>" + "Condition: " + itemCondition + "\n" +
-                                            "Description: " + itemDescription + "\n" + "Exchange Preference: " + itemExchangePref + "\n" + "Address: "
-                                            + address + "\n" + "Seller: " + seller;
-                                    searchResultsData.add(item);
-                                }
-                            }
-
-                            if (searchResultsData.isEmpty()) {
-                                errorMessageTextView.setText("No matching items found");
-                                errorMessageTextView.setVisibility(View.VISIBLE);
-                            } else {
-                                errorMessageTextView.setVisibility(View.GONE);
-                            }
-                            adapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Handle database error
-                        }
-                    });
+                    searchWithData(name, condition, exchangePreference);
                 }
             }
         });
     }
 
-    private boolean matchesCriteria(
-            String name, String condition, String exchangePref,
-            String nameCriteria, String conditionCriteria, String exchangePrefCriteria
-    ) {
+    private boolean hasNoSearchCriteria(String name, String condition, String exchangePreference) {
+        return name.isEmpty() && condition.equals("Any") && exchangePreference.isEmpty();
+    }
+
+    private void displayNoCriteriaError() {
+        errorMessageTextView.setText("Please enter search criteria");
+        errorMessageTextView.setVisibility(View.VISIBLE);
+        clearSearchResults();
+    }
+
+    private void searchWithData(String name, String condition, String exchangePreference) {
+        clearSearchResults();
+        queryFirebaseForSearchResults(name, condition, exchangePreference);
+    }
+
+    private void clearSearchResults() {
+        searchResultsData.clear();
+        adapter.notifyDataSetChanged();
+    }
+
+    private void queryFirebaseForSearchResults(String name, String condition, String exchangePreference) {
+        listingNode.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                processSearchResults(dataSnapshot, name, condition, exchangePreference);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                handleDatabaseError(databaseError);
+            }
+        });
+    }
+
+    private void processSearchResults(DataSnapshot dataSnapshot, String name, String condition, String exchangePreference) {
+        for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+            String itemName = itemSnapshot.child("Product Name").getValue(String.class);
+            String itemCondition = itemSnapshot.child("Condition").getValue(String.class);
+            String itemDescription = itemSnapshot.child("Description").getValue(String.class);
+            String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
+            String seller = itemSnapshot.child("Seller").getValue(String.class);
+            String address = itemSnapshot.child("Address").getValue(String.class);
+
+            if (matchesSearchCriteria(itemName, itemCondition, itemExchangePref, name, condition, exchangePreference)) {
+                addMatchingItemToResults(itemName, itemCondition, itemDescription, itemExchangePref, seller, address);
+            }
+        }
+
+        displaySearchResultsOrNoMatchError();
+    }
+
+    private boolean matchesSearchCriteria(String name, String condition, String exchangePref,
+                                          String nameCriteria, String conditionCriteria, String exchangePrefCriteria) {
         boolean nameMatch = nameCriteria.trim().isEmpty() || name.toLowerCase().contains(nameCriteria.toLowerCase().trim());
         boolean conditionMatch = conditionCriteria.equals("Any") || condition.equals(conditionCriteria);
         boolean exchangePrefMatch = exchangePrefCriteria.trim().isEmpty() || exchangePref.toLowerCase().contains(exchangePrefCriteria.toLowerCase().trim());
         return nameMatch && conditionMatch && exchangePrefMatch;
+    }
+
+    private void addMatchingItemToResults(String itemName, String itemCondition, String itemDescription, String itemExchangePref, String seller, String address) {
+        String item = itemName + "<br>" + "Condition: " + itemCondition + "\n" +
+                "Description: " + itemDescription + "\n" + "Exchange Preference: " + itemExchangePref + "\n" + "Address: "
+                + address + "\n" + "Seller: " + seller;
+        searchResultsData.add(item);
+    }
+
+    private void displaySearchResultsOrNoMatchError() {
+        if (searchResultsData.isEmpty()) {
+            errorMessageTextView.setText("No matching items found");
+            errorMessageTextView.setVisibility(View.VISIBLE);
+        } else {
+            errorMessageTextView.setVisibility(View.GONE);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void handleDatabaseError(DatabaseError databaseError) {
+        // Handle database error
+    }
+
+    private void initializeFirebase() {
+        listingNode = FirebaseDatabase.getInstance().getReference("Listings"); // Replace with your
     }
 }
