@@ -26,6 +26,13 @@
             android:name=".MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
+        <service
+            android:name=".notifications.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <activity
             android:name=".messaging.MessagingActivity"
             android:exported="false" />
@@ -67,13 +74,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ItemDescriptionActivity"
-            android:exported="true" />
-
-        <activity
             android:name=".FirstLoginLocation"
             android:exported="true" />
-
     </application>
-
 </manifest>
