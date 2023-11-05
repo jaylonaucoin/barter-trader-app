@@ -6,18 +6,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class transactions extends AppCompatActivity {
     private FirebaseDatabase firebaseDB;
-    private DatabaseReference firebaseDBRef;
+    private DatabaseReference receiver, provider;
     Button request, cancel;
     @SuppressLint("MissingInflatedId")
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,11 @@ public class transactions extends AppCompatActivity {
                 cancel.setVisibility(View.VISIBLE);
                 request.setVisibility(View.GONE);
                 connectToDBase();
-                writeToDB();
+
+                // considering it is the reference to the provider
+                provider = firebaseDB.getReference("providerUserName");
+                retrieveData(provider);
+                addRequest(provider, receiver);
             }
         });
 
@@ -52,28 +60,49 @@ public class transactions extends AppCompatActivity {
         });
     }
     private void connectToDBase(){
-        firebaseDB = FirebaseDatabase.getInstance("https://my-application-89cfb-default-rtdb.firebaseio.com/");
-        firebaseDBRef = firebaseDB.getReference("User1");
+        firebaseDB = FirebaseDatabase.getInstance("https://transactionactivity-40673-default-rtdb.firebaseio.com/");
+
     }
 
-    private void writeToDB(){
-        // User information
-        Map<String, String> user = new HashMap<>();
-        user.put("Name", "Rahul Kumar");
-        user.put("Password", "123456" );
+    // this method add request on the receiver side
+    private void addRequest(String providerName, String listingName){
+        //creating a hashmap, and storing providerName, and listing name to receiver requests
+        Map<String, String> req = new HashMap<>();
+        req.put(providerName,listingName);
 
-        // item information
-        Map<String, String> listings = new HashMap<>();
-        listings.put("Address", "address");
-        listings.put("Condition", "condition");
-        listings.put("Description", "description");
-        listings.put("Exchange preference", "preference");
+        Map<String, String> status = new HashMap<>();
+        req.put("Status","Pending");
+        receiver = firebaseDB.getReference("receiverUserName");
+        receiver.child("Requests").setValue(req);
+        receiver.child("Requests").child(providerName).setValue(status);
+    }
 
-        Map<String, Map> data = new HashMap<>();
-        data.put("User", user);
-        data.put("listings", listings);
+    // this method retrieves the name of provider and the product name
+    private void retrieveData(DatabaseReference provider){
+        provider.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    final String providerName = snapshot.child("UserName").getValue(String.class);
+                    final String listingName = snapshot.child("Listing").child("Name").toString();
+                    addRequest(providerName,listingName);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        firebaseDBRef.setValue(data);
+            }
+        });
+
+    }
+
+    // this method will add the receiver name and listing Name to provider
+    private void addRequest(DatabaseReference provider, DatabaseReference receiver){
+        String receiverName = receiver.child("UserName").toString();
+        String productName = receiver.child("Requests").child(provider.child("Name").toString()).toString();
+        Map<String, String > itemReq = new HashMap<>();
+        itemReq.put(receiverName, productName);
+        provider.child("RequestReceived").setValue(itemReq);
     }
 }
