@@ -106,7 +106,7 @@ public class ValuationService extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Are you sure to sell?");
             builder.setMessage("You want sell " + itemName + " and get " + itemValue + " dollars in your total value ?");
-            builder.setPositiveButton("是的", (dialog, which) -> {
+            builder.setPositiveButton("Yes", (dialog, which) -> {
                 //if chose yes
                 calculate.sellItem(itemName, itemValue);
                 tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
