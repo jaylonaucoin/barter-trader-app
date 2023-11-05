@@ -27,6 +27,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -56,6 +58,8 @@ public class SavedAddresses extends AppCompatActivity {
     // The RecyclerView for displaying the list of saved addresses.
     private RecyclerView recyclerView;
 
+    private FusedLocationProviderClient locationClient;
+
     // A list to hold maps of the address details fetched from Firebase.
     private final List<Map<String, Object>> addressList = new ArrayList<>();
 
@@ -63,6 +67,8 @@ public class SavedAddresses extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_addresses); // Replace with the name of your layout XML
+
+        locationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Checks if the user is logged in and exits if not.
         verifyUserLoggedIn();
@@ -196,16 +202,19 @@ public class SavedAddresses extends AppCompatActivity {
     }
 
     private void fetchLastKnownLocation() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (locationManager != null) {
-            try {
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    startMapsActivity(location);
-                }
-            } catch (SecurityException e) {
-                e.printStackTrace();
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
             }
+            locationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            startMapsActivity(location);
+                        }
+                    })
+                    .addOnFailureListener(this, e -> Log.e("LocationError", "Error trying to get last GPS location", e));
+        } catch (SecurityException e) {
+            Log.e("LocationError", "SecurityException", e);
         }
     }
 
