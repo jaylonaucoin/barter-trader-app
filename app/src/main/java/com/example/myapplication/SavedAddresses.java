@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -15,19 +14,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.Manifest;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -45,15 +40,13 @@ import java.util.Map;
 import java.util.Objects;
 
 // The SavedAddresses activity is responsible for displaying and managing a list of saved addresses for a user.
-public class SavedAddresses extends AppCompatActivity {
+public class SavedAddresses extends AppCompatActivity implements LocationHelper.LocationCallback {
 
-    // Constants for permissions
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     // Firebase database reference and the ID of the current user.
     private DatabaseReference mDatabase;
     private String userId;
-    private FusedLocationProviderClient locationClient;
+    private LocationHelper locationHelper;
 
     // The RecyclerView for displaying the list of saved addresses.
     private RecyclerView recyclerView;
@@ -66,8 +59,7 @@ public class SavedAddresses extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_addresses); // Replace with the name of your layout XML
 
-        // Initialize FusedLocationProviderClient
-        locationClient = LocationServices.getFusedLocationProviderClient(this);
+        locationHelper = new LocationHelper(this, this);
 
         // Checks if the user is logged in and exits if not.
         verifyUserLoggedIn();
@@ -188,48 +180,24 @@ public class SavedAddresses extends AppCompatActivity {
             }
         }
     }
-    // Gets the current location from the LocationManager
-    private void getCurrentLocation() {
-        // Check for location permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Request the permission
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-        } else {
-            // Permission has already been granted
-            fetchLastKnownLocation();
-        }
-    }
-
-    private void fetchLastKnownLocation() {
-        try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            locationClient.getLastLocation()
-                    .addOnSuccessListener(this, location -> {
-                        if (location != null) {
-                            startMapsActivity(location);
-                        }
-                    })
-                    .addOnFailureListener(this, e -> Log.e("LocationError", "Error trying to get last GPS location", e));
-        } catch (SecurityException e) {
-            Log.e("LocationError", "SecurityException", e);
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted
-                fetchLastKnownLocation();
-            } else {
-                // Permission was denied. Disable the functionality that depends on this permission.
-                Toast.makeText(this, "Location permission is needed to use this feature", Toast.LENGTH_SHORT).show();
-            }
-        }
+        locationHelper.onRequestPermissionsResult(requestCode, grantResults);
     }
+
+    // Sends location to MapsActivity
+    @Override
+    public void onLocationRetrieved(Location location) {
+        startMapsActivity(location);
+    }
+
+    // Gets Location using FusedLocationProviderClient
+    private void getCurrentLocation() {
+        locationHelper.getCurrentLocation();
+    }
+
 
     // Starts the MapsActivity with the given location
     private void startMapsActivity(Location location) {
