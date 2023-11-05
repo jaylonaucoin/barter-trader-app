@@ -9,12 +9,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -35,6 +36,7 @@ public class FirstLoginLocation extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private DatabaseReference mUserAddressesRef;
+    private FusedLocationProviderClient locationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,9 @@ public class FirstLoginLocation extends AppCompatActivity {
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         mUserAddressesRef = mDatabase.getReference("User").child(userId).child("addresses");
+
+        // Initialize FusedLocationProviderClient
+        locationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Check if the user's 0th address already exists
         checkIf0thAddressExists();
@@ -136,20 +141,19 @@ public class FirstLoginLocation extends AppCompatActivity {
 
     // Retrieve the current location of the device
     private void getCurrentLocation() {
-        // Get the system's location service
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (locationManager != null) {
-            try {
-                // Get the last known location from the GPS provider
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    // Start MapsActivity with the current location
-                    startMapsActivityWithLocation(location);
-                }
-            } catch (SecurityException e) {
-                // Log any SecurityException that might occur
-                Log.e("LocationError", "SecurityException", e);
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
             }
+            locationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            startMapsActivityWithLocation(location);
+                        }
+                    })
+                    .addOnFailureListener(this, e -> Log.e("LocationError", "Error trying to get last GPS location", e));
+        } catch (SecurityException e) {
+            Log.e("LocationError", "SecurityException", e);
         }
     }
 
