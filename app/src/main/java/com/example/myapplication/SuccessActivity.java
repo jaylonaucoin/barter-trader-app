@@ -80,6 +80,7 @@ public class SuccessActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent ValueIntent = new Intent(SuccessActivity.this, ValuationService.class);
+                ValueIntent.putExtra("USER_ID", auth.getCurrentUser().getUid());
                 startActivity(ValueIntent);
             }
         });

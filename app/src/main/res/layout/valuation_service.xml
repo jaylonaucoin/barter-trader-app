@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/tvTotalValue"
-        android:layout_width="205dp"
-        android:layout_height="25dp"
+        android:layout_width="314dp"
+        android:layout_height="28dp"
         android:text="Your total value:"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"

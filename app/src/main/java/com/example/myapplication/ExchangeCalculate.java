@@ -8,8 +8,9 @@ public class ExchangeCalculate {
     //build array
     private ArrayList<String> items;
 
-    public ExchangeCalculate(ArrayList<String> initialItems) {
+    public ExchangeCalculate(ArrayList<String> initialItems, double initialTotalValue) {
         this.items = initialItems;
+        this.totalValue = initialTotalValue;
     }
 
     public void sellItem(String itemName, double itemValue) {

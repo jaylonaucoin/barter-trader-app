@@ -21,7 +21,7 @@ public class ValueSerUnitTest {
     @Before
     public void setUp() {
         items = new ArrayList<>();
-        calculator = new ExchangeCalculate(items);
+        calculator = new ExchangeCalculate(items, 0.0);
     }
 
     @Test
