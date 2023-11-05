@@ -32,4 +32,14 @@ public class ExchangeCalculate {
     public double getTotalValue() {
         return totalValue;
     }
+    //check is able to buy 
+     public boolean AbleToBuy(int position) {
+        if (position != -1 && position < items.size()) {
+            String selectedItem = items.get(position);
+            String[] parts = selectedItem.split(" - ");
+            double itemValue = Double.parseDouble(parts[1]);
+            return totalValue >= itemValue;
+        }
+        return false;
+    }
 }

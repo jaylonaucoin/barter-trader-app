@@ -82,6 +82,10 @@ public class ValuationService extends AppCompatActivity {
                     String selectedItem = items.get(position);
                     String[] parts = selectedItem.split(" - ");
                     String itemName = parts[0];
+                    if (!calculate.AbleToBuy(position)) {
+                        Toast.makeText(ValuationService.this, "You do not have enough value " + itemName, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     //same as sell button
                     new AlertDialog.Builder(ValuationService.this)
                             .setTitle("Confirm to buy")
