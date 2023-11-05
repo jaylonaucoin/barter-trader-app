@@ -56,7 +56,7 @@ public class LoginEspressoTest {
     public void testLoginButtonWithValidCredentials() {
         // Enter valid email and password, then click the "Login" button
         Espresso.onView(ViewMatchers.withId(R.id.email)).perform(ViewActions.typeText("connormacintyre14@gmail.com"));
-        Espresso.onView(ViewMatchers.withId(R.id.password)).perform(ViewActions.typeText("connor123"));
+        Espresso.onView(ViewMatchers.withId(R.id.password)).perform(ViewActions.typeText("admin123"));
         Espresso.closeSoftKeyboard(); // Close the keyboard
         Espresso.onView(ViewMatchers.withId(R.id.loginButton)).perform(ViewActions.click());
 
