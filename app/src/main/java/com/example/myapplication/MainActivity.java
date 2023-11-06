@@ -49,19 +49,19 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
 
 
-    public void scheduleWorker(String token) { //creates a worker that runs something every hour
+    public void scheduleWorker(String token) {
 
-        OneTimeWorkRequest.Builder workBuilder = new OneTimeWorkRequest.Builder(NotificationWorker.class);
+        PeriodicWorkRequest.Builder workBuilder = new PeriodicWorkRequest.Builder(NotificationWorker.class,1, TimeUnit.HOURS);
         Data data = new Data.Builder()
                 .putString("token", token)
                 .build();
 
-        OneTimeWorkRequest hourlyWork = workBuilder.setInputData(data).build();
-        WorkManager.getInstance(getApplicationContext()).enqueueUniqueWork("test", ExistingWorkPolicy.KEEP, hourlyWork);
+        PeriodicWorkRequest hourlyWork = workBuilder.setInputData(data).build();
+        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("test", ExistingPeriodicWorkPolicy.KEEP, hourlyWork);
 
     }
-    public void startWorkerProcess(){ // method to start everything
-        FirebaseMessaging.getInstance().getToken() //the token of the device, firebase uses it to send notification
+    public void startWorkerProcess(){
+        FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         connectToFirebase();
-        startWorkerProcess(); //start
+        startWorkerProcess();
 
 
         Button loginPageButton = findViewById(R.id.loginPage);
