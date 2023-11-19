@@ -7,102 +7,134 @@
     tools:context=".SuccessActivity">
 
     <Button
+        android:id="@+id/feedBtn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="138dp"
+        android:text="@string/feed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ValueSerButton" />
+
+    <Button
         android:id="@+id/postGoodsButton"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginEnd="123dp"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="138dp"
         android:text="@string/postGoods"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instructions" />
 
     <Button
-        android:id="@+id/profileButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
-        android:text="@string/profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/preferenceButton" />
-
-    <Button
-        android:id="@+id/searchBtn"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
-        android:text="@string/search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postGoodsButton" />
-
-    <Button
-        android:id="@+id/messageButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
-        android:text="@string/messages"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userListing" />
-
-    <Button
         android:id="@+id/userListing"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
+        android:layout_marginEnd="138dp"
         android:text="@string/listings"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchBtn" />
 
     <Button
+        android:id="@+id/savedAddresses"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="138dp"
+        android:text="@string/saved_addresses"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileButton" />
+
+    <Button
         android:id="@+id/preferenceButton"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
+        android:layout_marginEnd="138dp"
         android:text="@string/preferences"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/messageButton" />
 
     <Button
-        android:id="@+id/savedAddresses"
+        android:id="@+id/logoutButton"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
-        android:text="@string/saved_addresses"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="73dp"
+        android:layout_marginEnd="138dp"
+        android:text="@string/logout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileButton" />
+        app:layout_constraintTop_toBottomOf="@+id/feedBtn" />
+
+    <Button
+        android:id="@+id/messageButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="138dp"
+        android:text="@string/messages"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userListing" />
+
+    <Button
+        android:id="@+id/ValueSerButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="138dp"
+        android:text="Valuation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/savedAddresses" />
+
+    <Button
+        android:id="@+id/searchBtn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="138dp"
+        android:text="@string/search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postGoodsButton" />
+
+    <Button
+        android:id="@+id/profileButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="135dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="138dp"
+        android:text="@string/profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferenceButton" />
 
     <TextView
         android:id="@+id/welcomeMessage"
@@ -131,32 +163,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeMessage" />
-
-    <Button
-        android:id="@+id/logoutButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="123dp"
-        android:text="@string/logout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ValueSerButton" />
-
-    <Button
-        android:id="@+id/ValueSerButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="166dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="122dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="123dp"
-        android:text="Valuation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/savedAddresses" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

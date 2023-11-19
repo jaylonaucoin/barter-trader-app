@@ -124,6 +124,18 @@ public class SuccessActivity extends AppCompatActivity {
             }
         });
 
+        // grabbing the feed button to add an on-click listener
+        Button feedButton = findViewById(R.id.feedBtn);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // on click for when feed is clicked
+            public void onClick(View v) {
+                // going to the feed page
+                Intent feedIntent = new Intent(SuccessActivity.this, FeedActivity.class);
+                startActivity(feedIntent);
+            }
+        });
+
         // grabs the saved address button and adds a listener to it
         Button savedAddresses = findViewById(R.id.savedAddresses);
         savedAddresses.setOnClickListener(new View.OnClickListener() {
