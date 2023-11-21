@@ -85,4 +85,14 @@
     <string name="where_are_you_located">Where are You Located?</string>
     <string name="search_your_location">Search your Location</string>
     <string name="saved_addresses">Saved Addresses</string>
+    <string name="category">Product Category:</string>
+    <string-array name="category_array">
+        <item>Electronics</item>
+        <item>Toys &amp; Games</item>
+        <item>Sports &amp; Outdoors</item>
+        <item>Vehicles &amp; Parts</item>
+        <item>Furniture</item>
+        <item>Clothing &amp; Accessories</item>
+        <item>Musical Instruments</item>
+    </string-array>
 </resources>

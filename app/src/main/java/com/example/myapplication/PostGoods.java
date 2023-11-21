@@ -37,19 +37,21 @@ public class PostGoods extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 EditText prodName = findViewById(R.id.name);
+                Spinner category = findViewById(R.id.category);
                 Spinner condition = findViewById(R.id.condition);
                 EditText description = findViewById(R.id.description);
                 EditText preference = findViewById(R.id.preference);
 
                 // Copying their string Value
                 String prodValue = prodName.getText().toString().trim();
+                String prodCategory = category.getSelectedItem().toString().trim();
                 String conditionValue = condition.getSelectedItem().toString().trim();
                 String descriptionValue = description.getText().toString().trim();
                 String preferenceValue = preference.getText().toString().trim();
 
-                if(!prodValue.isEmpty() && !conditionValue.isEmpty() && !descriptionValue.isEmpty() && !preferenceValue.isEmpty()){
+                if(!prodValue.isEmpty() && !prodCategory.isEmpty() && !conditionValue.isEmpty() && !descriptionValue.isEmpty() && !preferenceValue.isEmpty()){
                     successToast.show();
-                    writeToFireDB(prodValue, conditionValue, descriptionValue, preferenceValue);
+                    writeToFireDB(prodValue, prodCategory, conditionValue, descriptionValue, preferenceValue);
                     Intent searchIntent = new Intent(PostGoods.this, SearchActivity.class);
                     startActivity(searchIntent);
                 }else{
@@ -64,7 +66,7 @@ public class PostGoods extends AppCompatActivity {
         firebaseDBRef = firebaseDB.getReference("Listings");
         auth = FirebaseAuth.getInstance();
     }
-    private void writeToFireDB(String name, String condition, String description, String preference){
+    private void writeToFireDB(String name, String category, String condition, String description, String preference){
         String id = firebaseDBRef.push().getKey();
         String uid = auth.getCurrentUser().getUid();
 
@@ -108,6 +110,7 @@ public class PostGoods extends AppCompatActivity {
         firebaseDBRef.child("User ID").setValue(uid);
         firebaseDBRef.child("Product Name").setValue(name);
         firebaseDBRef.child("Description").setValue(description);
+        firebaseDBRef.child("Category").setValue(category);
         firebaseDBRef.child("Condition").setValue(condition);
         firebaseDBRef.child("Exchange Preference").setValue(preference);
 
