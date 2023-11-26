@@ -1,6 +1,7 @@
 package com.example.myapplication.user_profile_page;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.RatingBar;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,10 @@ public class UserProfile extends AppCompatActivity {
 
     // Firebase database reference to "user_reviews"
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("user_reviews");
+
+    public void onCloseClick(View view) {
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

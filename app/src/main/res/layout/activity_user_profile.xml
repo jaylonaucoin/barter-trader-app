@@ -3,6 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Back Button -->
+    <ImageView
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        android:padding="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/back_button"
+        android:onClick="onCloseClick" />
+
     <!-- User's profile picture, name, and ratings -->
     <RelativeLayout
         android:id="@+id/profileHeader"
@@ -16,9 +28,9 @@
             android:id="@+id/profilePicture"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:contentDescription="@string/user_profile_picture"
             android:scaleType="centerCrop"
-            android:src="@drawable/empty_user_icon"
-            android:contentDescription="@string/user_profile_picture"/>
+            android:src="@drawable/empty_user_icon" />
 
         <!-- User's name TextView -->
         <!-- HardCoded Username, Will Update once account systems are implemented -->
@@ -26,27 +38,27 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Christopher Hage"
-            android:textSize="18sp"
+            android:layout_toEndOf="@id/profilePicture"
             android:paddingTop="8dp"
-            android:layout_toEndOf="@id/profilePicture"/>
+            android:text="Christopher Hage"
+            android:textSize="18sp" />
 
         <!-- User's RatingBar -->
         <RatingBar
             android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="4dp"
             android:layout_below="@id/username"
             android:layout_toEndOf="@id/profilePicture"
+            android:isIndicator="true"
             android:numStars="5"
-            android:stepSize="0.5"
+            android:paddingTop="4dp"
             android:rating="5"
             android:scaleX="0.75"
             android:scaleY="0.75"
+            android:stepSize="0.5"
             android:transformPivotX="0dp"
-            android:transformPivotY="0dp"
-            android:isIndicator="true" />
+            android:transformPivotY="0dp" />
 
     </RelativeLayout>
 
@@ -55,7 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/profileHeader">
-        
+
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
