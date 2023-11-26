@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -17,9 +19,11 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.myapplication.notifications.NotificationWorker;
+import com.example.myapplication.user_profile_page.UserProfile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void scheduleWorker(String token) {
 
-        PeriodicWorkRequest.Builder workBuilder = new PeriodicWorkRequest.Builder(NotificationWorker.class,1, TimeUnit.HOURS);
+        PeriodicWorkRequest.Builder workBuilder = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1, TimeUnit.HOURS);
         Data data = new Data.Builder()
                 .putString("token", token)
                 .build();
@@ -60,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("test", ExistingPeriodicWorkPolicy.KEEP, hourlyWork);
 
     }
-    public void startWorkerProcess(){
+
+    public void startWorkerProcess() {
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -81,7 +86,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_refactor);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ImageView userProfileIcon = findViewById(R.id.icon_user_profile);
+        userProfileIcon.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+        ImageView addressIcon = findViewById(R.id.icon_address);
+        addressIcon.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+
+        userProfileIcon.setOnClickListener(view -> {
+
+            Intent intent = new Intent(MainActivity.this, UserProfile.class);
+            startActivity(intent);
+        });
+
+        addressIcon.setOnClickListener(view -> {
+
+            Intent intent = new Intent(MainActivity.this, SavedAddresses.class);
+            startActivity(intent);
+        });
+
+        /*
         connectToFirebase();
         startWorkerProcess();
 
@@ -116,8 +143,10 @@ public class MainActivity extends AppCompatActivity {
         firebaseDB = FirebaseDatabase.getInstance();
         firebaseDBRef = firebaseDB.getReference("test");
     }
-
+    }
 
 }
-
+*/
+    }
+}
 
