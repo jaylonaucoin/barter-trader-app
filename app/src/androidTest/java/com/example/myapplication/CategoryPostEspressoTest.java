@@ -35,8 +35,8 @@ public class CategoryPostEspressoTest {
 
     @Before
     public void loginUser() {
-        onView(withId(R.id.email)).perform(typeText("test@test.com"), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(typeText("admintest123"), closeSoftKeyboard());
+        onView(withId(R.id.email)).perform(typeText("roshanplayzmc@gmail.com"), closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText("admin123"), closeSoftKeyboard());
         onView(withId(R.id.loginButton)).perform(click());
 
         // Add delay or IdlingResource to ensure login process completes before subsequent tests
@@ -47,7 +47,7 @@ public class CategoryPostEspressoTest {
         }
     }
 
-    @Test
+    @Before
     public void clickPost() {
         onView(withId(R.id.postGoodsButton)).perform(click());
 
@@ -59,4 +59,17 @@ public class CategoryPostEspressoTest {
         }
         Espresso.onView(ViewMatchers.withId(R.id.condition)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
+
+    @Test
+    public void selectCategoryClothing() {
+
+
+        // Perform actions to select a different category (for example, Clothing)
+        onView(withId(R.id.category)).perform(click());
+
+        // Check if the selected category is displayed or not
+        Espresso.onView(ViewMatchers.withId(R.id.category))
+                .check(ViewAssertions.matches(ViewMatchers.withText("Furniture")));
+    }
+
 }
