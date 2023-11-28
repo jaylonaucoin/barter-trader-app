@@ -9,6 +9,11 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import com.example.myapplication.provider_fragments.ChatFragment;
+import com.example.myapplication.provider_fragments.PostFragment;
+import com.example.myapplication.provider_fragments.ListingsFragment;
+import androidx.fragment.app.Fragment;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -62,6 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void replaceFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment) // fragment_container is the ID of your FrameLayout where fragments will be displayed
+                .commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,18 +105,22 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.navigation_chat) {
-                // Handle Chat tab selection
-                return true;
+                replaceFragment(new ChatFragment());
             } else if (itemId == R.id.navigation_post) {
-                // Handle Post tab selection
+                replaceFragment(new PostFragment());
                 return true;
             } else if (itemId == R.id.navigation_listings) {
-                // Handle Listings tab selection
+                replaceFragment(new ListingsFragment());
                 return true;
             }
 
             return false;
         });
+
+        // Default tab
+        if (savedInstanceState == null) {
+            bottomNavigationView.setSelectedItemId(R.id.navigation_listings);
+        }
 
         /*
         connectToFirebase();

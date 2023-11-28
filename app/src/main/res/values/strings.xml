@@ -88,4 +88,5 @@
     <string name="back_button">Back Button</string>
     <string name="post">Post</string>
     <string name="chat">Chat</string>
+    <string name="select_a_category">Select a category</string>
 </resources>
