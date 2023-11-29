@@ -87,6 +87,7 @@
     <string name="saved_addresses">Saved Addresses</string>
     <string name="category">Product Category:</string>
     <string-array name="category_array">
+        <item>Any</item>
         <item>Electronics</item>
         <item>Toys &amp; Games</item>
         <item>Sports &amp; Outdoors</item>

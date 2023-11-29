@@ -27,6 +27,8 @@ import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
     private EditText nameEditText;
+
+    private Spinner categorySpinner;
     private Spinner conditionSpinner;
     private EditText exchangePreferenceEditText;
     private Button searchButton;
@@ -48,6 +50,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void initializeUIElements() {
         nameEditText = findViewById(R.id.nameEditText);
+        categorySpinner = findViewById(R.id.categorySpinner);
         conditionSpinner = findViewById(R.id.conditionSpinner);
         exchangePreferenceEditText = findViewById(R.id.exchangePreferenceEditText);
         searchButton = findViewById(R.id.searchButton);
@@ -108,18 +111,19 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String name = nameEditText.getText().toString();
                 String condition = conditionSpinner.getSelectedItem().toString();
+                String category = categorySpinner.getSelectedItem().toString();
                 String exchangePreference = exchangePreferenceEditText.getText().toString();
-                if (hasNoSearchCriteria(name, condition, exchangePreference)) {
+                if (hasNoSearchCriteria(name, category, condition, exchangePreference)) {
                     displayNoCriteriaError();
                 } else {
-                    searchWithData(name, condition, exchangePreference);
+                    searchWithData(name, category, condition, exchangePreference);
                 }
             }
         });
     }
 
-    private boolean hasNoSearchCriteria(String name, String condition, String exchangePreference) {
-        return name.isEmpty() && condition.equals("Any") && exchangePreference.isEmpty();
+    private boolean hasNoSearchCriteria(String name, String category, String condition, String exchangePreference) {
+        return name.isEmpty() && category.equals("Any") && condition.equals("Any") && exchangePreference.isEmpty();
     }
 
     private void displayNoCriteriaError() {
@@ -128,9 +132,9 @@ public class SearchActivity extends AppCompatActivity {
         clearSearchResults();
     }
 
-    private void searchWithData(String name, String condition, String exchangePreference) {
+    private void searchWithData(String name, String category, String condition, String exchangePreference) {
         clearSearchResults();
-        queryFirebaseForSearchResults(name, condition, exchangePreference);
+        queryFirebaseForSearchResults(name, category, condition, exchangePreference);
     }
 
     private void clearSearchResults() {
@@ -138,11 +142,11 @@ public class SearchActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    private void queryFirebaseForSearchResults(String name, String condition, String exchangePreference) {
+    private void queryFirebaseForSearchResults(String name, String category, String condition, String exchangePreference) {
         listingNode.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                processSearchResults(dataSnapshot, name, condition, exchangePreference);
+                processSearchResults(dataSnapshot, name, category, condition, exchangePreference);
             }
 
             @Override
@@ -152,29 +156,31 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    private void processSearchResults(DataSnapshot dataSnapshot, String name, String condition, String exchangePreference) {
+    private void processSearchResults(DataSnapshot dataSnapshot, String name, String category, String condition, String exchangePreference) {
         for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
             String itemName = itemSnapshot.child("Product Name").getValue(String.class);
+            String itemCategory = itemSnapshot.child("Category").getValue(String.class);
             String itemCondition = itemSnapshot.child("Condition").getValue(String.class);
             String itemDescription = itemSnapshot.child("Description").getValue(String.class);
             String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
             String seller = itemSnapshot.child("Seller").getValue(String.class);
             String address = itemSnapshot.child("Address").getValue(String.class);
 
-            if (matchesSearchCriteria(itemName, itemCondition, itemExchangePref, name, condition, exchangePreference)) {
-                addMatchingItemToResults(itemName, itemCondition, itemDescription, itemExchangePref, seller, address);
+            if (matchesSearchCriteria(itemName, itemCategory, itemCondition, itemExchangePref, name, category, condition, exchangePreference)) {
+                addMatchingItemToResults(itemName, itemCategory, itemCondition, itemDescription, itemExchangePref, seller, address);
             }
         }
 
         displaySearchResultsOrNoMatchError();
     }
 
-    private boolean matchesSearchCriteria(String name, String condition, String exchangePref,
-                                          String nameCriteria, String conditionCriteria, String exchangePrefCriteria) {
+    private boolean matchesSearchCriteria(String name, String category, String condition, String exchangePref,
+                                          String nameCriteria, String categoryCriteria, String conditionCriteria, String exchangePrefCriteria) {
         boolean nameMatch = nameCriteria.trim().isEmpty() || name.toLowerCase().contains(nameCriteria.toLowerCase().trim());
+        boolean categoryMatch = categoryCriteria.equals("Any") || category.equals(categoryCriteria);
         boolean conditionMatch = conditionCriteria.equals("Any") || condition.equals(conditionCriteria);
         boolean exchangePrefMatch = exchangePrefCriteria.trim().isEmpty() || exchangePref.toLowerCase().contains(exchangePrefCriteria.toLowerCase().trim());
-        return nameMatch && conditionMatch && exchangePrefMatch;
+        return nameMatch && categoryMatch && conditionMatch && exchangePrefMatch;
     }
 
     private void addMatchingItemToResults(String itemName, String itemCondition, String itemDescription, String itemExchangePref, String seller, String address) {
