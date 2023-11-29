@@ -3,7 +3,6 @@ package com.example.myapplication;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -65,7 +64,7 @@ public class SuccessActivity extends AppCompatActivity {
 
                     if ("Provider".equals(userRole)) {
                         // User is a Provider, set the content view to activity_main_provider
-                        setContentView(R.layout.activity_main_provider);
+                        setContentView(R.layout.activity_success_provider);
 
                         Toolbar toolbar = findViewById(R.id.toolbar);
                         setSupportActionBar(toolbar);
