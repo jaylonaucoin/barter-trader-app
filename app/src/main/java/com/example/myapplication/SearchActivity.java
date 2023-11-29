@@ -183,8 +183,9 @@ public class SearchActivity extends AppCompatActivity {
         return nameMatch && categoryMatch && conditionMatch && exchangePrefMatch;
     }
 
-    private void addMatchingItemToResults(String itemName, String itemCondition, String itemDescription, String itemExchangePref, String seller, String address) {
-        String item = itemName + "<br>" + "Condition: " + itemCondition + "\n" +
+    private void addMatchingItemToResults(String itemName, String itemCategory, String itemCondition, String itemDescription, String itemExchangePref, String seller, String address) {
+        String item = itemName + "<br>" + "Category: " + itemCategory + "\n" +
+                "Condition: " + itemCondition + "\n" +
                 "Description: " + itemDescription + "\n" + "Exchange Preference: " + itemExchangePref + "\n" + "Address: "
                 + address + "\n" + "Seller: " + seller;
         searchResultsData.add(item);
