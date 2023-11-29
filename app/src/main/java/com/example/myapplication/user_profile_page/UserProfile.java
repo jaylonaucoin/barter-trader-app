@@ -3,6 +3,7 @@ package com.example.myapplication.user_profile_page;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.myapplication.R;
 import com.example.myapplication.user_profile_page.user_profile_fragments.Review;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +32,7 @@ public class UserProfile extends AppCompatActivity {
 
     // Firebase database reference to "user_reviews"
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("user_reviews");
+    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("User");
 
     public void onCloseClick(View view) {
         finish();
@@ -43,6 +46,12 @@ public class UserProfile extends AppCompatActivity {
 
         // Initialize RatingBar UI component
         RatingBar ratingBar = findViewById(R.id.ratingBar);
+
+        // Fetch the TextView for the username
+        TextView usernameTextView = findViewById(R.id.username);
+
+        // Fetch username and set it
+        fetchUsername(usernameTextView);
 
         // Fetch user reviews and set the average rating on the RatingBar
         fetchReviewsAndSetRating(ratingBar);
@@ -78,6 +87,33 @@ public class UserProfile extends AppCompatActivity {
             }
         });
     }
+
+    private void fetchUsername(TextView usernameTextView) {
+        DatabaseReference userReference = dbRef.child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String firstName = dataSnapshot.child("firstName").getValue(String.class);
+                String lastName = dataSnapshot.child("lastName").getValue(String.class);
+
+                // Check if values are not null before setting the TextView
+                if (firstName != null && lastName != null) {
+                    String fullName = firstName + " " + lastName;
+                    usernameTextView.setText(fullName);
+                } else {
+                    // Handle null values
+                    usernameTextView.setText("N/A"); // Set a default value or handle it accordingly
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle error, e.g., log it or show an error message to the user
+            }
+        });
+    }
+
 
     /**
      * Fetches reviews from the database and calculates the average rating to be set on the RatingBar.

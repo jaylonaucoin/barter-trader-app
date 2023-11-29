@@ -1,5 +1,6 @@
 package com.example.myapplication.user_profile_page.user_profile_fragments;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -16,8 +17,12 @@ import android.graphics.drawable.Drawable;
 import androidx.core.content.ContextCompat;
 
 import com.example.myapplication.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ReviewPage extends AppCompatActivity {
 
@@ -69,24 +74,40 @@ public class ReviewPage extends AppCompatActivity {
     private void submitReview() {
         float rating = ratingBar.getRating();
         String reviewText = reviewEditText.getText().toString().trim();
+        String userId = FirebaseAuth.getInstance().getUid();
 
-        // Uses hardcoded user id, will be changed once user account system is implemented
-        String userId = "user123";
+        if (userId != null) {
+            DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child(userId);
 
-        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("user_reviews").child(userId);
+            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String firstName = dataSnapshot.child("firstName").getValue(String.class);
+                    String lastName = dataSnapshot.child("lastName").getValue(String.class);
+                    String fullName = (firstName != null && lastName != null) ? firstName + " " + lastName : "Unknown User";
 
-        // Hardcoded username, will be changed once user account system is implemented
-        userReference.child("username").setValue("Roshan");
-        userReference.child("rating").setValue(rating);
-        userReference.child("feedback").setValue(reviewText);
+                    DatabaseReference reviewRef = userReference.child("reviews").push();
+                    Review review = new Review(userId, fullName, rating, reviewText);
+                    reviewRef.setValue(review);
 
-        if (rating > 0) {
-            Toast.makeText(ReviewPage.this, "Review submitted successfully!", Toast.LENGTH_SHORT).show();
-            finish();
+                    if (rating > 0) {
+                        Toast.makeText(ReviewPage.this, "Review submitted successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(ReviewPage.this, "Please set a rating!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle error
+                }
+            });
         } else {
-            Toast.makeText(ReviewPage.this, "Please set a rating!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ReviewPage.this, "User not logged in", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

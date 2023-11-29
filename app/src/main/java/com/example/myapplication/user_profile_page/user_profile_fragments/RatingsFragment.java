@@ -96,13 +96,21 @@ public class RatingsFragment extends Fragment {
      * Fetch reviews from Firebase and update the UI.
      */
     private void fetchReviewsFromFirebase() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("User");
+
+        usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 reviewList.clear();
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    Review review = extractReviewFromSnapshot(userSnapshot);
-                    reviewList.add(review);
+                    if (userSnapshot.hasChild("reviews")) {
+                        for (DataSnapshot reviewSnapshot : userSnapshot.child("reviews").getChildren()) {
+                            Review review = reviewSnapshot.getValue(Review.class);
+                            if (review != null) {
+                                reviewList.add(review);
+                            }
+                        }
+                    }
                 }
                 updateUIElements();
                 adapter.notifyDataSetChanged();
@@ -114,6 +122,7 @@ public class RatingsFragment extends Fragment {
             }
         });
     }
+
 
     /**
      * Extracts a Review object from a Firebase snapshot.
