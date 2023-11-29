@@ -89,4 +89,9 @@
     <string name="post">Post</string>
     <string name="chat">Chat</string>
     <string name="select_a_category">Select a category</string>
+    <string name="your_listings">Your Listings</string>
+    <string name="exchange_preference_label">Exchange Preference:&#160;</string>
+    <string name="description_label">Description:&#160;</string>
+    <string name="product_name_label">Product Name:&#160;</string>
+    <string name="condition_label">Condition:&#160;</string>
 </resources>

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.PostGoods;
 import com.example.myapplication.R;
+
 public class PostFragment extends Fragment {
 
     @Nullable
