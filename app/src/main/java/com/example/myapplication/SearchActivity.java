@@ -170,7 +170,6 @@ public class SearchActivity extends AppCompatActivity {
                 addMatchingItemToResults(itemName, itemCategory, itemCondition, itemDescription, itemExchangePref, seller, address);
             }
         }
-
         displaySearchResultsOrNoMatchError();
     }
 
