@@ -74,6 +74,16 @@
         <item>Used (Good)</item>
         <item>Used (Acceptable)</item>
     </string-array>
+    <string-array name="category">
+        <item>Any</item>
+        <item>Electronics</item>
+        <item>Toys &amp; Games</item>
+        <item>Sports &amp; Outdoors</item>
+        <item>Vehicles &amp; Parts</item>
+        <item>Furniture</item>
+        <item>Clothing &amp; Accessories</item>
+        <item>Musical Instruments</item>
+    </string-array>
     <string name="condition">Product Condition:</string>
     <string name="location">Location</string>
     <string name="product_name">Product Name</string>
@@ -94,4 +104,11 @@
     <string name="description_label">Description:&#160;</string>
     <string name="product_name_label">Product Name:&#160;</string>
     <string name="condition_label">Condition:&#160;</string>
+    <string name="category_1">Category 1</string>
+    <string name="category_2">Category 2</string>
+    <string name="category_3">Category 3</string>
+    <string name="category_4">Category 4</string>
+    <string name="category_5">Category 5</string>
+    <string name="category_7">Category 7</string>
+    <string name="category_8">Category 8</string>
 </resources>
