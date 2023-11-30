@@ -21,6 +21,9 @@ import com.example.myapplication.messaging.MessagingActivity;
 import com.example.myapplication.provider_fragments.ChatFragment;
 import com.example.myapplication.provider_fragments.ListingsFragment;
 import com.example.myapplication.provider_fragments.PostFragment;
+import com.example.myapplication.reciever_fragments.ReceiverChatFragment;
+import com.example.myapplication.reciever_fragments.ReceiverListingFragment;
+import com.example.myapplication.reciever_fragments.SearchFragment;
 import com.example.myapplication.user_profile_page.UserProfile;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -130,112 +133,66 @@ public class SuccessActivity extends AppCompatActivity {
 
                     } else {
 
-                        setContentView(R.layout.activity_success);
+                        setContentView(R.layout.activity_success_receiver);
 
-                        firebaseDBRef.child("firstName").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                name = dataSnapshot.getValue(String.class);
+                        Toolbar toolbar = findViewById(R.id.toolbar);
+                        setSupportActionBar(toolbar);
 
-                                // Find the welcome message TextView and set it with the user's name
-                                TextView welcomeMessage = findViewById(R.id.welcomeMessage);
-                                welcomeMessage.setText("Welcome " + name + "!");
-                            }
+                        ImageView userProfileIcon = findViewById(R.id.icon_user_profile);
+                        userProfileIcon.setColorFilter(ContextCompat.getColor(SuccessActivity.this, android.R.color.white));
+                        ImageView addressIcon = findViewById(R.id.icon_address);
+                        addressIcon.setColorFilter(ContextCompat.getColor(SuccessActivity.this, android.R.color.white));
+                        ImageView logoutIcon = findViewById(R.id.icon_log_out);
+                        logoutIcon.setColorFilter(ContextCompat.getColor(SuccessActivity.this, android.R.color.white));
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                // Handle errors or provide a default name
-                                name = "Unknown User";
+                        logoutIcon.setOnClickListener(v -> new AlertDialog.Builder(SuccessActivity.this)
+                                .setTitle("Logout Confirmation")
+                                .setMessage("Are you sure you want to log out?")
+                                .setPositiveButton("No", null) // "No" button first
+                                .setNegativeButton("Yes", (dialog, which) -> {
+                                    auth.signOut();
+                                    Intent intent = new Intent(SuccessActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }) // "Yes" button second
+                                .show());
 
-                                // Find the welcome message TextView and set it with the default name
-                                TextView welcomeMessage = findViewById(R.id.welcomeMessage);
-                                welcomeMessage.setText("Welcome " + name + "!");
-                            }
+                        userProfileIcon.setOnClickListener(view -> {
+
+                            Intent intent = new Intent(SuccessActivity.this, UserProfile.class);
+                            startActivity(intent);
                         });
 
-                        // grabbing the postGoods button
-                        Button postGoodsButton = findViewById(R.id.postGoodsButton);
-                        postGoodsButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            // when clicked bring user to post page
-                            public void onClick(View v) {
-                                Intent postIntent = new Intent(SuccessActivity.this, PostGoods.class);
-                                startActivity(postIntent);
-                            }
+                        addressIcon.setOnClickListener(view -> {
+
+                            Intent intent = new Intent(SuccessActivity.this, SavedAddresses.class);
+                            startActivity(intent);
                         });
 
-                        // grabbing the message button
-                        Button messageButton = findViewById(R.id.messageButton);
-                        messageButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            // when clicked bring user to messaging page
-                            public void onClick(View v) {
-                                Intent messageIntent = new Intent(SuccessActivity.this, MessagingActivity.class);
-                                startActivity(messageIntent);
+                        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+                        // Set OnItemSelectedListener to handle selection events
+                        bottomNavigationView.setOnItemSelectedListener(item -> {
+                            int itemId = item.getItemId();
+
+                            if (itemId == R.id.navigation_chat) {
+                                replaceFragment(new ReceiverChatFragment());
+                                return true;
+                            } else if (itemId == R.id.navigation_search) {
+                                replaceFragment(new SearchFragment());
+                                return true;
+                            } else if (itemId == R.id.navigation_listings) {
+                                replaceFragment(new ReceiverListingFragment());
+                                return true;
                             }
+
+                            return false;
                         });
 
-                        // grabbing the logout button to add an on-click listener
-                        Button logoutButton = findViewById(R.id.logoutButton);
-                        logoutButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            // on click for when logout is clicked
-                            public void onClick(View v) {
-                                // signing out the user
-                                auth.signOut();
-                                Toast.makeText(SuccessActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-
-                                // going back to the login page
-                                Intent loginIntent = new Intent(SuccessActivity.this, LoginActivity.class);
-                                startActivity(loginIntent);
-                            }
-                        });
-
-                        // grabbing the listing button to add an on-click listener
-                        Button listingButton = findViewById(R.id.userListing);
-                        listingButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            // on click for when user listings is clicked
-                            public void onClick(View v) {
-                                Toast.makeText(SuccessActivity.this, "User Listings Page", Toast.LENGTH_SHORT).show();
-
-                                // going back to the listing page
-                                Intent listingIntent = new Intent(SuccessActivity.this, UserListingActivity.class);
-                                startActivity(listingIntent);
-                            }
-                        });
-
-                        // grabbing the search button to add an on-click listener
-                        Button searchButton = findViewById(R.id.searchBtn);
-                        searchButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            // on click for when search is clicked
-                            public void onClick(View v) {
-                                // going to the search page
-                                Intent searchIntent = new Intent(SuccessActivity.this, SearchActivity.class);
-                                startActivity(searchIntent);
-                            }
-                        });
-
-                        // grabs the saved address button and adds a listener to it
-                        Button savedAddresses = findViewById(R.id.savedAddresses);
-                        savedAddresses.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // goes to saved addresses page
-                                Intent savedAddresses = new Intent(SuccessActivity.this, SavedAddresses.class);
-                                startActivity(savedAddresses);
-                            }
-                        });
-                        Button ValueServiceButton = findViewById(R.id.ValueSerButton);
-                        ValueServiceButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent ValueIntent = new Intent(SuccessActivity.this, ValuationService.class);
-                                ValueIntent.putExtra("USER_ID", auth.getCurrentUser().getUid());
-                                startActivity(ValueIntent);
-                            }
-                        });
+                        // Default tab
+                        if (savedInstanceState == null) {
+                            bottomNavigationView.setSelectedItemId(R.id.navigation_listings);
+                        }
                     }
                 }
             }

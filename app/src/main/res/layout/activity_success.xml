@@ -98,7 +98,7 @@
         android:layout_marginStart="122dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="123dp"
-        android:text="@string/saved_addresses"
+        android:text="Feed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
