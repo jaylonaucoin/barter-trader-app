@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class UserProfile extends AppCompatActivity {
 
     // Define UI components
@@ -74,16 +76,23 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                tabLayout.getTabAt(position).select();
+                Objects.requireNonNull(tabLayout.getTabAt(position)).select();
             }
         });
     }
 
     private void fetchUsername(TextView usernameTextView) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            DatabaseReference userReference = dbRef.child(user.getUid());
+        // Get UID from Intent or default to current user's UID
+        String uid = getIntent().getStringExtra("uid");
+        if (uid == null) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                uid = user.getUid();
+            }
+        }
 
+        if (uid != null) {
+            DatabaseReference userReference = dbRef.child(uid);
             userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -107,12 +116,20 @@ public class UserProfile extends AppCompatActivity {
     }
 
     private void fetchUserUID() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            String profileUserId = user.getUid();
-            fetchReviewsAndSetRating(profileUserId);
+        // Check for UID passed via Intent
+        String uid = getIntent().getStringExtra("uid");
+        if (uid != null) {
+            // Use the UID from the Intent
+            fetchReviewsAndSetRating(uid);
+        } else {
+            // Default to the current user's UID
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                fetchReviewsAndSetRating(user.getUid());
+            }
         }
     }
+
 
     private void fetchReviewsAndSetRating(String profileUserId) {
         DatabaseReference reviewsRef = dbRef.child(profileUserId).child("reviews");
