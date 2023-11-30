@@ -42,11 +42,29 @@ public class SuccessActivity extends AppCompatActivity {
         firebaseDBRef.child("firstName").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                name = dataSnapshot.getValue(String.class);
 
-                // Find the welcome message TextView and set it with the user's name
-                TextView welcomeMessage = findViewById(R.id.welcomeMessage);
-                welcomeMessage.setText("Welcome " + name + "!");
+                //name = dataSnapshot.getValue(String.class);
+                // if the character exist in database
+                if (dataSnapshot.exists()) {
+                    String role = dataSnapshot.child("role").getValue(String.class);
+
+                    //Find the welcome message TextView and set it with the user's name
+                    TextView welcomeMessage = findViewById(R.id.welcomeMessage);
+                    welcomeMessage.setText("Welcome " + (name != null ? name : "Unknown User") + "!");
+
+                    //list the button
+                    Button postGoods = findViewById(R.id.postGoodsButton);
+                    //check the login role is pro or rec
+                    if ("Provider".equals(role)) {
+                        postGoods.setVisibility(View.VISIBLE);
+                    } else if("Receiver".equals(role)) {
+                        postGoods.setVisibility(View.GONE);
+                    }
+                }
+
+               // Find the welcome message TextView and set it with the user's name
+                //TextView welcomeMessage = findViewById(R.id.welcomeMessage);
+//                welcomeMessage.setText("Welcome " + name + "!");
             }
 
             @Override
