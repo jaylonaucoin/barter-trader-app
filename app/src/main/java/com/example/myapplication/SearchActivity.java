@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -7,6 +8,7 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +18,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.user_profile_page.UserProfile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
@@ -36,6 +41,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private List<String> searchResultsData;
     private ArrayAdapter<String> adapter;
+    private HashMap<String, String> uidMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,31 @@ public class SearchActivity extends AppCompatActivity {
         searchResultsData = new ArrayList<>();
         adapter = createListAdapter();
         searchResultsList.setAdapter(adapter);
+
+        searchResultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Handle item click here
+                String selectedItem = (String) searchResultsList.getItemAtPosition(position);
+
+                String sellerUid;
+
+                String[] parts = selectedItem.split("<br>");
+                String[] parts2 = parts[1].split("\n");
+                String[] sellerString = parts2[4].split(":");
+                String sellerName = sellerString[1].trim();
+                sellerUid = uidMap.get(sellerName);
+
+                // Create an intent to start another activity
+                Intent intent = new Intent(SearchActivity.this, UserProfile.class);
+
+                // Add any necessary data to the intent using putExtra (if needed)
+                intent.putExtra("uid", sellerUid);
+
+                // Start the activity
+                startActivity(intent);
+            }
+        });
     }
 
     private ArrayAdapter<String> createListAdapter() {
@@ -160,9 +191,11 @@ public class SearchActivity extends AppCompatActivity {
             String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
             String seller = itemSnapshot.child("Seller").getValue(String.class);
             String address = itemSnapshot.child("Address").getValue(String.class);
+            String sellerUid = itemSnapshot.child("User ID").getValue(String.class);
 
             if (matchesSearchCriteria(itemName, itemCondition, itemExchangePref, name, condition, exchangePreference)) {
                 addMatchingItemToResults(itemName, itemCondition, itemDescription, itemExchangePref, seller, address);
+                uidMap.put(seller, sellerUid);
             }
         }
 

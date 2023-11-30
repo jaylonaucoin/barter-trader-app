@@ -36,7 +36,6 @@ public class FeedActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private List<String> resultsData;
     private ArrayAdapter<String> adapter;
-    private FirebaseAuth auth;
     private HashMap<String, String> uidMap = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +70,7 @@ public class FeedActivity extends AppCompatActivity {
                 Intent intent = new Intent(FeedActivity.this, UserProfile.class);
 
                 // Add any necessary data to the intent using putExtra (if needed)
-                intent.putExtra("UID", sellerUid);
+                intent.putExtra("uid", sellerUid);
 
                 // Start the activity
                 startActivity(intent);
@@ -175,6 +174,5 @@ public class FeedActivity extends AppCompatActivity {
     private void initializeFirebase() {
         database = FirebaseDatabase.getInstance();
         listingNode = database.getReference("Listings");
-        auth = FirebaseAuth.getInstance();
     }
 }
