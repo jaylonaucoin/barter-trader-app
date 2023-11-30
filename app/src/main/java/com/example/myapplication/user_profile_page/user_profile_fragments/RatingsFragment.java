@@ -36,6 +36,7 @@ public class RatingsFragment extends Fragment {
     private final List<Review> reviewList = new ArrayList<>();
     private ReviewsAdapter adapter;
     private DatabaseReference userReviewsRef;
+    private ImageButton reviewButton;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -44,8 +45,10 @@ public class RatingsFragment extends Fragment {
         initUI(view);
         setupFirebaseReference();
         fetchCurrentUserReviews();
+        checkIfCurrentUser(view); // New method to check if the current user is viewing their own profile
         return view;
     }
+
 
     private void initUI(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.reviewsRecyclerView);
@@ -70,12 +73,24 @@ public class RatingsFragment extends Fragment {
 
         // Set up the review button
         // Review button to navigate to ReviewPage
-        ImageButton reviewButton = view.findViewById(R.id.reviewButton);
+        reviewButton = view.findViewById(R.id.reviewButton);
         reviewButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ReviewPage.class);
             startActivity(intent);
         });
     }
+
+    private void checkIfCurrentUser(View view) {
+        assert getArguments() != null;
+        String profileUserId = getArguments().getString("uid"); // Get the user ID passed to the fragment
+        String currentUserId = FirebaseAuth.getInstance().getUid();
+
+        if (currentUserId != null && currentUserId.equals(profileUserId)) {
+            // Current user is viewing their own profile, hide the review button
+            reviewButton.setVisibility(View.GONE);
+        }
+    }
+
 
 
     private void setupFirebaseReference() {

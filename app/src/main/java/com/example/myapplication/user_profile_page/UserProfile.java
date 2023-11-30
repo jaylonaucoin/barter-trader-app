@@ -45,7 +45,7 @@ public class UserProfile extends AppCompatActivity {
         ratingBar = findViewById(R.id.ratingBar);
 
         // Fetch and set user ID and reviews
-        fetchUserUID();
+        String userId= fetchUserUID();
 
         // Fetch the TextView for the username and set it
         TextView usernameTextView = findViewById(R.id.username);
@@ -54,7 +54,7 @@ public class UserProfile extends AppCompatActivity {
         // Initialize TabLayout and ViewPager2 UI components
         tabLayout = findViewById(R.id.tab_layout);
         viewPager2 = findViewById(R.id.view_pager);
-        profileViewPageAdapter = new ProfileViewPageAdapter(this);
+        profileViewPageAdapter = new ProfileViewPageAdapter(this, userId);
         viewPager2.setAdapter(profileViewPageAdapter);
 
         // Set listener to switch viewPager's page when a tab is selected
@@ -115,12 +115,13 @@ public class UserProfile extends AppCompatActivity {
         }
     }
 
-    private void fetchUserUID() {
+    private String fetchUserUID() {
         // Check for UID passed via Intent
         String uid = getIntent().getStringExtra("uid");
         if (uid != null) {
             // Use the UID from the Intent
             fetchReviewsAndSetRating(uid);
+            return uid;
         } else {
             // Default to the current user's UID
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -128,6 +129,8 @@ public class UserProfile extends AppCompatActivity {
                 fetchReviewsAndSetRating(user.getUid());
             }
         }
+
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
 

@@ -27,7 +27,7 @@ public class UserProfileListingsFragment extends Fragment {
     private DatabaseReference mDatabase;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_profile_listings, container, false);
 
@@ -43,14 +43,22 @@ public class UserProfileListingsFragment extends Fragment {
     }
 
     private void loadUserListings() {
-        String currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        Bundle args = getArguments();
+        String userId = args != null ? args.getString("uid") : null;
+
+        // Fall back to the current user ID if no user ID is passed
+        if (userId == null) {
+            userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        }
+
+        final String finalUserId = userId;
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Listing> userListingList = new ArrayList<>();
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
-                    String userId = listingSnapshot.child("User ID").getValue(String.class);
-                    if (userId != null && userId.equals(currentUserId)) {
+                    String listingUserId = listingSnapshot.child("User ID").getValue(String.class);
+                    if (listingUserId != null && listingUserId.equals(finalUserId)) {
                         Listing listing = new Listing(
                                 listingSnapshot.child("Condition").getValue(String.class),
                                 listingSnapshot.child("Exchange Preference").getValue(String.class),
