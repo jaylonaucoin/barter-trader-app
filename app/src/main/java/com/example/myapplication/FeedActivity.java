@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -7,6 +8,7 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.user_profile_page.UserProfile;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,20 +25,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class FeedActivity extends AppCompatActivity {
     private ListView resultsList;
     private DatabaseReference listingNode;
+    private FirebaseDatabase database;
     private List<String> resultsData;
     private ArrayAdapter<String> adapter;
-
+    private FirebaseAuth auth;
+    private HashMap<String, String> uidMap = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-        initializeUIElements();
         initializeFirebase();
+        initializeUIElements();
         queryFirebaseForResults();
     }
 
@@ -44,6 +53,30 @@ public class FeedActivity extends AppCompatActivity {
         resultsData = new ArrayList<>();
         adapter = createListAdapter();
         resultsList.setAdapter(adapter);
+        resultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Handle item click here
+                String selectedItem = (String) resultsList.getItemAtPosition(position);
+
+                String sellerUid;
+
+                String[] parts = selectedItem.split("<br>");
+                String[] parts2 = parts[1].split("\n");
+                String[] sellerString = parts2[4].split(":");
+                String sellerName = sellerString[1].trim();
+                sellerUid = uidMap.get(sellerName);
+
+                // Create an intent to start another activity
+                Intent intent = new Intent(FeedActivity.this, UserProfile.class);
+
+                // Add any necessary data to the intent using putExtra (if needed)
+                intent.putExtra("UID", sellerUid);
+
+                // Start the activity
+                startActivity(intent);
+            }
+        });
     }
 
     private ArrayAdapter<String> createListAdapter() {
@@ -116,8 +149,10 @@ public class FeedActivity extends AppCompatActivity {
             String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
             String seller = itemSnapshot.child("Seller").getValue(String.class);
             String address = itemSnapshot.child("Address").getValue(String.class);
+            String sellerUid = itemSnapshot.child("User ID").getValue(String.class);
 
             addItemToResults(itemName, itemCondition, itemDescription, itemExchangePref, seller, address);
+            uidMap.put(seller, sellerUid);
         }
         displaySearchResults();
     }
@@ -138,6 +173,8 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     private void initializeFirebase() {
-        listingNode = FirebaseDatabase.getInstance().getReference("Listings");
+        database = FirebaseDatabase.getInstance();
+        listingNode = database.getReference("Listings");
+        auth = FirebaseAuth.getInstance();
     }
 }
