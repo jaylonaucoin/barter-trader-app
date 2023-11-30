@@ -126,7 +126,7 @@ public class SuccessActivity extends AppCompatActivity {
 
         // grabbing the feed button to add an on-click listener
         Button feedButton = findViewById(R.id.feedBtn);
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        feedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             // on click for when feed is clicked
             public void onClick(View v) {
