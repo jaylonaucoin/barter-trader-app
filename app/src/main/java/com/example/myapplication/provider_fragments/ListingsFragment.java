@@ -68,7 +68,7 @@ public class ListingsFragment extends Fragment {
         });
     }
 
-    static class Listing {
+    public static class Listing {
         public String condition;
         public String exchangePreference;
         public String description;
@@ -82,7 +82,7 @@ public class ListingsFragment extends Fragment {
         }
     }
 
-    static class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ListingViewHolder> {
+    public static class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ListingViewHolder> {
         private List<Listing> listings = new ArrayList<>();
 
         public void setListings(List<Listing> listings) {

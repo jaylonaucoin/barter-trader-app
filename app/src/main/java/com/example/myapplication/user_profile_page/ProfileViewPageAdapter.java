@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.myapplication.user_profile_page.user_profile_fragments.AboutFragment;
-import com.example.myapplication.user_profile_page.user_profile_fragments.ListingsFragment;
+import com.example.myapplication.user_profile_page.user_profile_fragments.UserProfileListingsFragment;
 import com.example.myapplication.user_profile_page.user_profile_fragments.RatingsFragment;
 
 public class ProfileViewPageAdapter extends FragmentStateAdapter {
@@ -28,7 +28,7 @@ public class ProfileViewPageAdapter extends FragmentStateAdapter {
                 return new AboutFragment();
 
             default:
-                return new ListingsFragment();
+                return new UserProfileListingsFragment();
         }
     }
 
