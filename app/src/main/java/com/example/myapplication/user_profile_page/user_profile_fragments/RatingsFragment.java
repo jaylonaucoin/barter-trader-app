@@ -1,9 +1,12 @@
 package com.example.myapplication.user_profile_page.user_profile_fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -28,6 +31,8 @@ public class RatingsFragment extends Fragment {
 
     private RatingBar ratingBar;
     private TextView decimalRatingText;
+    private ProgressBar fiveStarProgressBar, fourStarProgressBar, threeStarProgressBar, twoStarProgressBar, oneStarProgressBar;
+    private TextView fiveStarCount, fourStarCount, threeStarCount, twoStarCount, oneStarCount;
     private final List<Review> reviewList = new ArrayList<>();
     private ReviewsAdapter adapter;
     private DatabaseReference userReviewsRef;
@@ -50,7 +55,28 @@ public class RatingsFragment extends Fragment {
 
         ratingBar = view.findViewById(R.id.ratingBar);
         decimalRatingText = view.findViewById(R.id.decimalRatingText);
+
+        fiveStarProgressBar = view.findViewById(R.id.fiveStarProgressBar);
+        fourStarProgressBar = view.findViewById(R.id.fourStarProgressBar);
+        threeStarProgressBar = view.findViewById(R.id.threeStarProgressBar);
+        twoStarProgressBar = view.findViewById(R.id.twoStarProgressBar);
+        oneStarProgressBar = view.findViewById(R.id.oneStarProgressBar);
+
+        fiveStarCount = view.findViewById(R.id.fiveStarCount);
+        fourStarCount = view.findViewById(R.id.fourStarCount);
+        threeStarCount = view.findViewById(R.id.threeStarCount);
+        twoStarCount = view.findViewById(R.id.twoStarCount);
+        oneStarCount = view.findViewById(R.id.oneStarCount);
+
+        // Set up the review button
+        // Review button to navigate to ReviewPage
+        ImageButton reviewButton = view.findViewById(R.id.reviewButton);
+        reviewButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ReviewPage.class);
+            startActivity(intent);
+        });
     }
+
 
     private void setupFirebaseReference() {
         String currentUserId = FirebaseAuth.getInstance().getUid();
@@ -69,16 +95,19 @@ public class RatingsFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     reviewList.clear();
                     float totalRating = 0;
-                    int count = 0;
+                    int[] starCounts = new int[5]; // From 1 to 5 stars
                     for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
                         Review review = reviewSnapshot.getValue(Review.class);
                         if (review != null) {
                             reviewList.add(review);
                             totalRating += review.getRating();
-                            count++;
+                            if (review.getRating() >= 1 && review.getRating() <= 5) {
+                                starCounts[(int) review.getRating() - 1]++;
+                            }
                         }
                     }
-                    float averageRating = count > 0 ? totalRating / count : 0;
+                    updateStarCounts(starCounts);
+                    float averageRating = reviewList.size() > 0 ? totalRating / reviewList.size() : 0;
                     ratingBar.setRating(averageRating);
                     decimalRatingText.setText(String.format(Locale.US, "%.2f out of 5", averageRating));
                     adapter.notifyDataSetChanged();
@@ -89,6 +118,30 @@ public class RatingsFragment extends Fragment {
                     // Handle error
                 }
             });
+        }
+    }
+
+    private void updateStarCounts(int[] starCounts) {
+        int totalReviews = reviewList.size();
+        fiveStarCount.setText(String.format(Locale.US, "%d", starCounts[4]));
+        fourStarCount.setText(String.format(Locale.US, "%d", starCounts[3]));
+        threeStarCount.setText(String.format(Locale.US, "%d", starCounts[2]));
+        twoStarCount.setText(String.format(Locale.US, "%d", starCounts[1]));
+        oneStarCount.setText(String.format(Locale.US, "%d", starCounts[0]));
+
+        // Update progress bars
+        if (totalReviews > 0) {
+            fiveStarProgressBar.setProgress((starCounts[4] * 100) / totalReviews);
+            fourStarProgressBar.setProgress((starCounts[3] * 100) / totalReviews);
+            threeStarProgressBar.setProgress((starCounts[2] * 100) / totalReviews);
+            twoStarProgressBar.setProgress((starCounts[1] * 100) / totalReviews);
+            oneStarProgressBar.setProgress((starCounts[0] * 100) / totalReviews);
+        } else {
+            fiveStarProgressBar.setProgress(0);
+            fourStarProgressBar.setProgress(0);
+            threeStarProgressBar.setProgress(0);
+            twoStarProgressBar.setProgress(0);
+            oneStarProgressBar.setProgress(0);
         }
     }
 }
