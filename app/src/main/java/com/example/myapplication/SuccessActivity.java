@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -73,6 +75,21 @@ public class SuccessActivity extends AppCompatActivity {
                         userProfileIcon.setColorFilter(ContextCompat.getColor(SuccessActivity.this, android.R.color.white));
                         ImageView addressIcon = findViewById(R.id.icon_address);
                         addressIcon.setColorFilter(ContextCompat.getColor(SuccessActivity.this, android.R.color.white));
+                        ImageView logoutIcon = findViewById(R.id.icon_log_out);
+                        logoutIcon.setColorFilter(ContextCompat.getColor(SuccessActivity.this, android.R.color.white));
+
+                        logoutIcon.setOnClickListener(v -> new AlertDialog.Builder(SuccessActivity.this)
+                                .setTitle("Logout Confirmation")
+                                .setMessage("Are you sure you want to log out?")
+                                .setPositiveButton("No", null) // "No" button first
+                                .setNegativeButton("Yes", (dialog, which) -> {
+                                    auth.signOut();
+                                    Intent intent = new Intent(SuccessActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }) // "Yes" button second
+                                .show());
+
 
                         userProfileIcon.setOnClickListener(view -> {
 
