@@ -112,4 +112,5 @@
     <string name="category_7">Category 7</string>
     <string name="category_8">Category 8</string>
     <string name="sample_username">Sample Username</string>
+    <string name="most_recent_chat_message">Most recent chat message</string>
 </resources>
