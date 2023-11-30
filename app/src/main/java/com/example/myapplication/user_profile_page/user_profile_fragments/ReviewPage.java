@@ -74,39 +74,50 @@ public class ReviewPage extends AppCompatActivity {
     private void submitReview() {
         float rating = ratingBar.getRating();
         String reviewText = reviewEditText.getText().toString().trim();
-        String userId = FirebaseAuth.getInstance().getUid();
 
-        if (userId != null) {
-            DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("User").child(userId);
-
-            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String firstName = dataSnapshot.child("firstName").getValue(String.class);
-                    String lastName = dataSnapshot.child("lastName").getValue(String.class);
-                    String fullName = (firstName != null && lastName != null) ? firstName + " " + lastName : "Unknown User";
-
-                    DatabaseReference reviewRef = userReference.child("reviews").push();
-                    Review review = new Review(userId, fullName, rating, reviewText);
-                    reviewRef.setValue(review);
-
-                    if (rating > 0) {
-                        Toast.makeText(ReviewPage.this, "Review submitted successfully!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(ReviewPage.this, "Please set a rating!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Handle error
-                }
-            });
-        } else {
-            Toast.makeText(ReviewPage.this, "User not logged in", Toast.LENGTH_SHORT).show();
+        // Retrieve the user ID of the user being reviewed from the Intent
+        String reviewedUserId = getIntent().getStringExtra("reviewed_user_id");
+        if (reviewedUserId == null) {
+            Toast.makeText(ReviewPage.this, "Reviewed User ID not found", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        // Get the current logged-in user's UID
+        String currentUserId = FirebaseAuth.getInstance().getUid();
+        if (currentUserId == null) {
+            Toast.makeText(ReviewPage.this, "Current User ID not found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Fetch the current user's name from Firebase
+        DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference().child("User").child(currentUserId);
+        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String firstName = dataSnapshot.child("firstName").getValue(String.class);
+                String lastName = dataSnapshot.child("lastName").getValue(String.class);
+                String fullName = (firstName != null && lastName != null) ? firstName + " " + lastName : "Unknown User";
+
+                // Post the review to the reviewed user's reviews section
+                DatabaseReference reviewRef = FirebaseDatabase.getInstance().getReference().child("User").child(reviewedUserId).child("reviews").push();
+                Review review = new Review(currentUserId, fullName, rating, reviewText);
+                reviewRef.setValue(review);
+
+                if (rating > 0) {
+                    Toast.makeText(ReviewPage.this, "Review submitted successfully!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(ReviewPage.this, "Please set a rating!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle error
+            }
+        });
     }
+
 
 
     @Override

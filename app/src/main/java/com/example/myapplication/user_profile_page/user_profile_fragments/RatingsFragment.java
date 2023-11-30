@@ -73,9 +73,19 @@ public class RatingsFragment extends Fragment {
 
         // Set up the review button
         // Review button to navigate to ReviewPage
+
         reviewButton = view.findViewById(R.id.reviewButton);
         reviewButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ReviewPage.class);
+
+            // Get the user ID from arguments, or use the current user's ID if null
+            String uid = getArguments() != null ? getArguments().getString("uid") : null;
+            if (uid == null) {
+                uid = FirebaseAuth.getInstance().getUid();
+            }
+
+            // Pass the user ID to ReviewPage
+            intent.putExtra("reviewed_user_id", uid);
             startActivity(intent);
         });
     }
@@ -94,14 +104,24 @@ public class RatingsFragment extends Fragment {
 
 
     private void setupFirebaseReference() {
-        String currentUserId = FirebaseAuth.getInstance().getUid();
-        if (currentUserId != null) {
+        // Retrieve user ID from arguments if it exists
+        Bundle args = getArguments();
+        String userId = args != null ? args.getString("uid") : null;
+
+        // If no user ID in arguments, use the current user's ID
+        if (userId == null) {
+            userId = FirebaseAuth.getInstance().getUid();
+        }
+
+        // Set up Firebase reference with the determined user ID
+        if (userId != null) {
             userReviewsRef = FirebaseDatabase.getInstance().getReference()
                     .child("User")
-                    .child(currentUserId)
+                    .child(userId)
                     .child("reviews");
         }
     }
+
 
     private void fetchCurrentUserReviews() {
         if (userReviewsRef != null) {
