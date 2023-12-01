@@ -1,4 +1,4 @@
-package com.example.myapplication.reciever_fragments;
+package com.example.myapplication.receiver_fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,7 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class ReceiverListingFragment extends Fragment {
     private ListView resultsList;

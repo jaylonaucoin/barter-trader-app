@@ -1,4 +1,4 @@
-package com.example.myapplication.reciever_fragments;
+package com.example.myapplication.receiver_fragments;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void scheduleWorker(String token) {
 
-        PeriodicWorkRequest.Builder workBuilder = new PeriodicWorkRequest.Builder(NotificationWorker.class,1, TimeUnit.HOURS);
+        PeriodicWorkRequest.Builder workBuilder = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1, TimeUnit.HOURS);
         Data data = new Data.Builder()
                 .putString("token", token)
                 .build();
@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("test", ExistingPeriodicWorkPolicy.KEEP, hourlyWork);
 
     }
-    public void startWorkerProcess(){
+
+    public void startWorkerProcess() {
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -74,50 +75,15 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        connectToFirebase();
         startWorkerProcess();
 
-
-        Button loginPageButton = findViewById(R.id.loginPage);
-        loginPageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            // when clicked bring user to login page
-            public void onClick(View v) {
-                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(loginIntent);
-            }
-        });
-
-
-        // grabbing the login button
-        Button registerPageButton = findViewById(R.id.registerPage);
-        registerPageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-
-            // when clicked bring user to login page
-            public void onClick(View v) {
-
-                Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(registerIntent);
-            }
-        });
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
-
-    protected void connectToFirebase(){
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseDB = FirebaseDatabase.getInstance();
-        firebaseDBRef = firebaseDB.getReference("test");
-    }
-
-
 }
-
 

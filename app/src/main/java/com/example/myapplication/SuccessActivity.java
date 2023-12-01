@@ -1,14 +1,9 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -17,13 +12,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.myapplication.messaging.MessagingActivity;
 import com.example.myapplication.provider_fragments.ChatFragment;
 import com.example.myapplication.provider_fragments.ListingsFragment;
 import com.example.myapplication.provider_fragments.PostFragment;
-import com.example.myapplication.reciever_fragments.ReceiverChatFragment;
-import com.example.myapplication.reciever_fragments.ReceiverListingFragment;
-import com.example.myapplication.reciever_fragments.SearchFragment;
+import com.example.myapplication.receiver_fragments.ReceiverChatFragment;
+import com.example.myapplication.receiver_fragments.ReceiverListingFragment;
+import com.example.myapplication.receiver_fragments.SearchFragment;
 import com.example.myapplication.user_profile_page.UserProfile;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;

@@ -1,5 +1,6 @@
 package com.example.myapplication.messaging;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.user_profile_page.UserProfile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -192,7 +194,15 @@ public class MessagingActivity extends AppCompatActivity {
     private void showPopupMenu() {
         PopupMenu popupMenu = new PopupMenu(this, findViewById(R.id.action_settings));
         popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu()); // Inflate your popup menu
-        popupMenu.setOnMenuItemClickListener(item -> true);
+
+        // Set an item click listener for the popup menu
+        popupMenu.setOnMenuItemClickListener(item -> {
+            Intent userProfileIntent = new Intent(MessagingActivity.this, UserProfile.class);
+            userProfileIntent.putExtra("uid", receiverId);
+            startActivity(userProfileIntent);
+            return true;
+        });
+
         popupMenu.show();
     }
 
