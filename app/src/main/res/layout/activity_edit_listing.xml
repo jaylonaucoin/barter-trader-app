@@ -108,4 +108,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editCondition" />
 
+        <CheckBox
+            android:id="@+id/markAsExchangedCheckBox"
+            android:layout_width="259dp"
+            android:layout_height="41dp"
+            android:layout_marginStart="77dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="75dp"
+            android:layout_marginBottom="38dp"
+            android:text="Mark as Exchanged"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hideListingButton" />
+
+        <Button
+            android:id="@+id/hideListingButton"
+            android:layout_width="260dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="77dp"
+            android:layout_marginTop="597dp"
+            android:layout_marginEnd="74dp"
+            android:layout_marginBottom="8dp"
+            android:text="Hide Listing"
+            app:layout_constraintBottom_toTopOf="@+id/markAsExchangedCheckBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDB;
     private DatabaseReference firebaseDBRef;
     private FirebaseAuth auth;
+    private EditDeleteHelper editDeleteHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_listing);
         connectToFirebase();
 
+        editDeleteHelper = new EditDeleteHelper();
         // Retrieve listing details from the intent
         String listingDetails = getIntent().getStringExtra("listingDetails");
         String listingKey = getIntent().getStringExtra("listingKey");
@@ -40,6 +43,8 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         EditText editExchangePreference = findViewById(R.id.editExchangePreference);
         Button saveButton = findViewById(R.id.saveButton);
         Button deleteButton = findViewById(R.id.deleteButton);
+        CheckBox markAsExchangedCheckBox = findViewById(R.id.markAsExchangedCheckBox);
+        Button hideListingButton = findViewById(R.id.hideListingButton);
 
         // Extract listing details
         String[] listingDetailsLines = listingDetails.split("\n");
@@ -74,6 +79,12 @@ public class EditDeleteListingActivity extends AppCompatActivity {
                 handleDeleteButtonClicked(listingKey);
             }
         });
+
+        markAsExchangedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) ->
+                editDeleteHelper.markAsExchanged(listingKey, isChecked));
+
+        hideListingButton.setOnClickListener(v ->
+                editDeleteHelper.hideListing(listingKey, EditDeleteListingActivity.this));
     }
 
     private void connectToFirebase() {
