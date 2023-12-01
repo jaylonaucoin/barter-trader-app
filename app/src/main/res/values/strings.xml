@@ -65,7 +65,7 @@
     <string name="returnSuccess">Return</string>
     <string name="editListing">Edit Listing</string>
     <string name="saveListing">Save Changes</string>
-    <string name="deleteListing">Delete Listing</string>
+    <string name="deleteListing">Remove Listing</string>
     <string-array name="condition_array">
         <item>Any</item>
         <item>New</item>
