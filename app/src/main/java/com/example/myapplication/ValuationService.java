@@ -92,32 +92,51 @@ public class ValuationService extends AppCompatActivity {
         });
         //behavior on sell button
         Sell.setOnClickListener(v -> {
-            String itemName = etItemName.getText().toString();
-            double itemValue;
+            userDatabaseRef.child("role").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {  //check the existing
+                    if (dataSnapshot.exists()) {
+                        String role = dataSnapshot.getValue(String.class);
+                        if ("receiver".equalsIgnoreCase(role)) {
+                            Toast.makeText(ValuationService.this, "As a Receiver, you can't sell products", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // if is not receiver
+                            String itemName = etItemName.getText().toString();
+                            double itemValue;
+                            // avoid nothing input
+                            try {
+                                itemValue = Double.parseDouble(etItemValue.getText().toString());
+                            } catch (NumberFormatException e) {
+                                Toast.makeText(ValuationService.this, "Please enter the price.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            //have a dialog to make sure for user
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ValuationService.this);
+                            builder.setTitle("Are you sure to sell?");
+                            builder.setMessage("You want sell " + itemName + " and get " + itemValue + " dollars in your total value ?");
+                            builder.setPositiveButton("Yes", (dialog, which) -> {
+                                //if chose yes
+                                calculate.sellItem(itemName, itemValue);
+                                tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
+                                adapter.notifyDataSetChanged();
 
-            // avoid nothing input
-            try {
-                itemValue = Double.parseDouble(etItemValue.getText().toString());
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "Please enter the price.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            //have a dialog to make sure for user
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Are you sure to sell?");
-            builder.setMessage("You want sell " + itemName + " and get " + itemValue + " dollars in your total value ?");
-            builder.setPositiveButton("Yes", (dialog, which) -> {
-                //if chose yes
-                calculate.sellItem(itemName, itemValue);
-                tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
-                adapter.notifyDataSetChanged();
+                                publicItemsRef.push().setValue(itemName + " - " + itemValue);
+                                userDatabaseRef.child("totalValue").setValue(calculate.getTotalValue());
+                            });
+                            //if chose no
+                            builder.setNegativeButton("Cancel", null);
+                            builder.create().show();
+                        }
+                    } else {
+                        Toast.makeText(ValuationService.this, "role did not identify", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
-                publicItemsRef.push().setValue(itemName + " - " + itemValue);
-                userDatabaseRef.child("totalValue").setValue(calculate.getTotalValue());
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { //show wrong message
+                    Toast.makeText(ValuationService.this, "database error " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             });
-            //if chose no
-            builder.setNegativeButton("Cancel", null);
-            builder.create().show();
         });
         //behavior on buy button
         Buy.setOnClickListener(v -> {
