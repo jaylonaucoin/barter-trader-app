@@ -31,7 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
+    // Declare UI elements
     private EditText nameEditText;
+    private Spinner categorySpinner;
     private Spinner conditionSpinner;
     private EditText exchangePreferenceEditText;
     private Button searchButton;
@@ -39,6 +41,7 @@ public class SearchActivity extends AppCompatActivity {
     private TextView errorMessageTextView;
     private DatabaseReference listingNode;
 
+    // Declare variables for search results
     private List<String> searchResultsData;
     private ArrayAdapter<String> adapter;
     private HashMap<String, String> uidMap = new HashMap<>();
@@ -47,19 +50,25 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        // Initialize UI elements, search button setup, and Firebase
         initializeUIElements();
         setupSearchButton();
         initializeFirebase();
     }
 
+    // Initialize UI elements
     private void initializeUIElements() {
+        // Find UI elements by their IDs
         nameEditText = findViewById(R.id.nameEditText);
+        categorySpinner = findViewById(R.id.categorySpinner);
         conditionSpinner = findViewById(R.id.conditionSpinner);
         exchangePreferenceEditText = findViewById(R.id.exchangePreferenceEditText);
         searchButton = findViewById(R.id.searchButton);
         searchResultsList = findViewById(R.id.searchResultsListView);
         errorMessageTextView = findViewById(R.id.errorMessageTextView);
 
+        // Initialize list and adapter for search results
         searchResultsData = new ArrayList<>();
         adapter = createListAdapter();
         searchResultsList.setAdapter(adapter);
@@ -90,11 +99,13 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    // Create an adapter for the list view
     private ArrayAdapter<String> createListAdapter() {
         return new ArrayAdapter<String>(this, R.layout.list_item, searchResultsData) {
             @NonNull
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                // Create or reuse the view for list items
                 View view = createOrReuseView(convertView, parent);
                 TextView nameTextView = view.findViewById(R.id.nameTextView);
                 TextView detailsTextView = view.findViewById(R.id.detailsTextView);
@@ -105,87 +116,113 @@ public class SearchActivity extends AppCompatActivity {
         };
     }
 
+    // Create or reuse a view for list items
     private View createOrReuseView(View convertView, ViewGroup parent) {
         if (convertView == null) {
+            // Inflate the layout for list items if the view is null
             LayoutInflater inflater = getLayoutInflater();
             return inflater.inflate(R.layout.list_item, parent, false);
         }
+        // Return the converted view if it's not null
         return convertView;
     }
 
+    // Display details of an item in the list view
     private void displayItemDetails(TextView nameTextView, TextView detailsTextView, String item) {
+        // Split the item details if applicable
         String[] parts = item.split("<br>");
         if (parts.length >= 1) {
+            // Extract name and details from the item
             String name = parts[0];
             String details = (parts.length > 1) ? parts[1] : "";
+            // Make the name text bold
             Spannable spannable = makeNameTextBold(name);
-            nameTextView.setText(spannable);
-            detailsTextView.setText(details);
+            nameTextView.setText(spannable); // Set bold name text to the TextView
+            detailsTextView.setText(details); // Set details to the TextView
         } else {
+            // If there are no parts, set the entire item as text in the TextView
             nameTextView.setText(item);
             detailsTextView.setText("");
         }
     }
 
+    // Make the name text bold
     private Spannable makeNameTextBold(String name) {
+        // Create a SpannableString to make the text bold
         Spannable spannable = new SpannableString(name);
+        // Set the style to bold for the entire text
         spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannable;
+        return spannable; // Return the bold SpannableString
     }
 
+    // Set up click listener for the search button
     private void setupSearchButton() {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Get values from EditTexts and Spinners
                 String name = nameEditText.getText().toString();
                 String condition = conditionSpinner.getSelectedItem().toString();
+                String category = categorySpinner.getSelectedItem().toString();
                 String exchangePreference = exchangePreferenceEditText.getText().toString();
-                if (hasNoSearchCriteria(name, condition, exchangePreference)) {
+                // Check if there are no search criteria
+                if (hasNoSearchCriteria(name, category, condition, exchangePreference)) {
+                    // Display error message for no criteria
                     displayNoCriteriaError();
                 } else {
-                    searchWithData(name, condition, exchangePreference);
+                    // Perform search with provided data
+                    searchWithData(name, category, condition, exchangePreference);
                 }
             }
         });
     }
 
-    private boolean hasNoSearchCriteria(String name, String condition, String exchangePreference) {
-        return name.isEmpty() && condition.equals("Any") && exchangePreference.isEmpty();
+    // Check if there are no search criteria entered
+    private boolean hasNoSearchCriteria(String name, String category, String condition, String exchangePreference) {
+        return name.isEmpty() && category.equals("Any") && condition.equals("Any") && exchangePreference.isEmpty();
     }
 
+    // Display error message for no search criteria entered
     private void displayNoCriteriaError() {
         errorMessageTextView.setText("Please enter search criteria");
-        errorMessageTextView.setVisibility(View.VISIBLE);
-        clearSearchResults();
+        errorMessageTextView.setVisibility(View.VISIBLE); // Set visibility to make error message visible
+        clearSearchResults(); // Clear search results from the list
     }
 
-    private void searchWithData(String name, String condition, String exchangePreference) {
-        clearSearchResults();
-        queryFirebaseForSearchResults(name, condition, exchangePreference);
+    // Perform search with provided data
+    private void searchWithData(String name, String category, String condition, String exchangePreference) {
+        clearSearchResults(); // Clear previous search results
+        queryFirebaseForSearchResults(name, category, condition, exchangePreference); // Query Firebase for search results
     }
 
+    // Clear search results from the list
     private void clearSearchResults() {
-        searchResultsData.clear();
-        adapter.notifyDataSetChanged();
+        searchResultsData.clear(); // Clear the list of search results
+        adapter.notifyDataSetChanged(); // Notify adapter to update the list view
     }
 
-    private void queryFirebaseForSearchResults(String name, String condition, String exchangePreference) {
+    // Query Firebase for search results based on search criteria
+    private void queryFirebaseForSearchResults(String name, String category, String condition, String exchangePreference) {
         listingNode.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                processSearchResults(dataSnapshot, name, condition, exchangePreference);
+                processSearchResults(dataSnapshot, name, category, condition, exchangePreference); // Process received search results
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                handleDatabaseError(databaseError);
+                handleDatabaseError(databaseError); // Handle database error if any
             }
         });
     }
 
-    private void processSearchResults(DataSnapshot dataSnapshot, String name, String condition, String exchangePreference) {
+    // Process received search results from Firebase
+    private void processSearchResults(DataSnapshot dataSnapshot, String name, String category, String condition, String exchangePreference) {
+        // Iterate through each item in received search results
         for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+            // Get item details from Firebase snapshot
             String itemName = itemSnapshot.child("Product Name").getValue(String.class);
+            String itemCategory = itemSnapshot.child("Category").getValue(String.class);
             String itemCondition = itemSnapshot.child("Condition").getValue(String.class);
             String itemDescription = itemSnapshot.child("Description").getValue(String.class);
             String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
@@ -193,45 +230,58 @@ public class SearchActivity extends AppCompatActivity {
             String address = itemSnapshot.child("Address").getValue(String.class);
             String sellerUid = itemSnapshot.child("User ID").getValue(String.class);
 
-            if (matchesSearchCriteria(itemName, itemCondition, itemExchangePref, name, condition, exchangePreference)) {
-                addMatchingItemToResults(itemName, itemCondition, itemDescription, itemExchangePref, seller, address);
+
+            // Check if the item matches the search criteria
+            if (matchesSearchCriteria(itemName, itemCategory, itemCondition, itemExchangePref, name, category, condition, exchangePreference)) {
+                // Add the matching item to the search results list
+                addMatchingItemToResults(itemName, itemCategory, itemCondition, itemDescription, itemExchangePref, seller, address);
                 uidMap.put(seller, sellerUid);
             }
         }
-
+        // Display search results or no match error based on search outcome
         displaySearchResultsOrNoMatchError();
     }
 
-    private boolean matchesSearchCriteria(String name, String condition, String exchangePref,
-                                          String nameCriteria, String conditionCriteria, String exchangePrefCriteria) {
+    // Check if an item matches the search criteria
+    private boolean matchesSearchCriteria(String name, String category, String condition, String exchangePref,
+                                          String nameCriteria, String categoryCriteria, String conditionCriteria, String exchangePrefCriteria) {
+        // Check for matches based on provided search criteria
         boolean nameMatch = nameCriteria.trim().isEmpty() || name.toLowerCase().contains(nameCriteria.toLowerCase().trim());
+        boolean categoryMatch = categoryCriteria.equals("Any") || category.equals(categoryCriteria);
         boolean conditionMatch = conditionCriteria.equals("Any") || condition.equals(conditionCriteria);
         boolean exchangePrefMatch = exchangePrefCriteria.trim().isEmpty() || exchangePref.toLowerCase().contains(exchangePrefCriteria.toLowerCase().trim());
-        return nameMatch && conditionMatch && exchangePrefMatch;
+        return nameMatch && categoryMatch && conditionMatch && exchangePrefMatch;
     }
 
-    private void addMatchingItemToResults(String itemName, String itemCondition, String itemDescription, String itemExchangePref, String seller, String address) {
-        String item = itemName + "<br>" + "Condition: " + itemCondition + "\n" +
+    // Add a matching item to the search results list
+    private void addMatchingItemToResults(String itemName, String itemCategory, String itemCondition, String itemDescription, String itemExchangePref, String seller, String address) {
+        // Format item details and add to the search results list
+        String item = itemName + "<br>" + "Category: " + itemCategory + "\n" +
+                "Condition: " + itemCondition + "\n" +
                 "Description: " + itemDescription + "\n" + "Exchange Preference: " + itemExchangePref + "\n" + "Address: "
                 + address + "\n" + "Seller: " + seller;
-        searchResultsData.add(item);
+        searchResultsData.add(item); // Add item to the list of search results
     }
 
+    // Display search results or no match error
     private void displaySearchResultsOrNoMatchError() {
+        // Show error message if no search results found, otherwise hide the error message
         if (searchResultsData.isEmpty()) {
             errorMessageTextView.setText("No matching items found");
-            errorMessageTextView.setVisibility(View.VISIBLE);
+            errorMessageTextView.setVisibility(View.VISIBLE); // Set visibility to make error message visible
         } else {
-            errorMessageTextView.setVisibility(View.GONE);
+            errorMessageTextView.setVisibility(View.GONE); // Set visibility to hide the error message
         }
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged(); // Notify adapter to update the list view
     }
 
+    // Handle database error
     private void handleDatabaseError(DatabaseError databaseError) {
-        // Handle database error
+        // Handle database error if necessary
     }
 
+    // Initialize Firebase database reference
     private void initializeFirebase() {
-        listingNode = FirebaseDatabase.getInstance().getReference("Listings"); // Replace with your
+        listingNode = FirebaseDatabase.getInstance().getReference("Listings"); // Replace with your own database reference
     }
 }

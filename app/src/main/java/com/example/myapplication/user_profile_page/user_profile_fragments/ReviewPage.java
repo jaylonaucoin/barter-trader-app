@@ -1,5 +1,6 @@
 package com.example.myapplication.user_profile_page.user_profile_fragments;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -16,8 +17,12 @@ import android.graphics.drawable.Drawable;
 import androidx.core.content.ContextCompat;
 
 import com.example.myapplication.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ReviewPage extends AppCompatActivity {
 
@@ -70,23 +75,50 @@ public class ReviewPage extends AppCompatActivity {
         float rating = ratingBar.getRating();
         String reviewText = reviewEditText.getText().toString().trim();
 
-        // Uses hardcoded user id, will be changed once user account system is implemented
-        String userId = "user123";
-
-        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("user_reviews").child(userId);
-
-        // Hardcoded username, will be changed once user account system is implemented
-        userReference.child("username").setValue("Roshan");
-        userReference.child("rating").setValue(rating);
-        userReference.child("feedback").setValue(reviewText);
-
-        if (rating > 0) {
-            Toast.makeText(ReviewPage.this, "Review submitted successfully!", Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            Toast.makeText(ReviewPage.this, "Please set a rating!", Toast.LENGTH_SHORT).show();
+        // Retrieve the user ID of the user being reviewed from the Intent
+        String reviewedUserId = getIntent().getStringExtra("reviewed_user_id");
+        if (reviewedUserId == null) {
+            Toast.makeText(ReviewPage.this, "Reviewed User ID not found", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        // Get the current logged-in user's UID
+        String currentUserId = FirebaseAuth.getInstance().getUid();
+        if (currentUserId == null) {
+            Toast.makeText(ReviewPage.this, "Current User ID not found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Fetch the current user's name from Firebase
+        DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference().child("User").child(currentUserId);
+        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String firstName = dataSnapshot.child("firstName").getValue(String.class);
+                String lastName = dataSnapshot.child("lastName").getValue(String.class);
+                String fullName = (firstName != null && lastName != null) ? firstName + " " + lastName : "Unknown User";
+
+                // Post the review to the reviewed user's reviews section
+                DatabaseReference reviewRef = FirebaseDatabase.getInstance().getReference().child("User").child(reviewedUserId).child("reviews").push();
+                Review review = new Review(currentUserId, fullName, rating, reviewText);
+                reviewRef.setValue(review);
+
+                if (rating > 0) {
+                    Toast.makeText(ReviewPage.this, "Review submitted successfully!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(ReviewPage.this, "Please set a rating!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle error
+            }
+        });
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

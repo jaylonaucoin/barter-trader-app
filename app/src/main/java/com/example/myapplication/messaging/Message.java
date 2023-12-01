@@ -1,16 +1,23 @@
 package com.example.myapplication.messaging;
 
 public class Message {
-    private String senderId;
+    private final String senderId;
+    private final String receiverId;
+    private final String text;
+    private final long timestamp;
 
-    private String receiverId;
-    private String text;
-    private long timestamp;
-
-
-    public Message() {}
+    public Message() {
+        senderId = "";
+        receiverId = "";
+        text = "";
+        timestamp = 0;
+    }
 
     public Message(String senderId, String receiverId, String text, long timestamp) {
+        if (senderId == null || receiverId == null || text == null) {
+            throw new IllegalArgumentException("Sender ID, Receiver ID, and Text cannot be null");
+        }
+
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.text = text;
@@ -31,5 +38,15 @@ public class Message {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "senderId='" + senderId + '\'' +
+                ", receiverId='" + receiverId + '\'' +
+                ", text='" + text + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }
