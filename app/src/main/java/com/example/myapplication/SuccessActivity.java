@@ -3,7 +3,6 @@ package com.example.myapplication;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.messaging.MessagingActivity;
+import com.example.myapplication.registration.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

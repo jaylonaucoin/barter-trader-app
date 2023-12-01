@@ -6,6 +6,7 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
 import androidx.test.espresso.matcher.ViewMatchers;
 
+import com.example.myapplication.registration.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.hamcrest.Matchers;

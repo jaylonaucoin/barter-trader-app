@@ -5,6 +5,8 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.example.myapplication.registration.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.Before;
