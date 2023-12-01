@@ -63,7 +63,9 @@ public class UserProfileListingsFragment extends Fragment {
                                 listingSnapshot.child("Condition").getValue(String.class),
                                 listingSnapshot.child("Exchange Preference").getValue(String.class),
                                 listingSnapshot.child("Description").getValue(String.class),
-                                listingSnapshot.child("Product Name").getValue(String.class)
+                                listingSnapshot.child("Product Name").getValue(String.class),
+                                listingSnapshot.child("Category").getValue(String.class),
+                                listingSnapshot.getKey()
                         );
                         userListingList.add(listing);
                     }

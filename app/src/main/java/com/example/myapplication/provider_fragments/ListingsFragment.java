@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -53,7 +54,9 @@ public class ListingsFragment extends Fragment {
                                 listingSnapshot.child("Condition").getValue(String.class),
                                 listingSnapshot.child("Exchange Preference").getValue(String.class),
                                 listingSnapshot.child("Description").getValue(String.class),
-                                listingSnapshot.child("Product Name").getValue(String.class)
+                                listingSnapshot.child("Product Name").getValue(String.class),
+                                listingSnapshot.child("Category").getValue(String.class),
+                                listingSnapshot.getKey()
                         );
                         userListingList.add(listing);
                     }
@@ -68,17 +71,23 @@ public class ListingsFragment extends Fragment {
         });
     }
 
+    // Update Listing class to include category
     public static class Listing {
         public String condition;
         public String exchangePreference;
         public String description;
         public String productName;
+        public String category;
+        public String listingKey;
 
-        public Listing(String condition, String exchangePreference, String description, String productName) {
+        public Listing(String condition, String exchangePreference, String description,
+                       String productName, String category, String listingKey) {
             this.condition = condition;
             this.exchangePreference = exchangePreference;
             this.description = description;
             this.productName = productName;
+            this.category = category;
+            this.listingKey = listingKey;
         }
     }
 
@@ -104,6 +113,7 @@ public class ListingsFragment extends Fragment {
             holder.exchangePreferenceView.setText(listing.exchangePreference);
             holder.descriptionView.setText(listing.description);
             holder.productNameView.setText(listing.productName);
+            holder.categoryView.setText(listing.category);
         }
 
         @Override
@@ -116,6 +126,7 @@ public class ListingsFragment extends Fragment {
             TextView exchangePreferenceView;
             TextView descriptionView;
             TextView productNameView;
+            TextView categoryView;
 
             public ListingViewHolder(View itemView) {
                 super(itemView);
@@ -123,6 +134,7 @@ public class ListingsFragment extends Fragment {
                 exchangePreferenceView = itemView.findViewById(R.id.exchangePreferenceTextView);
                 descriptionView = itemView.findViewById(R.id.descriptionTextView);
                 productNameView = itemView.findViewById(R.id.productNameTextView);
+                categoryView = itemView.findViewById(R.id.categoryTextView);
             }
         }
     }
