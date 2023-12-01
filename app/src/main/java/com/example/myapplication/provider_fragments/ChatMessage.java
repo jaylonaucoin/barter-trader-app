@@ -5,7 +5,9 @@ public class ChatMessage {
     private String senderId;
     private final String text;
     private final long timestamp;
+    private String fullName; // New property for full name
 
+    // Constructor
     public ChatMessage(String receiverId, String senderId, String text, long timestamp) {
         this.receiverId = receiverId;
         this.senderId = senderId;
@@ -13,24 +15,12 @@ public class ChatMessage {
         this.timestamp = timestamp;
     }
 
-    public String getReceiverId() {
-        return receiverId;
-    }
-
-    public String getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
+    // Getters and Setters
+    public String getReceiverId() { return receiverId; }
+    public String getSenderId() { return senderId; }
+    public void setSenderId(String senderId) { this.senderId = senderId; }
+    public String getText() { return text; }
+    public long getTimestamp() { return timestamp; }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 }
-

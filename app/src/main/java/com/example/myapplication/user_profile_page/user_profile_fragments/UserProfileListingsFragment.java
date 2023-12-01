@@ -12,6 +12,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.provider_fragments.ListingsFragment.Listing;
 import com.example.myapplication.provider_fragments.ListingsFragment.ListingsAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,40 +26,43 @@ public class UserProfileListingsFragment extends Fragment {
 
     private ListingsAdapter adapter;
     private DatabaseReference mDatabase;
+    private boolean isCurrentUserProfile;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_profile_listings, container, false);
-
         RecyclerView rvListings = view.findViewById(R.id.rvUserProfileListings);
         rvListings.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ListingsAdapter(getContext());
+
+        // Determine if the fragment is displaying the current user's profile
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String currentUserId = currentUser != null ? currentUser.getUid() : null;
+
+        // Get the user ID whose listings we need to display
+        Bundle args = getArguments();
+        String profileUserId = args != null ? args.getString("uid") : currentUserId;
+
+        // Check if the user is viewing their own profile
+        isCurrentUserProfile = profileUserId != null && profileUserId.equals(currentUserId);
+
+        adapter = new ListingsAdapter(getContext(), isCurrentUserProfile);
         rvListings.setAdapter(adapter);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Listings");
-        loadUserListings();
+        loadUserListings(profileUserId);
 
         return view;
     }
 
-    private void loadUserListings() {
-        Bundle args = getArguments();
-        String userId = args != null ? args.getString("uid") : null;
+    private void loadUserListings(String userId) {
 
-        // Fall back to the current user ID if no user ID is passed
-        if (userId == null) {
-            userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-        }
-
-        final String finalUserId = userId;
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Listing> userListingList = new ArrayList<>();
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
                     String listingUserId = listingSnapshot.child("User ID").getValue(String.class);
-                    if (listingUserId != null && listingUserId.equals(finalUserId)) {
+                    if (listingUserId != null && listingUserId.equals(userId)) {
                         Listing listing = new Listing(
                                 listingSnapshot.child("Condition").getValue(String.class),
                                 listingSnapshot.child("Exchange Preference").getValue(String.class),

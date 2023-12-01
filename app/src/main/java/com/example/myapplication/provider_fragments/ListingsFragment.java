@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.EditDeleteListingActivity;
 import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,13 +29,27 @@ public class ListingsFragment extends Fragment {
 
     private ListingsAdapter adapter;
     private DatabaseReference mDatabase;
+    private boolean isCurrentUserProfile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.provider_listings, container, false);
         RecyclerView rvListings = view.findViewById(R.id.rvListings);
         rvListings.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ListingsAdapter(getContext());
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        // This is the current logged-in user's ID
+        String currentUserId = currentUser != null ? currentUser.getUid() : null;
+
+        // Assuming you're passing the user ID of the profile being viewed as an argument to the fragment
+        // If no user ID is passed, default to the current user ID
+        Bundle args = getArguments();
+        String profileUserId = args != null ? args.getString("uid") : currentUserId;
+
+        // Determine if the profile being viewed belongs to the current user
+        isCurrentUserProfile = profileUserId != null && profileUserId.equals(currentUserId);
+
+        // Initialize the adapter with the context and whether the items should be clickable
+        adapter = new ListingsAdapter(getContext(), isCurrentUserProfile);
         rvListings.setAdapter(adapter);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Listings");
@@ -97,9 +112,12 @@ public class ListingsFragment extends Fragment {
     public static class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ListingViewHolder> {
         private List<Listing> listings = new ArrayList<>();
         private final LayoutInflater inflater;
+        private boolean isItemClickable;
 
-        public ListingsAdapter(Context context) {
+
+        public ListingsAdapter(Context context, boolean isItemClickable) {
             inflater = LayoutInflater.from(context);
+            this.isItemClickable = isItemClickable;
         }
 
         public void setListings(List<Listing> listings) {
@@ -117,7 +135,7 @@ public class ListingsFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ListingViewHolder holder, int position) {
             Listing listing = listings.get(position);
-            holder.bind(listing);
+            holder.bind(listing, isItemClickable);
         }
 
         @Override
@@ -141,20 +159,24 @@ public class ListingsFragment extends Fragment {
                 categoryView = itemView.findViewById(R.id.categoryTextView);
             }
 
-            public void bind(final Listing listing) {
+            public void bind(final Listing listing, boolean isItemClickable) {
                 conditionView.setText(listing.condition);
                 exchangePreferenceView.setText(listing.exchangePreference);
                 descriptionView.setText(listing.description);
                 productNameView.setText(listing.productName);
                 categoryView.setText(listing.category);
 
-                itemView.setOnClickListener(v -> {
-                    Context context = itemView.getContext();
-                    Intent intent = new Intent(context, EditDeleteListingActivity.class);
-                    intent.putExtra("listingDetails", createListingDetailsString(listing));
-                    intent.putExtra("listingKey", listing.listingKey);
-                    context.startActivity(intent);
-                });
+                if (isItemClickable) {
+                    itemView.setOnClickListener(v -> {
+                        Context context = itemView.getContext();
+                        Intent intent = new Intent(context, EditDeleteListingActivity.class);
+                        intent.putExtra("listingDetails", createListingDetailsString(listing));
+                        intent.putExtra("listingKey", listing.listingKey);
+                        context.startActivity(intent);
+                    });
+                } else {
+                    itemView.setOnClickListener(null);
+                }
             }
 
             private String createListingDetailsString(Listing listing) {

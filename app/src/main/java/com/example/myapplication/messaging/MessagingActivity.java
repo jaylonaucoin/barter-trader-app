@@ -1,13 +1,5 @@
 package com.example.myapplication.messaging;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -18,10 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.user_profile_page.UserProfile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -31,17 +29,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 public class MessagingActivity extends AppCompatActivity {
     private DatabaseReference dbReference;
     private String userId;
-    private String receiverId; // Receiver's UID
+    private String receiverId;
+    private String chatPath;
     private MessageAdapter adapter;
     private RecyclerView messageRecyclerView;
     private List<Message> messageList;
+    private EditText editTextMessage;
     private Toolbar toolbar;
 
     @Override
@@ -52,26 +51,32 @@ public class MessagingActivity extends AppCompatActivity {
         initializeFirebase();
         initializeUI();
         setupReceiverInfo();
-        getMessages();
+        setupChatPathAndLoadMessages();
     }
 
     private void initializeFirebase() {
-        FirebaseAuth dbAuth = FirebaseAuth.getInstance();
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        dbReference = db.getReference("chats");
-        userId = Objects.requireNonNull(dbAuth.getCurrentUser()).getUid();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+        dbReference = FirebaseDatabase.getInstance().getReference().child("chats");
     }
 
     private void initializeUI() {
+        editTextMessage = findViewById(R.id.editTextMessage);
+        Button sendButton = findViewById(R.id.buttonSend);
+        messageRecyclerView = findViewById(R.id.messageRecycler);
+        messageRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        Button sendButton = findViewById(R.id.buttonSend);
-        messageRecyclerView = findViewById(R.id.messageRecycler);
-        messageRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        toolbar.setTitleTextColor(Color.WHITE);
+        Drawable upArrow = ContextCompat.getDrawable(this, androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        if (upArrow != null) {
+            upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        }
 
         messageList = new ArrayList<>();
         adapter = new MessageAdapter(messageList, userId);
@@ -80,46 +85,32 @@ public class MessagingActivity extends AppCompatActivity {
         sendButton.setOnClickListener(v -> sendMessage());
     }
 
-    private void setupToolbarTitle(String title) {
-        if (toolbar != null) {
-            toolbar.setTitle(title);
-        }
-    }
-
     private void sendMessage() {
-        EditText input = findViewById(R.id.editTextMessage);
-        String messageText = input.getText().toString();
+        String messageText = editTextMessage.getText().toString().trim();
         if (messageText.isEmpty()) {
-            Toast.makeText(this, "Message is empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MessagingActivity.this, "Message is empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String chatPath = userId + "_" + receiverId;
-        DatabaseReference chatRef = dbReference.child(chatPath);
-
+        DatabaseReference chatRef = dbReference.child(chatPath); // Use the determined chatPath
         Message message = new Message(userId, receiverId, messageText, System.currentTimeMillis());
 
-        chatRef.push().setValue(message)
-                .addOnSuccessListener(aVoid -> messageRecyclerView.scrollToPosition(messageList.size() - 1))
-                .addOnFailureListener(e -> Toast.makeText(this, "Could not send message: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-
-        input.setText("");
+        chatRef.push().setValue(message).addOnSuccessListener(aVoid -> {
+            editTextMessage.setText("");
+            messageRecyclerView.scrollToPosition(messageList.size() - 1);
+        }).addOnFailureListener(e -> Toast.makeText(MessagingActivity.this, "Failed to send message", Toast.LENGTH_SHORT).show());
     }
 
     private void setupReceiverInfo() {
         receiverId = getIntent().getStringExtra("RECEIVER_ID");
-        if (receiverId == null) {
-            receiverId = "default_receiver_id"; // Fallback ID or handle error
-        }
-
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User").child(receiverId);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String firstName = dataSnapshot.child("firstName").getValue(String.class);
                 String lastName = dataSnapshot.child("lastName").getValue(String.class);
-                String fullName = (firstName != null && lastName != null) ? firstName + " " + lastName : "Unknown";
-                setupToolbarTitle(fullName);
+                String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+                toolbar.setTitle(fullName); // Set toolbar title
             }
 
             @Override
@@ -129,73 +120,58 @@ public class MessagingActivity extends AppCompatActivity {
         });
     }
 
-    private void getMessages() {
-        // Clear the list to ensure it starts fresh
-        messageList.clear();
+    private void setupChatPathAndLoadMessages() {
+        String path1 = userId + "_" + receiverId;
+        String path2 = receiverId + "_" + userId;
 
-        // Assuming 'userId' is your current user's ID and 'receiverId' is the ID of the user they are chatting with
-        String chatPath = userId + "_" + receiverId;
-        DatabaseReference chatRef = dbReference.child(chatPath);
-
-        // Attach a listener to read the data at our chat reference
-        chatRef.addChildEventListener(new ChildEventListener() {
+        DatabaseReference path1Ref = dbReference.child(path1);
+        path1Ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
-                // A new message was added to the messages list
-                Message message = dataSnapshot.getValue(Message.class);
-                if (message != null) {
-                    messageList.add(message);
-                    displayMessages(); // Call a method to handle the display of new messages
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
-                // Existing messages might be changed, for example, to mark them as read
-                // You can implement logic here to handle such changes if needed
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                // Messages might be deleted
-                // You can implement logic here to handle message deletion if needed
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
-                // Messages might be moved
-                // Implement if your app logic requires handling message moving
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                chatPath = dataSnapshot.exists() ? path1 : path2; // Determine and store the chat path
+                loadMessages();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Database error occurred such as permission denied, handle the error
-                Toast.makeText(MessagingActivity.this, "Failed to load messages.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MessagingActivity.this, "Error loading chat", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void displayMessages() {
-        messageList.sort(Comparator.comparingLong(Message::getTimestamp));
-        adapter.notifyDataSetChanged();
-        messageRecyclerView.scrollToPosition(messageList.size() - 1);
+    private void loadMessages() {
+        DatabaseReference chatRef = dbReference.child(chatPath);
+        chatRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
+                Message message = dataSnapshot.getValue(Message.class);
+                if (message != null) {
+                    messageList.add(message);
+                    adapter.notifyDataSetChanged();
+                    messageRecyclerView.scrollToPosition(messageList.size() - 1);
+                }
+            }
+
+            // Implement other ChildEventListener methods as needed
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {}
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MessagingActivity.this, "Error loading messages", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.options_menu, menu);
-        Drawable upArrow = ContextCompat.getDrawable(this, androidx.appcompat.R.drawable.abc_ic_ab_back_material);
-        if (upArrow != null) {
-            upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-            toolbar.setNavigationIcon(upArrow);
-        }
-        for (int i = 0; i < menu.size(); i++) {
-            MenuItem menuItem = menu.getItem(i);
-            Drawable icon = menuItem.getIcon();
-            if (icon != null) {
-                icon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-            }
-        }
+        getMenuInflater().inflate(R.menu.options_menu, menu); // Inflate the options menu from XML
         return true;
     }
 
@@ -209,19 +185,15 @@ public class MessagingActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     private void showPopupMenu() {
-        PopupMenu popupMenu = new PopupMenu(MessagingActivity.this, findViewById(R.id.action_settings));
-        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(menuItem -> {
-            // Pass the receiver UID to the UserProfile activity
-            Intent profileIntent = new Intent(MessagingActivity.this, UserProfile.class);
-            profileIntent.putExtra("uid", receiverId);
-            startActivity(profileIntent);
-            return true;
-        });
+        PopupMenu popupMenu = new PopupMenu(this, findViewById(R.id.action_settings));
+        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu()); // Inflate your popup menu
+        popupMenu.setOnMenuItemClickListener(item -> true);
         popupMenu.show();
     }
+
 }
