@@ -14,8 +14,11 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
-    private List<Message> messages;
-    private String currentUserId;
+    private static final int VIEW_TYPE_MESSAGE_SENT = 1;
+    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 0;
+
+    private final List<Message> messages;
+    private final String currentUserId;
 
     public MessageAdapter(List<Message> messages, String currentUserId) {
         this.messages = messages;
@@ -25,22 +28,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public int getItemViewType(int position) {
         Message message = messages.get(position);
-        if (currentUserId.equals(message.getSenderId())) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return currentUserId.equals(message.getSenderId()) ? VIEW_TYPE_MESSAGE_SENT : VIEW_TYPE_MESSAGE_RECEIVED;
     }
 
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view;
-        if (viewType == 1) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_sent, parent, false);
+
+        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
+            view = layoutInflater.inflate(R.layout.message_sent, parent, false);
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_recieved, parent, false);
+            view = layoutInflater.inflate(R.layout.message_recieved, parent, false);
         }
+
         return new MessageViewHolder(view);
     }
 
@@ -56,7 +58,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {
 
-        TextView messageText;
+        private final TextView messageText;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -3,6 +3,7 @@ package com.example.myapplication.provider_fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -167,7 +168,6 @@ public class ChatFragment extends Fragment {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             ChatMessage message = chatMessages.get(position);
             holder.bind(context, message);
-            holder.username.setText(message.getReceiverId());
             holder.recentMessage.setText(message.getText());
             // Set an icon for the user
             holder.profileIcon.setImageResource(R.drawable.empty_user_icon);
