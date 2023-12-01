@@ -65,7 +65,7 @@
     <string name="returnSuccess">Return</string>
     <string name="editListing">Edit Listing</string>
     <string name="saveListing">Save Changes</string>
-    <string name="deleteListing">Delete Listing</string>
+    <string name="deleteListing">Remove Listing</string>
     <string-array name="condition_array">
         <item>Any</item>
         <item>New</item>
@@ -73,6 +73,16 @@
         <item>Used (Very Good)</item>
         <item>Used (Good)</item>
         <item>Used (Acceptable)</item>
+    </string-array>
+    <string-array name="category">
+        <item>Any</item>
+        <item>Electronics</item>
+        <item>Toys &amp; Games</item>
+        <item>Sports &amp; Outdoors</item>
+        <item>Vehicles &amp; Parts</item>
+        <item>Furniture</item>
+        <item>Clothing &amp; Accessories</item>
+        <item>Musical Instruments</item>
     </string-array>
     <string name="condition">Product Condition:</string>
     <string name="location">Location</string>
@@ -85,4 +95,35 @@
     <string name="where_are_you_located">Where are You Located?</string>
     <string name="search_your_location">Search your Location</string>
     <string name="saved_addresses">Saved Addresses</string>
+    <string name="back_button">Back Button</string>
+    <string name="post">Post</string>
+    <string name="chat">Chat</string>
+    <string name="select_a_category">Select a category</string>
+    <string name="your_listings">Your Listings</string>
+    <string name="exchange_preference_label">Exchange Preference:&#160;</string>
+    <string name="description_label">Description:&#160;</string>
+    <string name="product_name_label">Product Name:&#160;</string>
+    <string name="condition_label">Condition:&#160;</string>
+    <string name="category_1">Category 1</string>
+    <string name="category_2">Category 2</string>
+    <string name="category_3">Category 3</string>
+    <string name="category_4">Category 4</string>
+    <string name="category_5">Category 5</string>
+    <string name="category_7">Category 7</string>
+    <string name="category_8">Category 8</string>
+    <string name="sample_username">Sample Username</string>
+    <string name="most_recent_chat_message">Most recent chat message</string>
+    <string name="all_listings">All Listings</string>
+    <string name="category">Product Category:</string>
+    <string-array name="category_array">
+        <item>Any</item>
+        <item>Electronics</item>
+        <item>Toys &amp; Games</item>
+        <item>Sports &amp; Outdoors</item>
+        <item>Vehicles &amp; Parts</item>
+        <item>Furniture</item>
+        <item>Clothing &amp; Accessories</item>
+        <item>Musical Instruments</item>
+    </string-array>
 </resources>
+
