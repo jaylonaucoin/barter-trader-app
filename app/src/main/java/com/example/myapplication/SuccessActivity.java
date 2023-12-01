@@ -35,7 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
-public class SuccessActivity extends AppCompatActivity {
+public class SuccessActivity extends AppCompatActivity implements PostFragment.OnPostInteractionListener {
     private FirebaseDatabase firebaseDB;
     private DatabaseReference firebaseDBRef;
     private FirebaseAuth auth;
@@ -212,4 +212,11 @@ public class SuccessActivity extends AppCompatActivity {
         firebaseDBRef = firebaseDB.getReference("User");
         auth = FirebaseAuth.getInstance();
     }
+
+    @Override
+    public void onPostCompleted() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_listings); // Switch to Listings tab
+    }
+
 }

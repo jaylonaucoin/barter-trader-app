@@ -1,54 +1,148 @@
 package com.example.myapplication.provider_fragments;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.myapplication.PostGoods;
 import com.example.myapplication.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 public class PostFragment extends Fragment {
+
+    private FirebaseDatabase firebaseDB;
+    private DatabaseReference firebaseDBRef;
+    private FirebaseAuth auth;
+
+    private OnPostInteractionListener mListener;
+
+    public interface OnPostInteractionListener {
+        void onPostCompleted();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnPostInteractionListener) {
+            mListener = (OnPostInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnPostInteractionListener");
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.provider_post, container, false);
+        connectToDBase();
 
-        // Retrieve the category array from strings.xml
-        String[] categories = getResources().getStringArray(R.array.category);
+        Button submitButton = view.findViewById(R.id.submit_button);
+        EditText prodName = view.findViewById(R.id.name);
+        Spinner category = view.findViewById(R.id.category);
+        Spinner condition = view.findViewById(R.id.condition);
+        EditText description = view.findViewById(R.id.description);
+        EditText preference = view.findViewById(R.id.preference);
 
-        // Associate each button with its category and set up the click listeners
-        setupButtonListeners(view, categories);
+        Toast successToast = Toast.makeText(getContext(), "Item uploaded successfully", Toast.LENGTH_SHORT);
+        Toast failToast = Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT);
+
+        submitButton.setOnClickListener(v -> {
+            String prodValue = prodName.getText().toString().trim();
+            String prodCategory = category.getSelectedItem().toString().trim();
+            String conditionValue = condition.getSelectedItem().toString().trim();
+            String descriptionValue = description.getText().toString().trim();
+            String preferenceValue = preference.getText().toString().trim();
+
+            if (!prodValue.isEmpty() && !prodCategory.isEmpty() && !conditionValue.isEmpty() && !descriptionValue.isEmpty() && !preferenceValue.isEmpty()) {
+                successToast.show();
+                writeToFireDB(prodValue, prodCategory, conditionValue, descriptionValue, preferenceValue);
+            } else {
+                failToast.show();
+            }
+
+            mListener.onPostCompleted();
+        });
 
         return view;
     }
 
-    private void setupButtonListeners(View view, String[] categories) {
-        int[] buttonIds = {R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6, R.id.category7, R.id.category8};
+    private void connectToDBase() {
+        firebaseDB = FirebaseDatabase.getInstance();
+        firebaseDBRef = firebaseDB.getReference("Listings");
+        auth = FirebaseAuth.getInstance();
+    }
 
-        for (int i = 0; i < buttonIds.length; i++) {
-            if (i < categories.length) {
-                setupButtonListener(view, buttonIds[i], categories[i]);
+    // Write data to Firebase database
+    private void writeToFireDB(String name, String category, String condition, String description, String preference) {
+        String id = firebaseDBRef.push().getKey(); // Generate unique ID for the entry
+        String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid(); // Get current user ID
+
+        // Get references for user and address information
+        DatabaseReference userRef = firebaseDB.getReference("User").child(uid);
+        DatabaseReference addressRef = userRef.child("addresses").child("0");
+        firebaseDBRef = firebaseDB.getReference("Listings/" + id);
+
+        // Retrieve address details
+        addressRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Extract latitude, longitude, and address
+                Double latitude = snapshot.child("latitude").getValue(Double.class);
+                Double longitude = snapshot.child("longitude").getValue(Double.class);
+                String address = snapshot.child("address").getValue(String.class);
+
+                // Set values in Firebase for address details
+                firebaseDBRef.child("Address").setValue(address);
+                firebaseDBRef.child("Latitude").setValue(latitude);
+                firebaseDBRef.child("Longitude").setValue(longitude);
             }
-        }
-    }
 
-    private void setupButtonListener(View view, int buttonId, String category) {
-        Button button = view.findViewById(buttonId);
-        button.setText(category); // Set the text from the category array
-        button.setOnClickListener(v -> navigateToPostActivity(category));
-    }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Database Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
-    private void navigateToPostActivity(String category) {
-        Intent intent = new Intent(getActivity(), PostGoods.class);
-        intent.putExtra("category", category);
-        startActivity(intent);
+        // Retrieve user's first and last name
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Extract first and last name
+                String firstName = snapshot.child("firstName").getValue(String.class);
+                String lastName = snapshot.child("lastName").getValue(String.class);
+
+                // Set seller's name in Firebase
+                firebaseDBRef.child("Seller").setValue(firstName + " " + lastName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Database Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set product details in Firebase
+        firebaseDBRef.child("User ID").setValue(uid);
+        firebaseDBRef.child("Product Name").setValue(name);
+        firebaseDBRef.child("Description").setValue(description);
+        firebaseDBRef.child("Category").setValue(category);
+        firebaseDBRef.child("Condition").setValue(condition);
+        firebaseDBRef.child("Exchange Preference").setValue(preference);
     }
 }
