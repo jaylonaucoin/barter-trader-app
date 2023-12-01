@@ -80,6 +80,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
             }
         });
 
+        // exchange and hide buttons
         markAsExchangedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) ->
                 editDeleteHelper.markAsExchanged(listingKey, isChecked));
 

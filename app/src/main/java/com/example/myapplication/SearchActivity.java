@@ -152,17 +152,24 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    //added hidden and exchanged option
     private void processSearchResults(DataSnapshot dataSnapshot, String name, String condition, String exchangePreference) {
         for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-            String itemName = itemSnapshot.child("Product Name").getValue(String.class);
-            String itemCondition = itemSnapshot.child("Condition").getValue(String.class);
-            String itemDescription = itemSnapshot.child("Description").getValue(String.class);
-            String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
-            String seller = itemSnapshot.child("Seller").getValue(String.class);
-            String address = itemSnapshot.child("Address").getValue(String.class);
+            boolean isMarkedAsExchanged = Boolean.TRUE.equals(itemSnapshot.child("Marked As Exchanged").getValue(Boolean.class));
+            boolean isHidden = Boolean.TRUE.equals(itemSnapshot.child("Hidden").getValue(Boolean.class));
 
-            if (matchesSearchCriteria(itemName, itemCondition, itemExchangePref, name, condition, exchangePreference)) {
-                addMatchingItemToResults(itemName, itemCondition, itemDescription, itemExchangePref, seller, address);
+            // Skip items that are marked as exchanged or hidden
+            if (!isMarkedAsExchanged && !isHidden) {
+                String itemName = itemSnapshot.child("Product Name").getValue(String.class);
+                String itemCondition = itemSnapshot.child("Condition").getValue(String.class);
+                String itemDescription = itemSnapshot.child("Description").getValue(String.class);
+                String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
+                String seller = itemSnapshot.child("Seller").getValue(String.class);
+                String address = itemSnapshot.child("Address").getValue(String.class);
+
+                if (matchesSearchCriteria(itemName, itemCondition, itemExchangePref, name, condition, exchangePreference)) {
+                    addMatchingItemToResults(itemName, itemCondition, itemDescription, itemExchangePref, seller, address);
+                }
             }
         }
 
