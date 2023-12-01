@@ -114,4 +114,15 @@
     <string name="sample_username">Sample Username</string>
     <string name="most_recent_chat_message">Most recent chat message</string>
     <string name="all_listings">All Listings</string>
+    <string name="category">Product Category:</string>
+    <string-array name="category_array">
+        <item>Any</item>
+        <item>Electronics</item>
+        <item>Toys &amp; Games</item>
+        <item>Sports &amp; Outdoors</item>
+        <item>Vehicles &amp; Parts</item>
+        <item>Furniture</item>
+        <item>Clothing &amp; Accessories</item>
+        <item>Musical Instruments</item>
+    </string-array>
 </resources>
