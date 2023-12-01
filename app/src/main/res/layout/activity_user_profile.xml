@@ -32,15 +32,30 @@
             android:scaleType="centerCrop"
             android:src="@drawable/empty_user_icon" />
 
-        <!-- User's name TextView -->
+        <!-- User's Username -->
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/profilePicture"
+            android:layout_toStartOf="@+id/messageButton"
             android:paddingTop="8dp"
-            android:text="@string/sample_username"
+            android:text="Sample Username"
             android:textSize="18sp" />
+
+        <!-- Message Icon Button -->
+        <ImageView
+            android:id="@+id/messageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:padding="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_message"
+            android:visibility="gone" />
 
         <!-- User's RatingBar -->
         <RatingBar

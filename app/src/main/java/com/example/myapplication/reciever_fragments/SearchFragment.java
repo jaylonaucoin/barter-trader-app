@@ -8,7 +8,6 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +32,7 @@ import java.util.List;
 
 public class SearchFragment extends Fragment {
     private EditText nameEditText;
+    private Spinner categorySpinner;
     private Spinner conditionSpinner;
     private EditText exchangePreferenceEditText;
     private Button searchButton;
@@ -40,8 +40,8 @@ public class SearchFragment extends Fragment {
     private TextView errorMessageTextView;
     private DatabaseReference listingNode;
 
-    private List<String> searchResultsData;
-    private ArrayAdapter<String> adapter;
+    private List<ListItem> searchResultsData = new ArrayList<>();
+    private ArrayAdapter<ListItem> adapter;
     private HashMap<String, String> uidMap = new HashMap<>();
 
     @Override
@@ -51,14 +51,14 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         initializeUIElements(view);
-        setupSearchButton(view);
+        setupSearchButton();
         initializeFirebase();
     }
 
     private void initializeUIElements(View view) {
         nameEditText = view.findViewById(R.id.nameEditText);
+        categorySpinner = view.findViewById(R.id.categorySpinner);
         conditionSpinner = view.findViewById(R.id.conditionSpinner);
         exchangePreferenceEditText = view.findViewById(R.id.exchangePreferenceEditText);
         searchButton = view.findViewById(R.id.searchButton);
@@ -69,38 +69,31 @@ public class SearchFragment extends Fragment {
         adapter = createListAdapter();
         searchResultsList.setAdapter(adapter);
 
-        searchResultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = (String) searchResultsList.getItemAtPosition(position);
-                String sellerUid;
-                String[] parts = selectedItem.split("<br>");
-                String[] parts2 = parts[1].split("\n");
-                String[] sellerString = parts2[4].split(":");
-                String sellerName = sellerString[1].trim();
-                sellerUid = uidMap.get(sellerName);
+        searchResultsList.setOnItemClickListener((parent, view1, position, id) -> {
+            ListItem selectedItem = (ListItem) parent.getItemAtPosition(position);
+            String sellerUid = selectedItem.getUserId();
 
-                Intent intent = new Intent(getActivity(), UserProfile.class);
-                intent.putExtra("uid", sellerUid);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(getActivity(), UserProfile.class);
+            intent.putExtra("uid", sellerUid);
+            startActivity(intent);
         });
     }
 
-    private ArrayAdapter<String> createListAdapter() {
-        return new ArrayAdapter<String>(requireActivity(), R.layout.list_item, searchResultsData) {
+    private ArrayAdapter<ListItem> createListAdapter() {
+        return new ArrayAdapter<ListItem>(requireActivity(), R.layout.list_item, searchResultsData) {
             @NonNull
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 View view = createOrReuseView(convertView, parent);
                 TextView nameTextView = view.findViewById(R.id.nameTextView);
                 TextView detailsTextView = view.findViewById(R.id.detailsTextView);
-                String item = searchResultsData.get(position);
-                displayItemDetails(nameTextView, detailsTextView, item);
+                ListItem item = searchResultsData.get(position);
+                displayItemDetails(nameTextView, detailsTextView, item.getDisplayText());
                 return view;
             }
         };
     }
+
 
     private View createOrReuseView(View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -130,24 +123,22 @@ public class SearchFragment extends Fragment {
         return spannable;
     }
 
-    private void setupSearchButton(View view) {
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = nameEditText.getText().toString();
-                String condition = conditionSpinner.getSelectedItem().toString();
-                String exchangePreference = exchangePreferenceEditText.getText().toString();
-                if (hasNoSearchCriteria(name, condition, exchangePreference)) {
-                    displayNoCriteriaError();
-                } else {
-                    searchWithData(name, condition, exchangePreference);
-                }
+    private void setupSearchButton() {
+        searchButton.setOnClickListener(view -> {
+            String name = nameEditText.getText().toString();
+            String category = categorySpinner.getSelectedItem().toString();
+            String condition = conditionSpinner.getSelectedItem().toString();
+            String exchangePreference = exchangePreferenceEditText.getText().toString();
+            if (hasNoSearchCriteria(name, category, condition, exchangePreference)) {
+                displayNoCriteriaError();
+            } else {
+                searchWithData(name, category, condition, exchangePreference);
             }
         });
     }
 
-    private boolean hasNoSearchCriteria(String name, String condition, String exchangePreference) {
-        return name.isEmpty() && condition.equals("Any") && exchangePreference.isEmpty();
+    private boolean hasNoSearchCriteria(String name, String category, String condition, String exchangePreference) {
+        return name.isEmpty() && category.equals("Any") && condition.equals("Any") && exchangePreference.isEmpty();
     }
 
     private void displayNoCriteriaError() {
@@ -156,9 +147,9 @@ public class SearchFragment extends Fragment {
         clearSearchResults();
     }
 
-    private void searchWithData(String name, String condition, String exchangePreference) {
+    private void searchWithData(String name, String category, String condition, String exchangePreference) {
         clearSearchResults();
-        queryFirebaseForSearchResults(name, condition, exchangePreference);
+        queryFirebaseForSearchResults(name, category, condition, exchangePreference);
     }
 
     private void clearSearchResults() {
@@ -166,11 +157,11 @@ public class SearchFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void queryFirebaseForSearchResults(String name, String condition, String exchangePreference) {
+    private void queryFirebaseForSearchResults(String name, String category, String condition, String exchangePreference) {
         listingNode.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                processSearchResults(dataSnapshot, name, condition, exchangePreference);
+                processSearchResults(dataSnapshot, name, category, condition, exchangePreference);
             }
 
             @Override
@@ -180,9 +171,10 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    private void processSearchResults(DataSnapshot dataSnapshot, String name, String condition, String exchangePreference) {
+    private void processSearchResults(DataSnapshot dataSnapshot, String name, String category, String condition, String exchangePreference) {
         for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
             String itemName = itemSnapshot.child("Product Name").getValue(String.class);
+            String itemCategory = itemSnapshot.child("Category").getValue(String.class);
             String itemCondition = itemSnapshot.child("Condition").getValue(String.class);
             String itemDescription = itemSnapshot.child("Description").getValue(String.class);
             String itemExchangePref = itemSnapshot.child("Exchange Preference").getValue(String.class);
@@ -190,27 +182,30 @@ public class SearchFragment extends Fragment {
             String address = itemSnapshot.child("Address").getValue(String.class);
             String sellerUid = itemSnapshot.child("User ID").getValue(String.class);
 
-            if (matchesSearchCriteria(itemName, itemCondition, itemExchangePref, name, condition, exchangePreference)) {
-                addMatchingItemToResults(itemName, itemCondition, itemDescription, itemExchangePref, seller, address);
+            if (matchesSearchCriteria(itemName, itemCategory, itemCondition, itemExchangePref, name, category, condition, exchangePreference)) {
+                addMatchingItemToResults(itemName, itemCategory, itemCondition, itemDescription, itemExchangePref, seller, address, sellerUid);
                 uidMap.put(seller, sellerUid);
             }
         }
-
         displaySearchResultsOrNoMatchError();
     }
 
-    private boolean matchesSearchCriteria(String name, String condition, String exchangePref,
-                                          String nameCriteria, String conditionCriteria, String exchangePrefCriteria) {
-        boolean nameMatch = nameCriteria.trim().isEmpty() || name.toLowerCase().contains(nameCriteria.toLowerCase().trim());
-        boolean conditionMatch = conditionCriteria.equals("Any") || condition.equals(conditionCriteria);
-        boolean exchangePrefMatch = exchangePrefCriteria.trim().isEmpty() || exchangePref.toLowerCase().contains(exchangePrefCriteria.toLowerCase().trim());
-        return nameMatch && conditionMatch && exchangePrefMatch;
+    private boolean matchesSearchCriteria(String itemName, String itemCategory, String itemCondition, String itemExchangePref, String name, String category, String condition, String exchangePreference) {
+        boolean nameMatch = (itemName != null) && (name.isEmpty() || itemName.toLowerCase().contains(name.toLowerCase()));
+        boolean categoryMatch = (itemCategory != null) && (category.equals("Any") || itemCategory.equals(category));
+        boolean conditionMatch = (itemCondition != null) && (condition.equals("Any") || itemCondition.equals(condition));
+        boolean exchangePrefMatch = (itemExchangePref != null) && (exchangePreference.isEmpty() || itemExchangePref.toLowerCase().contains(exchangePreference.toLowerCase()));
+
+        return nameMatch && categoryMatch && conditionMatch && exchangePrefMatch;
     }
 
-    private void addMatchingItemToResults(String itemName, String itemCondition, String itemDescription, String itemExchangePref, String seller, String address) {
-        String item = itemName + "<br>" + "Condition: " + itemCondition + "\n" +
+
+    private void addMatchingItemToResults(String itemName, String itemCategory, String itemCondition, String itemDescription, String itemExchangePref, String seller, String address, String sellerUid) {
+        String displayText = itemName + "<br>" + "Category: " + itemCategory + "\n" +
+                "Condition: " + itemCondition + "\n" +
                 "Description: " + itemDescription + "\n" + "Exchange Preference: " + itemExchangePref + "\n" + "Address: "
                 + address + "\n" + "Seller: " + seller;
+        ListItem item = new ListItem(displayText, sellerUid);
         searchResultsData.add(item);
     }
 
@@ -225,10 +220,29 @@ public class SearchFragment extends Fragment {
     }
 
     private void handleDatabaseError(DatabaseError databaseError) {
-        // Handle database error
+        errorMessageTextView.setText("Database error occurred: " + databaseError.getMessage());
+        errorMessageTextView.setVisibility(View.VISIBLE);
     }
 
     private void initializeFirebase() {
         listingNode = FirebaseDatabase.getInstance().getReference("Listings");
+    }
+
+    public static class ListItem {
+        private String displayText;
+        private String userId;
+
+        public ListItem(String displayText, String userId) {
+            this.displayText = displayText;
+            this.userId = userId;
+        }
+
+        public String getDisplayText() {
+            return displayText;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
     }
 }

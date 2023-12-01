@@ -1,7 +1,9 @@
 package com.example.myapplication.user_profile_page;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.myapplication.R;
+import com.example.myapplication.messaging.MessagingActivity;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +31,8 @@ public class UserProfile extends AppCompatActivity {
     ViewPager2 viewPager2;
     ProfileViewPageAdapter profileViewPageAdapter;
     RatingBar ratingBar;
+    ImageView messageButton;
+    String userId;
 
     // Firebase database reference to User node
     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("User");
@@ -44,8 +49,12 @@ public class UserProfile extends AppCompatActivity {
         // Initialize RatingBar UI component
         ratingBar = findViewById(R.id.ratingBar);
 
+        messageButton = findViewById(R.id.messageButton);
+
         // Fetch and set user ID and reviews
-        String userId= fetchUserUID();
+        userId = fetchUserUID();
+
+        setupMessageButton(userId);
 
         // Fetch the TextView for the username and set it
         TextView usernameTextView = findViewById(R.id.username);
@@ -80,6 +89,21 @@ public class UserProfile extends AppCompatActivity {
             }
         });
     }
+
+    private void setupMessageButton(String profileUserId) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null && !currentUser.getUid().equals(profileUserId)) {
+            // The profile being viewed is not the current user's, show the message button
+            messageButton.setVisibility(View.VISIBLE);
+            messageButton.setOnClickListener(view -> {
+                // Start the MessagingActivity with the UID of the user's profile being viewed
+                Intent intent = new Intent(UserProfile.this, MessagingActivity.class);
+                intent.putExtra("RECEIVER_ID", profileUserId); // Pass the profileUserId as RECEIVER_ID
+                startActivity(intent);
+            });
+        }
+    }
+
 
     private void fetchUsername(TextView usernameTextView) {
         // Get UID from Intent or default to current user's UID
