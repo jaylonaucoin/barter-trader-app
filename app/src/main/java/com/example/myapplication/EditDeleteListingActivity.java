@@ -1,7 +1,7 @@
 package com.example.myapplication;
 
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -40,7 +42,12 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_back);
+        Drawable navIcon = ContextCompat.getDrawable(this, R.drawable.ic_back);
+        if (navIcon != null) {
+            navIcon = DrawableCompat.wrap(navIcon);
+            DrawableCompat.setTint(navIcon, ContextCompat.getColor(this, android.R.color.white));
+            toolbar.setNavigationIcon(navIcon);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,8 +162,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         }
 
         // Return to the UserListingActivity
-        Intent returnIntent = new Intent(EditDeleteListingActivity.this, UserListingActivity.class);
-        startActivity(returnIntent);
+        finish();
     }
 
     private void handleDeleteButtonClicked(String listingKey) {

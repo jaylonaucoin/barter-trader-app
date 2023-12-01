@@ -1,5 +1,7 @@
 package com.example.myapplication.provider_fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.EditDeleteListingActivity;
 import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -31,7 +34,7 @@ public class ListingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.provider_listings, container, false);
         RecyclerView rvListings = view.findViewById(R.id.rvListings);
         rvListings.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ListingsAdapter();
+        adapter = new ListingsAdapter(getContext());
         rvListings.setAdapter(adapter);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Listings");
@@ -93,6 +96,11 @@ public class ListingsFragment extends Fragment {
 
     public static class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ListingViewHolder> {
         private List<Listing> listings = new ArrayList<>();
+        private final LayoutInflater inflater;
+
+        public ListingsAdapter(Context context) {
+            inflater = LayoutInflater.from(context);
+        }
 
         public void setListings(List<Listing> listings) {
             this.listings = listings;
@@ -102,18 +110,14 @@ public class ListingsFragment extends Fragment {
         @NonNull
         @Override
         public ListingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listing_item, parent, false);
+            View view = inflater.inflate(R.layout.listing_item, parent, false);
             return new ListingViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ListingViewHolder holder, int position) {
             Listing listing = listings.get(position);
-            holder.conditionView.setText(listing.condition);
-            holder.exchangePreferenceView.setText(listing.exchangePreference);
-            holder.descriptionView.setText(listing.description);
-            holder.productNameView.setText(listing.productName);
-            holder.categoryView.setText(listing.category);
+            holder.bind(listing);
         }
 
         @Override
@@ -135,6 +139,31 @@ public class ListingsFragment extends Fragment {
                 descriptionView = itemView.findViewById(R.id.descriptionTextView);
                 productNameView = itemView.findViewById(R.id.productNameTextView);
                 categoryView = itemView.findViewById(R.id.categoryTextView);
+            }
+
+            public void bind(final Listing listing) {
+                conditionView.setText(listing.condition);
+                exchangePreferenceView.setText(listing.exchangePreference);
+                descriptionView.setText(listing.description);
+                productNameView.setText(listing.productName);
+                categoryView.setText(listing.category);
+
+                itemView.setOnClickListener(v -> {
+                    Context context = itemView.getContext();
+                    Intent intent = new Intent(context, EditDeleteListingActivity.class);
+                    intent.putExtra("listingDetails", createListingDetailsString(listing));
+                    intent.putExtra("listingKey", listing.listingKey);
+                    context.startActivity(intent);
+                });
+            }
+
+            private String createListingDetailsString(Listing listing) {
+                return listing.listingKey + "\n" +
+                        "Product Name: " + listing.productName + "\n" +
+                        "Description: " + listing.description + "\n" +
+                        "Category: " + listing.category + "\n" +
+                        "Condition: " + listing.condition + "\n" +
+                        "Exchange Preference: " + listing.exchangePreference + "\n";
             }
         }
     }

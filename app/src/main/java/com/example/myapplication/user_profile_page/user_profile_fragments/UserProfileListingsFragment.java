@@ -33,7 +33,7 @@ public class UserProfileListingsFragment extends Fragment {
 
         RecyclerView rvListings = view.findViewById(R.id.rvUserProfileListings);
         rvListings.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ListingsAdapter();
+        adapter = new ListingsAdapter(getContext());
         rvListings.setAdapter(adapter);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Listings");
