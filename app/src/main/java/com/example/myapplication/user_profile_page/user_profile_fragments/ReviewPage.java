@@ -75,14 +75,12 @@ public class ReviewPage extends AppCompatActivity {
         float rating = ratingBar.getRating();
         String reviewText = reviewEditText.getText().toString().trim();
 
-        // Retrieve the user ID of the user being reviewed from the Intent
         String reviewedUserId = getIntent().getStringExtra("reviewed_user_id");
         if (reviewedUserId == null) {
             Toast.makeText(ReviewPage.this, "Reviewed User ID not found", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Get the current logged-in user's UID
         String currentUserId = FirebaseAuth.getInstance().getUid();
         if (currentUserId == null) {
             Toast.makeText(ReviewPage.this, "Current User ID not found", Toast.LENGTH_SHORT).show();
@@ -98,25 +96,58 @@ public class ReviewPage extends AppCompatActivity {
                 String lastName = dataSnapshot.child("lastName").getValue(String.class);
                 String fullName = (firstName != null && lastName != null) ? firstName + " " + lastName : "Unknown User";
 
-                // Post the review to the reviewed user's reviews section
-                DatabaseReference reviewRef = FirebaseDatabase.getInstance().getReference().child("User").child(reviewedUserId).child("reviews").push();
-                Review review = new Review(currentUserId, fullName, rating, reviewText);
-                reviewRef.setValue(review);
+                // Now that we have the current user's name, we can proceed to find or create the review
+                DatabaseReference reviewsRef = FirebaseDatabase.getInstance().getReference().child("User").child(reviewedUserId).child("reviews");
 
-                if (rating > 0) {
-                    Toast.makeText(ReviewPage.this, "Review submitted successfully!", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(ReviewPage.this, "Please set a rating!", Toast.LENGTH_SHORT).show();
-                }
+                reviewsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot reviewsSnapshot) {
+                        DataSnapshot existingReviewSnapshot = null;
+
+                        // Check if the current user has already posted a review
+                        for (DataSnapshot reviewSnapshot : reviewsSnapshot.getChildren()) {
+                            String reviewerUserId = reviewSnapshot.child("userId").getValue(String.class);
+                            if (currentUserId.equals(reviewerUserId)) {
+                                existingReviewSnapshot = reviewSnapshot;
+                                break;
+                            }
+                        }
+
+                        DatabaseReference reviewToUpdateRef;
+                        if (existingReviewSnapshot != null) {
+                            // If the current user has already reviewed, update the existing review
+                            reviewToUpdateRef = existingReviewSnapshot.getRef();
+                        } else {
+                            // If the current user has not reviewed yet, create a new review entry
+                            reviewToUpdateRef = reviewsRef.push();
+                        }
+
+                        // Construct the review object with current user's info and the new review details
+                        Review review = new Review(currentUserId, fullName, rating, reviewText);
+
+                        // Set the value to either update existing or create a new review
+                        reviewToUpdateRef.setValue(review)
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(ReviewPage.this, "Review submitted successfully!", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(ReviewPage.this, "Failed to submit review: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(ReviewPage.this, "Database Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle error
+                Toast.makeText(ReviewPage.this, "Failed to retrieve user details: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
 
 
