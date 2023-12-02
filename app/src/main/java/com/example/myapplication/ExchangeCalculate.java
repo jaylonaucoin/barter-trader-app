@@ -23,8 +23,25 @@ public class ExchangeCalculate {
         if (position != -1 && position < items.size()) {
             String selectedItem = items.get(position);
             String[] parts = selectedItem.split(" - ");
-            double itemValue = Double.parseDouble(parts[1]);
-            //calculate the value and remove from original position
+            double itemValue;
+
+            try {
+                // according to the product format
+                if (parts.length == 2) {
+                    // if upload in valuationSer, so will be product - value
+                    itemValue = Double.parseDouble(parts[1]);
+                } else if (parts.length > 3) {
+                    // if upload in the postGoods, will be product product - description - preference - value
+                    itemValue = Double.parseDouble(parts[3]);
+                } else {
+                    // print nothing
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                // print nothing
+                return;
+            }
+            // calculate the value and remove from original position
             totalValue -= itemValue;
             items.remove(position);
         }
@@ -38,9 +55,20 @@ public class ExchangeCalculate {
         if (position != -1 && position < items.size()) {
             String selectedItem = items.get(position);
             String[] parts = selectedItem.split(" - ");
-            double itemValue = Double.parseDouble(parts[1]);
-            return totalValue >= itemValue;
+            double itemValue;
+
+            if (parts.length == 2 || parts.length > 3) {
+                //only the number
+                String priceString = parts[parts.length - 1].replaceAll("[^\\d.]", "");
+                try {
+                    itemValue = Double.parseDouble(priceString);
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+
+                return totalValue >= itemValue;
+            }
         }
-        return false;
+       return false;
     }
 }

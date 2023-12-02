@@ -22,11 +22,14 @@ public class PostGoods extends AppCompatActivity {
     private FirebaseDatabase firebaseDB;
     private DatabaseReference firebaseDBRef;
     private FirebaseAuth auth;
+    private DatabaseReference publicItemsRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_goods);
         connectToDBase();
+
+        publicItemsRef = FirebaseDatabase.getInstance().getReference("publicItems");
 
         Button submitButton = findViewById(R.id.submit_button);
 
@@ -40,14 +43,16 @@ public class PostGoods extends AppCompatActivity {
                 Spinner condition = findViewById(R.id.condition);
                 EditText description = findViewById(R.id.description);
                 EditText preference = findViewById(R.id.preference);
+                EditText moneyEditText = findViewById(R.id.money);
 
                 // Copying their string Value
                 String prodValue = prodName.getText().toString().trim();
                 String conditionValue = condition.getSelectedItem().toString().trim();
                 String descriptionValue = description.getText().toString().trim();
                 String preferenceValue = preference.getText().toString().trim();
+                String moneyValue = Money.getText().toString().trim();
 
-                if(!prodValue.isEmpty() && !conditionValue.isEmpty() && !descriptionValue.isEmpty() && !preferenceValue.isEmpty()){
+                if(!prodValue.isEmpty() && !conditionValue.isEmpty() && !descriptionValue.isEmpty() && !preferenceValue.isEmpty() && !moneyValue.isEmpty()){
                     successToast.show();
                     writeToFireDB(prodValue, conditionValue, descriptionValue, preferenceValue);
                     Intent searchIntent = new Intent(PostGoods.this, SearchActivity.class);
@@ -81,6 +86,9 @@ public class PostGoods extends AppCompatActivity {
                 firebaseDBRef.child("Address").setValue(address);
                 firebaseDBRef.child("Latitude").setValue(latitude);
                 firebaseDBRef.child("Longitude").setValue(longitude);
+                firebaseDBRef.child("Price").setValue(money);
+                String itemInfo = name + " - " + description + " - " + preference + " - " + money;
+                publicItemsRef.push().setValue(itemInfo);
             }
 
             @Override
@@ -103,6 +111,7 @@ public class PostGoods extends AppCompatActivity {
 
             }
         });
+        updateUserTotalValue(money);
 
 
         firebaseDBRef.child("User ID").setValue(uid);
@@ -112,5 +121,28 @@ public class PostGoods extends AppCompatActivity {
         firebaseDBRef.child("Exchange Preference").setValue(preference);
 
 
+    }
+    private void updateUserTotalValue(String money) {
+        String uid = auth.getCurrentUser().getUid();
+        DatabaseReference userRef = firebaseDB.getReference("User").child(uid);
+
+        userRef.child("totalValue").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                double currentTotalValue = 0;
+                if (snapshot.exists()) {
+                    currentTotalValue = snapshot.getValue(Double.class);
+                }
+                double updatedTotalValue = currentTotalValue + Double.parseDouble(money);
+
+                // update the data in firebase
+                userRef.child("totalValue").setValue(updatedTotalValue);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //do with error
+            }
+        });
     }
 }

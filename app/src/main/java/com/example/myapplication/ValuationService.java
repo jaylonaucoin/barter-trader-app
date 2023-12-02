@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ValuationService extends AppCompatActivity {
     private TextView tvTotalValue;
@@ -78,7 +79,12 @@ public class ValuationService extends AppCompatActivity {
                 items.clear();
                 keys.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    items.add(snapshot.getValue(String.class));
+                    if (snapshot.getValue() instanceof HashMap) {
+                        // if is hashmap, then skip (it is not useful if there's no hashmap in list, just I test for wrong so need this to clean)
+                        continue;
+                    }
+                    String itemInfo = snapshot.getValue(String.class);
+                    items.add(itemInfo);
                     keys.add(snapshot.getKey());
                 }
                 adapter.notifyDataSetChanged();
@@ -142,25 +148,24 @@ public class ValuationService extends AppCompatActivity {
         Buy.setOnClickListener(v -> {
             int position = listView.getCheckedItemPosition();
             if (position != ListView.INVALID_POSITION) {
-                String selectedItem = items.get(position);
-                String[] parts = selectedItem.split(" - ");
-                String itemName = parts[0];
-                //check if user can not buy with enough value
                 if (!calculate.AbleToBuy(position)) {
-                    Toast.makeText(ValuationService.this, "You do not have enough value to buy " + itemName, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ValuationService.this, "You do not have enough value to buy this item.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                //same as sell button
+
                 new AlertDialog.Builder(ValuationService.this)
-                        .setTitle("Confirm to buy")
-                        .setMessage("Are you sure you want to buy " + itemName + " ?")
+                        .setTitle("Confirm Purchase")
+                        .setMessage("Are you sure you want to buy ?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             calculate.buyItem(position);
-                            tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
+                            double updatedTotalValue = calculate.getTotalValue(); // get the totalValue after update
+                            // update UI
+                            tvTotalValue.setText("Your total value: " + updatedTotalValue);
+                            // save to database after update
+                            userDatabaseRef.child("totalValue").setValue(updatedTotalValue);
+                            // update list
                             adapter.notifyDataSetChanged();
-                            userDatabaseRef.child("totalValue").setValue(calculate.getTotalValue());
-
-                            //replace the item that already sell
+                            // remove product
                             publicItemsRef.child(keys.get(position)).removeValue();
                         })
                         .setNegativeButton("Cancel", null)
