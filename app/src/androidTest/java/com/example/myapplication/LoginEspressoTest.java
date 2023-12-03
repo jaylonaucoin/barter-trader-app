@@ -5,6 +5,8 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.example.myapplication.registration.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.Before;
@@ -55,7 +57,7 @@ public class LoginEspressoTest {
     @Test
     public void testLoginButtonWithValidCredentials() {
         // Enter valid email and password, then click the "Login" button
-        Espresso.onView(ViewMatchers.withId(R.id.email)).perform(ViewActions.typeText("connormacintyre14@gmail.com"));
+        Espresso.onView(ViewMatchers.withId(R.id.email)).perform(ViewActions.typeText("roshanplayzmc@gmail.com"));
         Espresso.onView(ViewMatchers.withId(R.id.password)).perform(ViewActions.typeText("admin123"));
         Espresso.closeSoftKeyboard(); // Close the keyboard
         Espresso.onView(ViewMatchers.withId(R.id.loginButton)).perform(ViewActions.click());
@@ -67,8 +69,8 @@ public class LoginEspressoTest {
             e.printStackTrace();
         }
 
-        // Verify that the SuccessActivity is displayed
-        Espresso.onView(ViewMatchers.withId(R.id.instructions)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+        // Verify that the SuccessActivity has been opened by checking if a logout button is displayed
+        Espresso.onView(ViewMatchers.withId(R.id.icon_log_out)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 
 

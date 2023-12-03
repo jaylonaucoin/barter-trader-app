@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.registration;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +11,10 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.myapplication.LocationHelper;
+import com.example.myapplication.MapsActivity;
+import com.example.myapplication.R;
+import com.example.myapplication.SuccessActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -31,44 +35,31 @@ import java.util.Objects;
 public class FirstLoginLocation extends AppCompatActivity implements LocationHelper.LocationCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
-    private DatabaseReference mUserAddressesRef;
 
     private LocationHelper locationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_login_location);
 
         // Initialize Firebase auth and database references
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        mUserAddressesRef = mDatabase.getReference("User").child(userId).child("addresses");
-
-        // Initialize LocationHelper instead of FusedLocationProviderClient
-        locationHelper = new LocationHelper(this, this);
+        DatabaseReference mUserAddressesRef = mDatabase.getReference("User").child(userId).child("addresses");
 
         // Check if the user's 0th address already exists
-        checkIf0thAddressExists();
-        // Setup click listener for the location icon
-        setupLocationIcon();
-        // Initialize Places API
-        initializePlaces();
-        // Setup the autocomplete fragment
-        setupAutocompleteSupportFragment();
-    }
-
-    // Checks if the user already has an address set
-    private void checkIf0thAddressExists() {
-        // Single-value event listener for 0th address
         mUserAddressesRef.child("0").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // if it exists, close the activity
+                // If it exists, start the SuccessActivity immediately
                 if (dataSnapshot.exists()) {
                     Intent successPage = new Intent(FirstLoginLocation.this, SuccessActivity.class);
                     startActivity(successPage);
+                    finish(); // Finish the current activity
+                } else {
+                    // If it doesn't exist, set the content view and continue with the rest of the setup
+                    setContentViewAndContinueSetup();
                 }
             }
 
@@ -80,6 +71,21 @@ public class FirstLoginLocation extends AppCompatActivity implements LocationHel
         });
     }
 
+    private void setContentViewAndContinueSetup() {
+        setContentView(R.layout.activity_first_login_location);
+
+        // Initialize LocationHelper
+        locationHelper = new LocationHelper(this, this);
+
+        // Setup click listener for the location icon
+        setupLocationIcon();
+
+        // Initialize Places API
+        initializePlaces();
+
+        // Setup the autocomplete fragment
+        setupAutocompleteSupportFragment();
+    }
 
     // Setup click listener for location icon
     private void setupLocationIcon() {

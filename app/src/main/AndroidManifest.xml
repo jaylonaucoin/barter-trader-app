@@ -58,13 +58,15 @@
             android:name=".user_profile_page.UserProfile"
             android:exported="true" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".PasswordRecoveryActivity" />
-        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".registration.LoginActivity" />
+        <activity android:name=".registration.PasswordRecoveryActivity" />
+        <activity android:name=".registration.RegisterActivity"/>
         <activity android:name=".SuccessActivity"/>
         <activity android:name=".SearchActivity"/>
         <activity android:name=".UserListingActivity"/>
         <activity android:name=".EditDeleteListingActivity"/>
         <activity android:name=".ValuationService"/>
+        <activity android:name=".FeedActivity"/>
         <activity
             android:name=".PostGoods"
             android:exported="true">
@@ -75,7 +77,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FirstLoginLocation"
+            android:name=".registration.FirstLoginLocation"
             android:exported="true" />
         <activity android:name=".transactions.Transaction"
             android:exported="true"/>
