@@ -29,7 +29,6 @@ public class ListingsFragment extends Fragment {
 
     private ListingsAdapter adapter;
     private DatabaseReference mDatabase;
-    private boolean isCurrentUserProfile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,7 +45,7 @@ public class ListingsFragment extends Fragment {
         String profileUserId = args != null ? args.getString("uid") : currentUserId;
 
         // Determine if the profile being viewed belongs to the current user
-        isCurrentUserProfile = profileUserId != null && profileUserId.equals(currentUserId);
+        boolean isCurrentUserProfile = profileUserId != null && profileUserId.equals(currentUserId);
 
         // Initialize the adapter with the context and whether the items should be clickable
         adapter = new ListingsAdapter(getContext(), isCurrentUserProfile);
@@ -112,7 +111,7 @@ public class ListingsFragment extends Fragment {
     public static class ListingsAdapter extends RecyclerView.Adapter<ListingsAdapter.ListingViewHolder> {
         private List<Listing> listings = new ArrayList<>();
         private final LayoutInflater inflater;
-        private boolean isItemClickable;
+        private final boolean isItemClickable;
 
 
         public ListingsAdapter(Context context, boolean isItemClickable) {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,7 +11,7 @@
         android:layout_marginStart="147dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="147dp"
-        android:text="Submit"
+        android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/preference" />
@@ -25,11 +24,12 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
-        android:hint="Preference for exchange"
+        android:hint="@string/preference_for_exchange"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/condition" />
+        app:layout_constraintTop_toBottomOf="@+id/condition"
+        android:autofillHints="Enter Preference of Exchange" />
 
     <TextView
         android:id="@+id/textView"
@@ -51,12 +51,12 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="17dp"
         android:ems="10"
-        android:hint="Name of Product"
+        android:hint="@string/name_of_product"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        tools:ignore="MissingConstraints" />
+        android:autofillHints="Enter Name of Product" />
 
     <EditText
         android:id="@+id/description"
@@ -66,11 +66,12 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="17dp"
         android:ems="10"
-        android:hint="Product Description"
+        android:hint="@string/product_description"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/name"
+        android:autofillHints="Product Description" />
 
     <Spinner
         android:id="@+id/condition"
@@ -114,7 +115,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="84dp"
         android:layout_marginEnd="135dp"
-        android:text="Post Product"
+        android:text="@string/post_product"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

@@ -111,6 +111,11 @@
     <string name="all_listings">All Listings</string>
     <string name="category">Product Category:</string>
     <string name="login_header">Login Header</string>
+    <string name="submit">Submit</string>
+    <string name="preference_for_exchange">Preference for Exchange</string>
+    <string name="name_of_product">Name of Product</string>
+    <string name="product_description">Product Description</string>
+    <string name="post_product">Post Product</string>
     <string-array name="category_array">
         <item>Any</item>
         <item>Electronics</item>
