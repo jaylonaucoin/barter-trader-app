@@ -104,7 +104,7 @@ public class ValuationService extends AppCompatActivity {
                     if (dataSnapshot.exists()) {
                         //check the role
                         String role = dataSnapshot.getValue(String.class);
-                        if ("receiver".equalsIgnoreCase(role)) {
+                        if ("Receiver".equalsIgnoreCase(role)) {
                             Toast.makeText(ValuationService.this, "As a Receiver, you can't submit products", Toast.LENGTH_SHORT).show();
                         } else {
                             // if is not receiver
@@ -123,7 +123,7 @@ public class ValuationService extends AppCompatActivity {
                             builder.setMessage("You want submit " + itemName + " and get " + itemValue + " in your total value ?");
                             builder.setPositiveButton("Yes", (dialog, which) -> {
                                 //if chose yes
-                                calculate.sellItem(itemName, itemValue);
+                                calculate.sellItem(itemName, itemValue, userId);
                                 tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
                                 adapter.notifyDataSetChanged();
 

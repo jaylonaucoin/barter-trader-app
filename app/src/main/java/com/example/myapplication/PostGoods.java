@@ -50,11 +50,11 @@ public class PostGoods extends AppCompatActivity {
                 String conditionValue = condition.getSelectedItem().toString().trim();
                 String descriptionValue = description.getText().toString().trim();
                 String preferenceValue = preference.getText().toString().trim();
-                String moneyValue = Money.getText().toString().trim();
+                String moneyValue = moneyEditText.getText().toString().trim();
 
                 if(!prodValue.isEmpty() && !conditionValue.isEmpty() && !descriptionValue.isEmpty() && !preferenceValue.isEmpty() && !moneyValue.isEmpty()){
                     successToast.show();
-                    writeToFireDB(prodValue, conditionValue, descriptionValue, preferenceValue);
+                    writeToFireDB(prodValue, conditionValue, descriptionValue, preferenceValue, moneyValue);
                     Intent searchIntent = new Intent(PostGoods.this, SearchActivity.class);
                     startActivity(searchIntent);
                 }else{
