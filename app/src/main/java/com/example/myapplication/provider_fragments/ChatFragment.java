@@ -19,11 +19,11 @@ import java.util.Objects;
 
 public class ChatFragment extends Fragment {
 
-    private ChatAdapter chatAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ChatAdapter chatAdapter;
         View view = inflater.inflate(R.layout.provider_chat, container, false);
         RecyclerView chatMessagesRecyclerView = view.findViewById(R.id.chatMessagesRecyclerView);
         chatMessagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,9 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class FeedActivity extends AppCompatActivity {
-    private ListView resultsList;
     private DatabaseReference listingNode;
-    private FirebaseDatabase database;
     private List<String> resultsData;
     private ArrayAdapter<String> adapter;
     private HashMap<String, String> uidMap = new HashMap<>();
@@ -47,34 +46,32 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     private void initializeUIElements() {
+        ListView resultsList;
         resultsList = findViewById(R.id.resultsListView);
 
         resultsData = new ArrayList<>();
         adapter = createListAdapter();
         resultsList.setAdapter(adapter);
-        resultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Handle item click here
-                String selectedItem = (String) resultsList.getItemAtPosition(position);
+        resultsList.setOnItemClickListener((parent, view, position, id) -> {
+            // Handle item click here
+            String selectedItem = (String) resultsList.getItemAtPosition(position);
 
-                String sellerUid;
+            String sellerUid;
 
-                String[] parts = selectedItem.split("<br>");
-                String[] parts2 = parts[1].split("\n");
-                String[] sellerString = parts2[4].split(":");
-                String sellerName = sellerString[1].trim();
-                sellerUid = uidMap.get(sellerName);
+            String[] parts = selectedItem.split("<br>");
+            String[] parts2 = parts[1].split("\n");
+            String[] sellerString = parts2[4].split(":");
+            String sellerName = sellerString[1].trim();
+            sellerUid = uidMap.get(sellerName);
 
-                // Create an intent to start another activity
-                Intent intent = new Intent(FeedActivity.this, UserProfile.class);
+            // Create an intent to start another activity
+            Intent intent = new Intent(FeedActivity.this, UserProfile.class);
 
-                // Add any necessary data to the intent using putExtra (if needed)
-                intent.putExtra("uid", sellerUid);
+            // Add any necessary data to the intent using putExtra (if needed)
+            intent.putExtra("uid", sellerUid);
 
-                // Start the activity
-                startActivity(intent);
-            }
+            // Start the activity
+            startActivity(intent);
         });
     }
 
@@ -117,13 +114,8 @@ public class FeedActivity extends AppCompatActivity {
 
     private Spannable makeNameTextBold(String name) {
         Spannable spannable = new SpannableString(name);
-        spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannable;
-    }
-
-    private void clearResults() {
-        resultsData.clear();
-        adapter.notifyDataSetChanged();
     }
 
     private void queryFirebaseForResults() {
@@ -168,10 +160,12 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     private void handleDatabaseError(DatabaseError databaseError) {
-        // Handle database error
+
+        System.out.println(databaseError.getMessage());
     }
 
     private void initializeFirebase() {
+        FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         listingNode = database.getReference("Listings");
     }

@@ -25,35 +25,7 @@ public class FirebaseChatService implements ChatService {
         chatsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<ChatMessage> chatMessagesList = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String chatKey = snapshot.getKey();
-                    if (chatKey != null && chatKey.contains(userId)) {
-                        String[] userIds = chatKey.split("_");
-                        String partnerId = userIds[0].equals(userId) ? userIds[1] : userIds[0];
-
-                        ChatMessage recentMessage = getMostRecentMessage(snapshot, partnerId, userId);
-                        if (recentMessage != null) {
-                            usersRef.child(partnerId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                                    String firstName = userSnapshot.child("firstName").getValue(String.class);
-                                    String lastName = userSnapshot.child("lastName").getValue(String.class);
-                                    String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
-
-                                    recentMessage.setFullName(fullName);
-                                    chatMessagesList.add(recentMessage);
-                                    callback.onCallback(chatMessagesList);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    // Handle error
-                                }
-                            });
-                        }
-                    }
-                }
+                processChatData(dataSnapshot, userId, callback);
             }
 
             @Override
@@ -61,6 +33,50 @@ public class FirebaseChatService implements ChatService {
                 // Handle error
             }
         });
+    }
+
+    private void processChatData(DataSnapshot dataSnapshot, String userId, ChatDataManager.FirebaseCallback callback) {
+        List<ChatMessage> chatMessagesList = new ArrayList<>();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            processSnapshot(snapshot, userId, chatMessagesList, callback);
+        }
+    }
+
+    private void processSnapshot(DataSnapshot snapshot, String userId, List<ChatMessage> chatMessagesList, ChatDataManager.FirebaseCallback callback) {
+        String chatKey = snapshot.getKey();
+        if (chatKey == null || !chatKey.contains(userId)) {
+            return;
+        }
+
+        String[] userIds = chatKey.split("_");
+        String partnerId = userIds[0].equals(userId) ? userIds[1] : userIds[0];
+        ChatMessage recentMessage = getMostRecentMessage(snapshot, partnerId, userId);
+
+        if (recentMessage == null) {
+            return;
+        }
+
+        usersRef.child(partnerId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                updateUserInformation(userSnapshot, recentMessage, chatMessagesList, callback);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle error
+            }
+        });
+    }
+
+    private void updateUserInformation(DataSnapshot userSnapshot, ChatMessage recentMessage, List<ChatMessage> chatMessagesList, ChatDataManager.FirebaseCallback callback) {
+        String firstName = userSnapshot.child("firstName").getValue(String.class);
+        String lastName = userSnapshot.child("lastName").getValue(String.class);
+        String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+
+        recentMessage.setFullName(fullName);
+        chatMessagesList.add(recentMessage);
+        callback.onCallback(chatMessagesList);
     }
 
     private ChatMessage getMostRecentMessage(DataSnapshot chatSnapshot, String partnerId, String currentUserId) {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,9 +129,10 @@ public class ReceiverListingFragment extends Fragment {
     // Make the name text bold using Spannable
     private Spannable makeNameTextBold(String name) {
         Spannable spannable = new SpannableString(name);
-        spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannable;
     }
+
 
     // Query Firebase for results
     private void queryFirebaseForResults() {

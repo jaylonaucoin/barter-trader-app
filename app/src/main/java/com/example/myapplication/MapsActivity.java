@@ -43,6 +43,7 @@ import java.util.Map;
 
 // This activity handles map interactions using Google Maps and the Google Places API for selecting locations.
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private static final String TAG_PLACES_API = "PlacesApi";
 
     private GoogleMap mMap;
     private PlacesClient placesClient;
@@ -111,7 +112,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 @Override
                 public void onError(@NonNull Status status) {
                     // Handle any errors returned by the Places API
-                    Log.i("PlacesApi", "An error occurred: " + status);
+                    Log.i(TAG_PLACES_API, "An error occurred: " + status);
                 }
             });
         }
@@ -234,13 +235,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }).addOnFailureListener((exception) -> {
                     // Handle any errors in fetching the place details.
                     if (exception instanceof ApiException) {
-                        Log.e("PlacesApi", "Error fetching place details: " + exception.getMessage());
+                        Log.e(TAG_PLACES_API, "Error fetching place details: " + exception.getMessage());
                     }
                 });
             }).addOnFailureListener((exception) -> {
                 // Handle errors in finding the address.
                 if (exception instanceof ApiException) {
-                    Log.e("PlacesApi", "Error finding address: " + exception.getMessage());
+                    Log.e(TAG_PLACES_API, "Error finding address: " + exception.getMessage());
                 }
             });
         }

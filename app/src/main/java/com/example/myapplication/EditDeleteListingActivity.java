@@ -1,9 +1,7 @@
 package com.example.myapplication;
 
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,12 +46,8 @@ public class EditDeleteListingActivity extends AppCompatActivity {
             DrawableCompat.setTint(navIcon, ContextCompat.getColor(this, android.R.color.white));
             toolbar.setNavigationIcon(navIcon);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed(); // Handle back button click
-            }
-        });
+        toolbar.setNavigationOnClickListener(v ->
+            onBackPressed());
 
         // Retrieve listing details from the intent
         String listingDetails = getIntent().getStringExtra("listingDetails");
@@ -70,6 +64,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         Button deleteButton = findViewById(R.id.deleteButton);
 
         // Extract listing details
+        assert listingDetails != null;
         String[] listingDetailsLines = listingDetails.split("\n");
         String productName = listingDetailsLines[1].replace("Product Name: ", "");
         String description = listingDetailsLines[2].replace("Description: ", "");
@@ -100,19 +95,9 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         editExchangePreference.setText(exchangePreference);
 
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleSaveButtonClicked(listingKey, productName, description, category, condition, exchangePreference);
-            }
-        });
+        saveButton.setOnClickListener(v -> handleSaveButtonClicked(listingKey, productName, description, category, condition, exchangePreference));
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleDeleteButtonClicked(listingKey);
-            }
-        });
+        deleteButton.setOnClickListener(v -> handleDeleteButtonClicked());
     }
 
     private void connectToFirebase() {
@@ -165,86 +150,75 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         finish();
     }
 
-    private void handleDeleteButtonClicked(String listingKey) {
+    private void handleDeleteButtonClicked() {
         // Show a confirmation dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(EditDeleteListingActivity.this);
         builder.setTitle("Confirm Removal");
         builder.setMessage("Are you sure you want to remove this listing?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // Retrieve listing details from the intent
-                String listingDetails = getIntent().getStringExtra("listingDetails");
-                String listingKey = getIntent().getStringExtra("listingKey");
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            // Retrieve listing details from the intent
+            String listingDetails = getIntent().getStringExtra("listingDetails");
+            String listingKey1 = getIntent().getStringExtra("listingKey");
 
-                // Extract listing details
-                String[] listingDetailsLines = listingDetails.split("\n");
-                String productName = listingDetailsLines[1].replace("Product Name: ", "");
-                String description = listingDetailsLines[2].replace("Description: ", "");
-                String category = listingDetailsLines[3].replace("Category: ", "");
-                String condition = listingDetailsLines[4].replace("Condition: ", "");
-                String exchangePreference = listingDetailsLines[5].replace("Exchange Preference: ", "");
+            // Extract listing details
+            assert listingDetails != null;
+            String[] listingDetailsLines = listingDetails.split("\n");
+            String productName = listingDetailsLines[1].replace("Product Name: ", "");
+            String description = listingDetailsLines[2].replace("Description: ", "");
+            String category = listingDetailsLines[3].replace("Category: ", "");
+            String condition = listingDetailsLines[4].replace("Condition: ", "");
+            String exchangePreference = listingDetailsLines[5].replace("Exchange Preference: ", "");
 
-                // Write the listing to the "Removed Listings" section
-                writeToFireDB(productName, category, condition, description, exchangePreference);
+            // Write the listing to the "Removed Listings" section
+            writeToFireDB(productName, category, condition, description, exchangePreference);
 
-                // Remove the listing from the "Listings" section
-                DatabaseReference listingsRef = firebaseDB.getReference("Listings");
-                DatabaseReference removedListingsRef = firebaseDB.getReference("RemovedListings");
+            // Remove the listing from the "Listings" section
+            DatabaseReference listingsRef = firebaseDB.getReference("Listings");
+            DatabaseReference removedListingsRef = firebaseDB.getReference("RemovedListings");
 
-                // Get a reference to the specific listing using its key
-                DatabaseReference specificListingRef = listingsRef.child(listingKey);
+            // Get a reference to the specific listing using its key
+            assert listingKey1 != null;
+            DatabaseReference specificListingRef = listingsRef.child(listingKey1);
 
-                specificListingRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Move the listing to "Removed Listings"
-                        removedListingsRef.child(listingKey).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                if (databaseError == null) {
-                                    // If adding to "Removed Listings" is successful, remove from "Listings"
-                                    specificListingRef.removeValue(new DatabaseReference.CompletionListener() {
-                                        @Override
-                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                            if (databaseError == null) {
-                                                // Deletion from "Listings" successful
-                                                finish(); // Close the activity or handle UI updates as needed
-                                            } else {
-                                                // Notify the user that listing could not be deleted
-                                                Toast.makeText(EditDeleteListingActivity.this, "Removal from Listings was unsuccessful", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+            specificListingRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // Move the listing to "Removed Listings"
+                    removedListingsRef.child(listingKey1).setValue(dataSnapshot.getValue(), (databaseError, databaseReference) -> {
+                        if (databaseError == null) {
+                            // If adding to "Removed Listings" is successful, remove from "Listings"
+                            specificListingRef.removeValue((databaseError1, databaseReference1) -> {
+                                if (databaseError1 == null) {
+                                    // Deletion from "Listings" successful
+                                    finish(); // Close the activity or handle UI updates as needed
                                 } else {
-                                    // Notify the user that adding to "Removed Listings" was unsuccessful
-                                    Toast.makeText(EditDeleteListingActivity.this, "Adding to Removed Listings was unsuccessful", Toast.LENGTH_SHORT).show();
+                                    // Notify the user that listing could not be deleted
+                                    Toast.makeText(EditDeleteListingActivity.this, "Removal from Listings was unsuccessful", Toast.LENGTH_SHORT).show();
                                 }
-                            }
-                        });
-                    }
+                            });
+                        } else {
+                            // Notify the user that adding to "Removed Listings" was unsuccessful
+                            Toast.makeText(EditDeleteListingActivity.this, "Adding to Removed Listings was unsuccessful", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // Handle database error if any
-                    }
-                });
-            }
-
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle database error if any
+                }
+            });
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Dismiss the dialog if the user clicks "No"
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton("No", (dialog, which) ->
+            // Dismiss the dialog if the user clicks "No"
+            dialog.dismiss());
         builder.show();
     }
 
     // Write data to Firebase database
     private void writeToFireDB(String name, String category, String condition, String description, String preference) {
         String id = firebaseDBRef.push().getKey(); // Generate unique ID for the entry
-        String uid = auth.getCurrentUser().getUid(); // Get current user ID
+        String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid(); // Get current user ID
 
         // Get references for user and address information
         DatabaseReference userRef = firebaseDB.getReference("User").child(uid);
