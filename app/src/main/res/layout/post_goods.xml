@@ -11,7 +11,7 @@
         android:layout_width="117dp"
         android:layout_height="56dp"
         android:layout_marginStart="147dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="54dp"
         android:layout_marginEnd="147dp"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,7 +23,8 @@
         android:layout_width="441dp"
         android:layout_height="69dp"
         android:layout_gravity="bottom"
-        android:layout_marginTop="78dp"
+        android:layout_marginTop="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/submit_button"
@@ -41,11 +42,10 @@
 
     <EditText
         android:id="@+id/preference"
-        android:layout_width="379dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="380dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="18dp"
         android:ems="10"
         android:hint="Preference for exchange"
         android:inputType="text"
@@ -56,21 +56,22 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="273dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="108dp"
+        android:layout_marginEnd="275dp"
         android:text="@string/condition"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category" />
+        app:layout_constraintTop_toBottomOf="@+id/description" />
 
     <EditText
         android:id="@+id/name"
         android:layout_width="377dp"
         android:layout_height="74dp"
         android:layout_marginStart="17dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="17dp"
         android:ems="10"
         android:hint="Name of Product"
@@ -82,11 +83,11 @@
 
     <EditText
         android:id="@+id/description"
-        android:layout_width="377dp"
-        android:layout_height="74dp"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="17dp"
+        android:layout_width="381dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="15dp"
         android:ems="10"
         android:hint="Product Description"
         android:inputType="text"
@@ -98,42 +99,21 @@
         android:id="@+id/condition"
         android:layout_width="377dp"
         android:layout_height="55dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginEnd="21dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="18dp"
         android:entries="@array/condition_array"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <TextView
-        android:id="@+id/productCategoryText"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="276dp"
-        android:text="@string/category"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description" />
-
-    <Spinner
-        android:id="@+id/category"
-        android:layout_width="377dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginEnd="21dp"
-        android:entries="@array/category_array"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/productCategoryText" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="135dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="135dp"
         android:text="Post Product"
         android:textSize="24sp"
@@ -141,5 +121,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topAppBar_form" />
+   
+    <EditText
+        android:id="@+id/money"
+        android:layout_width="381dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:ems="10"
+        android:hint="Value"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/condition"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintVertical_bias="0.036" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

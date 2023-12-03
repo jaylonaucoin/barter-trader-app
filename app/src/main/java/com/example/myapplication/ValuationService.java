@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ValuationService extends AppCompatActivity {
     private TextView tvTotalValue;
@@ -78,7 +79,12 @@ public class ValuationService extends AppCompatActivity {
                 items.clear();
                 keys.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    items.add(snapshot.getValue(String.class));
+                    if (snapshot.getValue() instanceof HashMap) {
+                        // if is hashmap, then skip (it is not useful if there's no hashmap in list, just I test for wrong so need this to clean)
+                        continue;
+                    }
+                    String itemInfo = snapshot.getValue(String.class);
+                    items.add(itemInfo);
                     keys.add(snapshot.getKey());
                 }
                 adapter.notifyDataSetChanged();
@@ -92,59 +98,76 @@ public class ValuationService extends AppCompatActivity {
         });
         //behavior on sell button
         Sell.setOnClickListener(v -> {
-            String itemName = etItemName.getText().toString();
-            double itemValue;
+            userDatabaseRef.child("role").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {  //check the existing
+                    if (dataSnapshot.exists()) {
+                        //check the role
+                        String role = dataSnapshot.getValue(String.class);
+                        if ("Receiver".equalsIgnoreCase(role)) {
+                            Toast.makeText(ValuationService.this, "As a Receiver, you can't submit products", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // if is not receiver
+                            String itemName = etItemName.getText().toString();
+                            double itemValue;
+                            // avoid nothing input
+                            try {
+                                itemValue = Double.parseDouble(etItemValue.getText().toString());
+                            } catch (NumberFormatException e) {
+                                Toast.makeText(ValuationService.this, "Please enter the value.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            //have a dialog to make sure for user
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ValuationService.this);
+                            builder.setTitle("Are you sure to submit?");
+                            builder.setMessage("You want submit " + itemName + " and get " + itemValue + " in your total value ?");
+                            builder.setPositiveButton("Yes", (dialog, which) -> {
+                                //if chose yes
+                                calculate.sellItem(itemName, itemValue, userId);
+                                tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
+                                adapter.notifyDataSetChanged();
 
-            // avoid nothing input
-            try {
-                itemValue = Double.parseDouble(etItemValue.getText().toString());
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "Please enter the price.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            //have a dialog to make sure for user
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Are you sure to sell?");
-            builder.setMessage("You want sell " + itemName + " and get " + itemValue + " dollars in your total value ?");
-            builder.setPositiveButton("Yes", (dialog, which) -> {
-                //if chose yes
-                if (calculate != null) {
-                    calculate.sellItem(itemName, itemValue);
+                                String itemInfo = itemName + " - " + itemValue + " - " + userId;
+                                publicItemsRef.push().setValue(itemInfo);
+                                userDatabaseRef.child("totalValue").setValue(calculate.getTotalValue());
+                            });
+                            //if chose no
+                            builder.setNegativeButton("Cancel", null);
+                            builder.create().show();
+                        }
+                    } else {
+                        Toast.makeText(ValuationService.this, "role did not identify", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
-                    tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
-                    adapter.notifyDataSetChanged();
-
-                    publicItemsRef.push().setValue(itemName + " - " + itemValue);
-                    userDatabaseRef.child("totalValue").setValue(calculate.getTotalValue());
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { //show wrong message
+                    Toast.makeText(ValuationService.this, "database error " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-            //if chose no
-            builder.setNegativeButton("Cancel", null);
-            builder.create().show();
         });
         //behavior on buy button
         Buy.setOnClickListener(v -> {
             int position = listView.getCheckedItemPosition();
             if (position != ListView.INVALID_POSITION) {
-                String selectedItem = items.get(position);
-                String[] parts = selectedItem.split(" - ");
-                String itemName = parts[0];
-                //check if user can not buy with enough value
                 if (!calculate.AbleToBuy(position)) {
-                    Toast.makeText(ValuationService.this, "You do not have enough value to buy " + itemName, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ValuationService.this, "You do not have enough value to exchange this item.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                //same as sell button
+
                 new AlertDialog.Builder(ValuationService.this)
-                        .setTitle("Confirm to buy")
-                        .setMessage("Are you sure you want to buy " + itemName + " ?")
+                        .setTitle("Confirm")
+                        .setMessage("Are you sure you want to exchange ?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             calculate.buyItem(position);
-                            tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
+                            double updatedTotalValue = calculate.getTotalValue(); // get the totalValue after update
+                            // update UI
+                            tvTotalValue.setText("Your total value: " + updatedTotalValue);
+                            // save to database after update
+                            userDatabaseRef.child("totalValue").setValue(updatedTotalValue);
+                            // update list
                             adapter.notifyDataSetChanged();
-                            userDatabaseRef.child("totalValue").setValue(calculate.getTotalValue());
-
-                            //replace the item that already sell
+                            // remove product
                             publicItemsRef.child(keys.get(position)).removeValue();
                         })
                         .setNegativeButton("Cancel", null)
