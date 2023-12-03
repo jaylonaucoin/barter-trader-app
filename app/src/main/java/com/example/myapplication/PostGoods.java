@@ -69,7 +69,7 @@ public class PostGoods extends AppCompatActivity {
         firebaseDBRef = firebaseDB.getReference("Listings");
         auth = FirebaseAuth.getInstance();
     }
-    private void writeToFireDB(String name, String condition, String description, String preference){
+    private void writeToFireDB(String name, String condition, String description, String preference, String money){
         String id = firebaseDBRef.push().getKey();
         String uid = auth.getCurrentUser().getUid();
 
@@ -87,7 +87,7 @@ public class PostGoods extends AppCompatActivity {
                 firebaseDBRef.child("Latitude").setValue(latitude);
                 firebaseDBRef.child("Longitude").setValue(longitude);
                 firebaseDBRef.child("Price").setValue(money);
-                String itemInfo = name + " - " + description + " - " + preference + " - " + money;
+                String itemInfo = name + " - " + description + " - " + preference + " - " + money + " - " + uid;
                 publicItemsRef.push().setValue(itemInfo);
             }
 

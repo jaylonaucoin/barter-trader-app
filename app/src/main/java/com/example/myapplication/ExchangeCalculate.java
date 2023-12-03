@@ -13,10 +13,10 @@ public class ExchangeCalculate {
         this.totalValue = initialTotalValue;
     }
 
-    public void sellItem(String itemName, double itemValue) {
+    public void sellItem(String itemName, double itemValue, String userid) {
         //calculate the value
         totalValue += itemValue;
-        items.add(itemName + " - " + itemValue);
+        items.add(itemName + " - " + itemValue + " - " + userid);
     }
 
     public void buyItem(int position) {
@@ -27,11 +27,11 @@ public class ExchangeCalculate {
 
             try {
                 // according to the product format
-                if (parts.length == 2) {
-                    // if upload in valuationSer, so will be product - value
+                if (parts.length == 3) {
+                    // if upload in valuationSer, so will be product - value - user
                     itemValue = Double.parseDouble(parts[1]);
                 } else if (parts.length > 3) {
-                    // if upload in the postGoods, will be product product - description - preference - value
+                    // if upload in the postGoods, will be product - description - preference - value - user
                     itemValue = Double.parseDouble(parts[3]);
                 } else {
                     // print nothing
@@ -57,18 +57,20 @@ public class ExchangeCalculate {
             String[] parts = selectedItem.split(" - ");
             double itemValue;
 
-            if (parts.length == 2 || parts.length > 3) {
-                //only the number
-                String priceString = parts[parts.length - 1].replaceAll("[^\\d.]", "");
-                try {
-                    itemValue = Double.parseDouble(priceString);
-                } catch (NumberFormatException e) {
+            try {
+                if (parts.length == 3) { // product - value - user
+                    itemValue = Double.parseDouble(parts[1]);
+                } else if (parts.length == 5) { // product - description - preference - value - user
+                    itemValue = Double.parseDouble(parts[3]);
+                } else {
                     return false;
                 }
-
-                return totalValue >= itemValue;
+            } catch (NumberFormatException e) {
+                return false;
             }
+
+            return totalValue >= itemValue;
         }
-       return false;
+        return false;
     }
 }

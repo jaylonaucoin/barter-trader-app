@@ -126,7 +126,8 @@ public class ValuationService extends AppCompatActivity {
                                 tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
                                 adapter.notifyDataSetChanged();
 
-                                publicItemsRef.push().setValue(itemName + " - " + itemValue);
+                                String itemInfo = itemName + " - " + itemValue + " - " + userId;
+                                publicItemsRef.push().setValue(itemInfo);
                                 userDatabaseRef.child("totalValue").setValue(calculate.getTotalValue());
                             });
                             //if chose no
