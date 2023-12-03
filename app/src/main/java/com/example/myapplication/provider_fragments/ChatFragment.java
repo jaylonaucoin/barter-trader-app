@@ -25,9 +25,8 @@ import java.util.Objects;
 
 public class ChatFragment extends Fragment {
 
-    private RecyclerView chatMessagesRecyclerView;
     private ChatAdapter chatAdapter;
-    private ArrayList<ChatMessage> chatMessagesList = new ArrayList<>();
+    private final ArrayList<ChatMessage> chatMessagesList = new ArrayList<>();
     private DatabaseReference chatsRef;
     private DatabaseReference usersRef;
     private String currentUserId;
@@ -36,7 +35,7 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.provider_chat, container, false);
-        chatMessagesRecyclerView = view.findViewById(R.id.chatMessagesRecyclerView);
+        RecyclerView chatMessagesRecyclerView = view.findViewById(R.id.chatMessagesRecyclerView);
         chatMessagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Initialize Firebase
@@ -45,16 +44,13 @@ public class ChatFragment extends Fragment {
         chatsRef = FirebaseDatabase.getInstance().getReference().child("chats");
         usersRef = FirebaseDatabase.getInstance().getReference().child("User");
 
-        chatAdapter = new ChatAdapter(chatMessagesList, currentUserId);
+        chatAdapter = new ChatAdapter(chatMessagesList);
         chatMessagesRecyclerView.setAdapter(chatAdapter);
 
-        loadChatMessages(new FirebaseCallback() {
-            @Override
-            public void onCallback(List<ChatMessage> list) {
-                chatAdapter.notifyDataSetChanged();
-            }
-        });
+        // Load chat messages
+        loadChatMessages(list -> chatAdapter.notifyDataSetChanged());
 
+        // Set click listener for chat items
         chatAdapter.setOnChatListener(partnerId -> {
             Intent intent = new Intent(getActivity(), MessagingActivity.class);
             intent.putExtra("RECEIVER_ID", partnerId);
@@ -64,6 +60,7 @@ public class ChatFragment extends Fragment {
         return view;
     }
 
+    // Load chat messages from Firebase
     private void loadChatMessages(FirebaseCallback callback) {
         chatsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -106,6 +103,7 @@ public class ChatFragment extends Fragment {
         });
     }
 
+    // Get the most recent message from a chat
     private ChatMessage getMostRecentMessage(DataSnapshot chatSnapshot, String partnerId) {
         ChatMessage recentMessage = null;
         long maxTimestamp = 0;
@@ -123,25 +121,27 @@ public class ChatFragment extends Fragment {
         return recentMessage;
     }
 
+    // Callback interface for Firebase data loading
     public interface FirebaseCallback {
         void onCallback(List<ChatMessage> list);
     }
 
+    // ChatAdapter class for the RecyclerView
     public static class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         private final List<ChatMessage> chatMessages;
-        private final String currentUserId;
         private OnChatListener onChatListener;
 
-        public ChatAdapter(List<ChatMessage> chatMessages, String currentUserId) {
+        public ChatAdapter(List<ChatMessage> chatMessages) {
             this.chatMessages = chatMessages;
-            this.currentUserId = currentUserId;
         }
 
+        // Interface for chat item click listener
         public interface OnChatListener {
             void onChatSelected(String partnerId);
         }
 
+        // Set the chat item click listener
         public void setOnChatListener(OnChatListener onChatListener) {
             this.onChatListener = onChatListener;
         }
@@ -159,6 +159,7 @@ public class ChatFragment extends Fragment {
             holder.textViewUsername.setText(chatMessage.getFullName());
             holder.textViewRecentMessage.setText(chatMessage.getText());
 
+            // Handle chat item click
             holder.itemView.setOnClickListener(v -> {
                 if (onChatListener != null) {
                     onChatListener.onChatSelected(chatMessage.getReceiverId());
@@ -171,6 +172,7 @@ public class ChatFragment extends Fragment {
             return chatMessages.size();
         }
 
+        // ViewHolder class for chat item views
         public static class ViewHolder extends RecyclerView.ViewHolder {
             TextView textViewUsername;
             TextView textViewRecentMessage;

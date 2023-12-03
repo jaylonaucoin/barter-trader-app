@@ -26,9 +26,8 @@ import java.util.Objects;
 
 public class ReceiverChatFragment extends Fragment {
 
-    private RecyclerView chatMessagesRecyclerView;
     private ChatAdapter chatAdapter;
-    private ArrayList<ChatMessage> chatMessagesList = new ArrayList<>();
+    private final ArrayList<ChatMessage> chatMessagesList = new ArrayList<>();
     private DatabaseReference chatsRef;
     private DatabaseReference usersRef;
     private String currentUserId;
@@ -37,7 +36,7 @@ public class ReceiverChatFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.receiver_chat, container, false);
-        chatMessagesRecyclerView = view.findViewById(R.id.chatMessagesRecyclerView);
+        RecyclerView chatMessagesRecyclerView = view.findViewById(R.id.chatMessagesRecyclerView);
         chatMessagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Initialize Firebase
@@ -46,16 +45,13 @@ public class ReceiverChatFragment extends Fragment {
         chatsRef = FirebaseDatabase.getInstance().getReference().child("chats");
         usersRef = FirebaseDatabase.getInstance().getReference().child("User");
 
-        chatAdapter = new ChatAdapter(chatMessagesList, currentUserId);
+        chatAdapter = new ChatAdapter(chatMessagesList);
         chatMessagesRecyclerView.setAdapter(chatAdapter);
 
-        loadChatMessages(new FirebaseCallback() {
-            @Override
-            public void onCallback(List<ChatMessage> list) {
-                chatAdapter.notifyDataSetChanged();
-            }
-        });
+        // Load chat messages
+        loadChatMessages(list -> chatAdapter.notifyDataSetChanged());
 
+        // Set click listener for chat items
         chatAdapter.setOnChatListener(partnerId -> {
             Intent intent = new Intent(getActivity(), MessagingActivity.class);
             intent.putExtra("RECEIVER_ID", partnerId);
@@ -65,6 +61,7 @@ public class ReceiverChatFragment extends Fragment {
         return view;
     }
 
+    // Load chat messages from Firebase
     private void loadChatMessages(FirebaseCallback callback) {
         chatsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -107,6 +104,7 @@ public class ReceiverChatFragment extends Fragment {
         });
     }
 
+    // Get the most recent message from a chat
     private ChatMessage getMostRecentMessage(DataSnapshot chatSnapshot, String partnerId) {
         ChatMessage recentMessage = null;
         long maxTimestamp = 0;
@@ -131,12 +129,10 @@ public class ReceiverChatFragment extends Fragment {
     public static class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         private final List<ChatMessage> chatMessages;
-        private final String currentUserId;
         private OnChatListener onChatListener;
 
-        public ChatAdapter(List<ChatMessage> chatMessages, String currentUserId) {
+        public ChatAdapter(List<ChatMessage> chatMessages) {
             this.chatMessages = chatMessages;
-            this.currentUserId = currentUserId;
         }
 
         public interface OnChatListener {

@@ -36,13 +36,12 @@ public class SearchFragment extends Fragment {
     private Spinner conditionSpinner;
     private EditText exchangePreferenceEditText;
     private Button searchButton;
-    private ListView searchResultsList;
     private TextView errorMessageTextView;
     private DatabaseReference listingNode;
 
     private List<ListItem> searchResultsData = new ArrayList<>();
     private ArrayAdapter<ListItem> adapter;
-    private HashMap<String, String> uidMap = new HashMap<>();
+    private final HashMap<String, String> uidMap = new HashMap<>();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,7 +61,7 @@ public class SearchFragment extends Fragment {
         conditionSpinner = view.findViewById(R.id.conditionSpinner);
         exchangePreferenceEditText = view.findViewById(R.id.exchangePreferenceEditText);
         searchButton = view.findViewById(R.id.searchButton);
-        searchResultsList = view.findViewById(R.id.searchResultsListView);
+        ListView searchResultsList = view.findViewById(R.id.searchResultsListView);
         errorMessageTextView = view.findViewById(R.id.errorMessageTextView);
 
         searchResultsData = new ArrayList<>();
@@ -229,8 +228,8 @@ public class SearchFragment extends Fragment {
     }
 
     public static class ListItem {
-        private String displayText;
-        private String userId;
+        private final String displayText;
+        private final String userId;
 
         public ListItem(String displayText, String userId) {
             this.displayText = displayText;
