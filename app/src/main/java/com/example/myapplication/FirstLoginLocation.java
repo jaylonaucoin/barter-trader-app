@@ -48,11 +48,14 @@ public class FirstLoginLocation extends AppCompatActivity implements LocationHel
         mUserAddressesRef.child("0").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // if it exists, start the SuccessActivity immediately
+                // If it exists, start the SuccessActivity immediately
                 if (dataSnapshot.exists()) {
                     Intent successPage = new Intent(FirstLoginLocation.this, SuccessActivity.class);
                     startActivity(successPage);
-                    finish(); // Finish the current activity to prevent it from appearing briefly
+                    finish(); // Finish the current activity
+                } else {
+                    // If it doesn't exist, set the content view and continue with the rest of the setup
+                    setContentViewAndContinueSetup();
                 }
             }
 
@@ -62,10 +65,12 @@ public class FirstLoginLocation extends AppCompatActivity implements LocationHel
                 Log.e("Firebase", "Database error occurred", databaseError.toException());
             }
         });
+    }
 
+    private void setContentViewAndContinueSetup() {
         setContentView(R.layout.activity_first_login_location);
 
-        // Initialize LocationHelper instead of FusedLocationProviderClient
+        // Initialize LocationHelper
         locationHelper = new LocationHelper(this, this);
 
         // Setup click listener for the location icon
@@ -77,8 +82,6 @@ public class FirstLoginLocation extends AppCompatActivity implements LocationHel
         // Setup the autocomplete fragment
         setupAutocompleteSupportFragment();
     }
-
-
 
     // Setup click listener for location icon
     private void setupLocationIcon() {
