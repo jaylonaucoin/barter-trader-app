@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.example.myapplication.registration.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 @RunWith(AndroidJUnit4.class)

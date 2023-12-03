@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.registration;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +11,10 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.myapplication.LocationHelper;
+import com.example.myapplication.MapsActivity;
+import com.example.myapplication.R;
+import com.example.myapplication.SuccessActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;

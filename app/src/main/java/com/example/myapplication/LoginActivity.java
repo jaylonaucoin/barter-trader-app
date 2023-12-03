@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.registration.FirstLoginLocation;
+import com.example.myapplication.registration.PasswordRecoveryActivity;
+import com.example.myapplication.registration.RegisterActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
