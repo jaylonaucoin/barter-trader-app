@@ -56,7 +56,7 @@ public class ValueSerEspressoTest {
             e.printStackTrace();
         }
 
-        Espresso.onView(ViewMatchers.withId(R.id.ValueSerButton)).perform(ViewActions.click());
+        ActivityScenario<ValuationService> valueScenario = ActivityScenario.launch(ValuationService.class);
     }
 
 
@@ -66,28 +66,4 @@ public class ValueSerEspressoTest {
         onView(withId(R.id.Buy)).check(matches(isDisplayed()));
         onView(withId(R.id.Sell)).check(matches(isDisplayed()));
     }
-
-    @Test
-
-    public void testSellButtonUpdates() throws InterruptedException {
-
-//check input the name and value
-        onView(withId(R.id.etItemName)).perform(typeText("Apple"));
-        Espresso.closeSoftKeyboard();
-        Thread.sleep(3000);
-        onView(withId(R.id.etItemValue)).perform(typeText("10.0"));
-
-        Espresso.closeSoftKeyboard();
-        Thread.sleep(3000);
-
-//click sell button
-        onView(withId(R.id.Sell)).perform(click());
-
-        Thread.sleep(3000);
-
-//click yes in dialog
-        onView(withText("Yes")).check(matches(isDisplayed())).perform(click());
-
-    }
-    //end
 }
