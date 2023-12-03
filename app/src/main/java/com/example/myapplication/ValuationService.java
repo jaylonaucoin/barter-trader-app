@@ -102,9 +102,10 @@ public class ValuationService extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {  //check the existing
                     if (dataSnapshot.exists()) {
+                        //check the role
                         String role = dataSnapshot.getValue(String.class);
                         if ("receiver".equalsIgnoreCase(role)) {
-                            Toast.makeText(ValuationService.this, "As a Receiver, you can't sell products", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ValuationService.this, "As a Receiver, you can't submit products", Toast.LENGTH_SHORT).show();
                         } else {
                             // if is not receiver
                             String itemName = etItemName.getText().toString();
@@ -113,13 +114,13 @@ public class ValuationService extends AppCompatActivity {
                             try {
                                 itemValue = Double.parseDouble(etItemValue.getText().toString());
                             } catch (NumberFormatException e) {
-                                Toast.makeText(ValuationService.this, "Please enter the price.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ValuationService.this, "Please enter the value.", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                             //have a dialog to make sure for user
                             AlertDialog.Builder builder = new AlertDialog.Builder(ValuationService.this);
-                            builder.setTitle("Are you sure to sell?");
-                            builder.setMessage("You want sell " + itemName + " and get " + itemValue + " dollars in your total value ?");
+                            builder.setTitle("Are you sure to submit?");
+                            builder.setMessage("You want submit " + itemName + " and get " + itemValue + " in your total value ?");
                             builder.setPositiveButton("Yes", (dialog, which) -> {
                                 //if chose yes
                                 calculate.sellItem(itemName, itemValue);
@@ -150,13 +151,13 @@ public class ValuationService extends AppCompatActivity {
             int position = listView.getCheckedItemPosition();
             if (position != ListView.INVALID_POSITION) {
                 if (!calculate.AbleToBuy(position)) {
-                    Toast.makeText(ValuationService.this, "You do not have enough value to buy this item.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ValuationService.this, "You do not have enough value to exchange this item.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 new AlertDialog.Builder(ValuationService.this)
-                        .setTitle("Confirm Purchase")
-                        .setMessage("Are you sure you want to buy ?")
+                        .setTitle("Confirm")
+                        .setMessage("Are you sure you want to exchange ?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             calculate.buyItem(position);
                             double updatedTotalValue = calculate.getTotalValue(); // get the totalValue after update
