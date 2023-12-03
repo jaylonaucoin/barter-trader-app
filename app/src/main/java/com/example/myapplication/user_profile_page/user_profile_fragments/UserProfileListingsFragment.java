@@ -24,49 +24,52 @@ import java.util.List;
 public class UserProfileListingsFragment extends Fragment {
 
     private ListingsAdapter adapter;
-    private DatabaseReference listingsDatabaseRef;
+    private DatabaseReference mDatabase;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_profile_listings, container, false);
-        setupRecyclerView(view);
+        RecyclerView rvListings = view.findViewById(R.id.rvUserProfileListings);
+        rvListings.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Determine if the fragment is displaying the current user's profile
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentUserId = currentUser != null ? currentUser.getUid() : null;
 
+        // Get the user ID whose listings we need to display
         Bundle args = getArguments();
         String profileUserId = args != null ? args.getString("uid") : currentUserId;
 
+        // Check if the user is viewing their own profile
         boolean isCurrentUserProfile = profileUserId != null && profileUserId.equals(currentUserId);
 
-        // Initialize RecyclerView adapter
         adapter = new ListingsAdapter(getContext(), isCurrentUserProfile);
+        rvListings.setAdapter(adapter);
 
-        // Set up Firebase database reference
-        listingsDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Listings");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Listings");
         loadUserListings(profileUserId);
 
         return view;
     }
 
-    private void setupRecyclerView(View view) {
-        // Set up the RecyclerView for displaying listings
-        RecyclerView rvListings = view.findViewById(R.id.rvUserProfileListings);
-        rvListings.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvListings.setAdapter(adapter);
-    }
-
     private void loadUserListings(String userId) {
-        // Load listings from Firebase database
-        listingsDatabaseRef.addValueEventListener(new ValueEventListener() {
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Listing> userListingList = new ArrayList<>();
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
                     String listingUserId = listingSnapshot.child("User ID").getValue(String.class);
                     if (listingUserId != null && listingUserId.equals(userId)) {
-                        userListingList.add(createListingFromSnapshot(listingSnapshot));
+                        Listing listing = new Listing(
+                                listingSnapshot.child("Condition").getValue(String.class),
+                                listingSnapshot.child("Exchange Preference").getValue(String.class),
+                                listingSnapshot.child("Description").getValue(String.class),
+                                listingSnapshot.child("Product Name").getValue(String.class),
+                                listingSnapshot.child("Category").getValue(String.class),
+                                listingSnapshot.getKey()
+                        );
+                        userListingList.add(listing);
                     }
                 }
                 adapter.setListings(userListingList);
@@ -74,20 +77,8 @@ public class UserProfileListingsFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle possible database errors
+                // Handle possible errors.
             }
         });
-    }
-
-    private Listing createListingFromSnapshot(DataSnapshot snapshot) {
-        // Create a Listing object from a DataSnapshot
-        return new Listing(
-                snapshot.child("Condition").getValue(String.class),
-                snapshot.child("Exchange Preference").getValue(String.class),
-                snapshot.child("Description").getValue(String.class),
-                snapshot.child("Product Name").getValue(String.class),
-                snapshot.child("Category").getValue(String.class),
-                snapshot.getKey()
-        );
     }
 }
