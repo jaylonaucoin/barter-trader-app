@@ -65,6 +65,7 @@
         <activity android:name=".UserListingActivity"/>
         <activity android:name=".EditDeleteListingActivity"/>
         <activity android:name=".ValuationService"/>
+        <activity android:name=".FeedActivity"/>
         <activity
             android:name=".PostGoods"
             android:exported="true">

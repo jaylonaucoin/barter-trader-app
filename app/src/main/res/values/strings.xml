@@ -74,6 +74,16 @@
         <item>Used (Good)</item>
         <item>Used (Acceptable)</item>
     </string-array>
+    <string-array name="category">
+        <item>Any</item>
+        <item>Electronics</item>
+        <item>Toys &amp; Games</item>
+        <item>Sports &amp; Outdoors</item>
+        <item>Vehicles &amp; Parts</item>
+        <item>Furniture</item>
+        <item>Clothing &amp; Accessories</item>
+        <item>Musical Instruments</item>
+    </string-array>
     <string name="condition">Product Condition:</string>
     <string name="location">Location</string>
     <string name="product_name">Product Name</string>
@@ -85,4 +95,35 @@
     <string name="where_are_you_located">Where are You Located?</string>
     <string name="search_your_location">Search your Location</string>
     <string name="saved_addresses">Saved Addresses</string>
+    <string name="feed">Feed</string>
+    <string name="back_button">Back Button</string>
+    <string name="post">Post</string>
+    <string name="chat">Chat</string>
+    <string name="select_a_category">Select a category</string>
+    <string name="your_listings">Your Listings</string>
+    <string name="exchange_preference_label">Exchange Preference:&#160;</string>
+    <string name="description_label">Description:&#160;</string>
+    <string name="product_name_label">Product Name:&#160;</string>
+    <string name="condition_label">Condition:&#160;</string>
+    <string name="category_label">Category:&#160;</string>
+    <string name="sample_username">Sample Username</string>
+    <string name="most_recent_chat_message">Most recent chat message</string>
+    <string name="all_listings">All Listings</string>
+    <string name="category">Product Category:</string>
+    <string name="login_header">Login Header</string>
+    <string name="submit">Submit</string>
+    <string name="preference_for_exchange">Preference for Exchange</string>
+    <string name="name_of_product">Name of Product</string>
+    <string name="product_description">Product Description</string>
+    <string name="post_product">Post Product</string>
+    <string-array name="category_array">
+        <item>Any</item>
+        <item>Electronics</item>
+        <item>Toys &amp; Games</item>
+        <item>Sports &amp; Outdoors</item>
+        <item>Vehicles &amp; Parts</item>
+        <item>Furniture</item>
+        <item>Clothing &amp; Accessories</item>
+        <item>Musical Instruments</item>
+    </string-array>
 </resources>
