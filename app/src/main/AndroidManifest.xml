@@ -79,7 +79,7 @@
         <activity
             android:name=".registration.FirstLoginLocation"
             android:exported="true" />
-        <activity android:name=".transactions.transactions"
+        <activity android:name=".transactions.Transaction"
             android:exported="true"/>
         <activity android:name=".transactions.providerSide"
             android:exported="true"/>
