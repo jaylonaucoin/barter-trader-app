@@ -17,6 +17,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import com.example.myapplication.registration.RegisterActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 @RunWith(AndroidJUnit4.class)

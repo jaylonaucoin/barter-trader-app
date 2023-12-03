@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <View
+        android:id="@+id/topLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/gray" />
+
+    <ImageView
+        android:id="@+id/imageViewProfileIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/topLine"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/empty_user_icon" />
+
+    <TextView
+        android:id="@+id/textViewUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/imageViewProfileIcon"
+        android:layout_below="@id/topLine"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/sample_username"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textViewRecentMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewUsername"
+        android:layout_toEndOf="@id/imageViewProfileIcon"
+        android:layout_marginStart="8dp"
+        android:text="@string/most_recent_chat_message"/>
+
+    <View
+        android:id="@+id/bottomLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/textViewRecentMessage"
+        android:background="@color/gray" />
+
+</RelativeLayout>
