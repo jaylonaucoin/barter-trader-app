@@ -103,7 +103,7 @@ public class SearchEspressoTest {
         // Then verify that the search results activity is displayed
         onView(withId(R.id.searchResultsListView)).check(matches(isDisplayed()));
 
-        // And verify that the search results match the specified condition
+        // And verify that the search results match the specified category
         onView(withId(R.id.searchResultsListView))
                 .check(matches(hasDescendant(withText(containsString("Electronics")))));
     }
