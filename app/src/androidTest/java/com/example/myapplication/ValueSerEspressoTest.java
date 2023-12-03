@@ -4,6 +4,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -54,7 +55,7 @@ public class ValueSerEspressoTest {
     }
 
     @Test
-    public void testSellButtonUpdates() {
+    public void testSellButtonUpdates() throws InterruptedException {
         //check input the name and value
         onView(withId(R.id.etItemName)).perform(typeText("Apple"));
         onView(withId(R.id.etItemValue)).perform(typeText("10.0"));
@@ -63,8 +64,10 @@ public class ValueSerEspressoTest {
         //click sell button
         onView(withId(R.id.Sell)).perform(click());
 
+        Thread.sleep(1000);
+
         //click yes in dialog
-        onView(withText("Yes")).perform(click());
+        onView(withText("Yes")).check(matches(isDisplayed())).perform(click());
     }
     //end
 }

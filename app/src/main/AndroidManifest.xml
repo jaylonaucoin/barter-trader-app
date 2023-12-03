@@ -57,6 +57,7 @@
         <activity
             android:name=".user_profile_page.UserProfile"
             android:exported="true" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".registration.LoginActivity" />
         <activity android:name=".registration.PasswordRecoveryActivity" />
         <activity android:name=".registration.RegisterActivity"/>
@@ -65,6 +66,7 @@
         <activity android:name=".UserListingActivity"/>
         <activity android:name=".EditDeleteListingActivity"/>
         <activity android:name=".ValuationService"/>
+        <activity android:name=".FeedActivity"/>
         <activity
             android:name=".PostGoods"
             android:exported="true">
