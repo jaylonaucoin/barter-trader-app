@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,19 +12,28 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class EditDeleteListingActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDB;
     private DatabaseReference firebaseDBRef;
     private FirebaseAuth auth;
     private EditDeleteHelper editDeleteHelper;
+    private  Button unHideListingButton;
+    private Button hideListingButton;
+    private Button markAsExchangedCheckBox;
+    private Button markAsAvailable;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +53,14 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         EditText editExchangePreference = findViewById(R.id.editExchangePreference);
         Button saveButton = findViewById(R.id.saveButton);
         Button deleteButton = findViewById(R.id.deleteButton);
-        CheckBox markAsExchangedCheckBox = findViewById(R.id.markAsExchangedCheckBox);
-        Button hideListingButton = findViewById(R.id.hideListingButton);
+        markAsExchangedCheckBox = findViewById(R.id.markAsExchangedCheckBox);
+        hideListingButton = findViewById(R.id.hideListingButton);
+        markAsAvailable = findViewById(R.id.markAsAvailableCheckBox);
+        unHideListingButton = findViewById(R.id.unHideListingButton);
+
+        // setting item hidden or sold
+        setHideUnHideButton(listingKey);
+        setAvailableUnavailableButton(listingKey);
 
         // Extract listing details
         String[] listingDetailsLines = listingDetails.split("\n");
@@ -66,6 +82,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         editCondition.setSelection(conditionPosition);
         editExchangePreference.setText(exchangePreference);
 
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,13 +97,30 @@ public class EditDeleteListingActivity extends AppCompatActivity {
             }
         });
 
-        // exchange and hide buttons
-        markAsExchangedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) ->
-                editDeleteHelper.markAsExchanged(listingKey, isChecked));
+        // exchange and hide buttons on click listeners
+        markAsExchangedCheckBox.setOnClickListener(v -> {
+            editDeleteHelper.markAsExchanged(listingKey, EditDeleteListingActivity.this);
+            markAsExchangedCheckBox.setVisibility(View.GONE);
+            markAsAvailable.setVisibility(View.VISIBLE);
+        });
+        hideListingButton.setOnClickListener(v -> {
+            editDeleteHelper.hideListing(listingKey, EditDeleteListingActivity.this);
+            hideListingButton.setVisibility(View.GONE);
+            unHideListingButton.setVisibility(View.VISIBLE);
 
-        hideListingButton.setOnClickListener(v ->
-                editDeleteHelper.hideListing(listingKey, EditDeleteListingActivity.this));
+        });
+        markAsAvailable.setOnClickListener(v -> {
+            editDeleteHelper.markAsAvailable(listingKey, EditDeleteListingActivity.this);
+            markAsAvailable.setVisibility(View.GONE);
+            markAsExchangedCheckBox.setVisibility(View.VISIBLE);
+        });
+        unHideListingButton.setOnClickListener(v -> {
+            editDeleteHelper.unHideListing(listingKey, EditDeleteListingActivity.this);
+            unHideListingButton.setVisibility(View.GONE);
+            hideListingButton.setVisibility(View.VISIBLE);
+        });
     }
+
 
     private void connectToFirebase() {
         // Initialize Firebase instances
@@ -167,4 +201,54 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         });
         builder.show();
     }
+
+    //Setting hide and unHide button visibility for each listing
+    private void setHideUnHideButton(String listingKey){
+        DatabaseReference listingRef = firebaseDBRef.child(listingKey).child("Hidden");
+        listingRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isHidden = Boolean.TRUE.equals(dataSnapshot.getValue(Boolean.class));
+                if (isHidden) {
+                    unHideListingButton.setVisibility(View.VISIBLE);
+                    hideListingButton.setVisibility(View.GONE);
+                }else{
+                    hideListingButton.setVisibility(View.VISIBLE);
+                    unHideListingButton.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors in fetching the data
+                Toast.makeText(EditDeleteListingActivity.this, "Operation was unsuccessful", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Setting availability for each product
+    private void setAvailableUnavailableButton(String listingKey){
+        DatabaseReference listingRefExchanged = firebaseDBRef.child(listingKey).child("Marked As Exchanged");
+        listingRefExchanged.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isMarkedAsExchanged = Boolean.TRUE.equals(dataSnapshot.getValue(Boolean.class));
+                if (isMarkedAsExchanged) {
+                    markAsAvailable.setVisibility(View.VISIBLE);
+                    markAsExchangedCheckBox.setVisibility(View.GONE);
+                } else {
+                    markAsExchangedCheckBox.setVisibility(View.VISIBLE);
+                    markAsAvailable.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors in fetching the data
+                Toast.makeText(EditDeleteListingActivity.this, "Operation was unsuccessful", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 }

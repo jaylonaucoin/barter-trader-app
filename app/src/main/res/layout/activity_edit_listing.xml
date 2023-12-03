@@ -15,13 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/listingDetailsTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp"
-            android:text="Listing Details Go Here" />
-
     </androidx.cardview.widget.CardView>
 
     <EditText
@@ -108,34 +101,69 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editCondition" />
 
-        <CheckBox
-            android:id="@+id/markAsExchangedCheckBox"
-            android:layout_width="259dp"
-            android:layout_height="41dp"
-            android:layout_marginStart="77dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="75dp"
-            android:layout_marginBottom="38dp"
-            android:text="Mark as Exchanged"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/hideListingButton" />
 
-        <Button
-            android:id="@+id/hideListingButton"
-            android:layout_width="260dp"
-            android:layout_height="47dp"
-            android:layout_marginStart="77dp"
-            android:layout_marginTop="597dp"
-            android:layout_marginEnd="74dp"
-            android:layout_marginBottom="8dp"
-            android:text="Hide Listing"
-            app:layout_constraintBottom_toTopOf="@+id/markAsExchangedCheckBox"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/markAsAvailableCheckBox"
+        android:layout_width="269dp"
+        android:layout_height="47dp"
+        android:text="Mark as Available"
+        app:layout_constraintBottom_toBottomOf="@+id/listingDetailsTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clickedListing"
+        app:layout_constraintVertical_bias="0.935" />
 
+    <Button
+        android:id="@+id/hideListingButton"
+        android:layout_width="265dp"
+        android:layout_height="47dp"
+        android:text="Hide Listing"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clickedListing"
+        app:layout_constraintVertical_bias="0.83" />
+
+
+    <TextView
+        android:id="@+id/listingDetailsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:text="Listing Details Go Here"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/markAsExchangedCheckBox"
+        android:layout_width="265dp"
+        android:layout_height="47dp"
+        android:text="Mark as Exchanged"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clickedListing"
+        app:layout_constraintVertical_bias="0.935" />
+
+    <Button
+        android:id="@+id/unHideListingButton"
+        android:layout_width="264dp"
+        android:layout_height="47dp"
+        android:layout_marginBottom="88dp"
+        android:text="Unhide Listing"
+        app:layout_constraintBottom_toBottomOf="@+id/listingDetailsTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clickedListing"
+        app:layout_constraintVertical_bias="0.995" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
