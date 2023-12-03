@@ -96,7 +96,7 @@
         android:id="@+id/textView7"
         android:layout_width="405dp"
         android:layout_height="21dp"
-        android:text="ItemStruct: item - description - value - preference - user"
+        android:text="ItemStruct: condition - item - description - preference - value - user"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

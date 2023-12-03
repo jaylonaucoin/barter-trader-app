@@ -87,7 +87,7 @@ public class PostGoods extends AppCompatActivity {
                 firebaseDBRef.child("Latitude").setValue(latitude);
                 firebaseDBRef.child("Longitude").setValue(longitude);
                 firebaseDBRef.child("Price").setValue(money);
-                String itemInfo = name + " - " + description + " - " + preference + " - " + money + " - " + uid;
+                String itemInfo = condition + " - " + name + " - " + description + " - " + preference + " - " + money + " - " + uid;
                 publicItemsRef.push().setValue(itemInfo);
             }
 
