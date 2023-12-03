@@ -10,18 +10,14 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,7 +48,9 @@ public class CategoryPostEspressoTest {
 
     @Before
     public void clickPost() {
-        onView(withId(R.id.postGoodsButton)).perform(click());
+        Espresso.onView(ViewMatchers.withId(R.id.navigation_post))
+                .perform(click());
+        onView(withId(R.id.submit_button)).perform(click());
 
         // Add delay or IdlingResource to ensure login process completes before subsequent tests
         try {

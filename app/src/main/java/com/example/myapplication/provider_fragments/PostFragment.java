@@ -97,11 +97,12 @@ public class PostFragment extends Fragment {
             if (!prodValue.isEmpty() && !prodCategory.isEmpty() && !conditionValue.isEmpty() && !descriptionValue.isEmpty() && !preferenceValue.isEmpty()) {
                 successToast.show();
                 writeToFireDB(prodValue, prodCategory, conditionValue, descriptionValue, preferenceValue);
-            } else {
-                failToast.show();
-            }
 
-            mListener.onPostCompleted();
+                // Only call onPostCompleted if all fields are filled
+                mListener.onPostCompleted();
+            } else
+                failToast.show();
+
         });
     }
 

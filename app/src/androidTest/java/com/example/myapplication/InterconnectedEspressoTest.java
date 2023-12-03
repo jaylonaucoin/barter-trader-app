@@ -33,7 +33,7 @@ public class InterconnectedEspressoTest {
         Espresso.onView(ViewMatchers.withId(R.id.loginButton))
                 .perform(click());
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         // Navigate through bottom navigation bar
         Espresso.onView(ViewMatchers.withId(R.id.navigation_chat))
@@ -77,7 +77,7 @@ public class InterconnectedEspressoTest {
         Espresso.onView(ViewMatchers.withId(R.id.loginButton))
                 .perform(click());
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         // Navigate through bottom navigation bar
         Espresso.onView(ViewMatchers.withId(R.id.navigation_chat))
@@ -99,7 +99,7 @@ public class InterconnectedEspressoTest {
         Espresso.onView(ViewMatchers.withId(R.id.icon_log_out))
                 .perform(click());
 
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         Espresso.onView(withText("Yes"))
                 .inRoot(isDialog())
