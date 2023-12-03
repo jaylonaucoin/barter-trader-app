@@ -1,14 +1,16 @@
 package com.example.myapplication;
 
+import static androidx.test.espresso.action.ViewActions.click;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,23 +39,21 @@ public class EditListingEspressoTest {
             e.printStackTrace();
         }
         // Verify that the SuccessActivity is displayed then click listings page
-        Espresso.onView(ViewMatchers.withId(R.id.instructions)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
-        Espresso.onView(ViewMatchers.withId(R.id.userListing)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.navigation_listings))
+                .perform(click());
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Espresso.onView(ViewMatchers.withId(R.id.listingsListView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+        Espresso.onView(ViewMatchers.withId(R.id.rvListings)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 
     @Test
     public void testClickedListing() {
         login();
-        Espresso.onData(Matchers.anything()) // This matches any data in the adapter
-                .inAdapterView(ViewMatchers.withId(R.id.listingsListView)) // Use the ID of your ListView
-                .atPosition(0) // Change this to the desired position
-                .perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.rvListings))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, ViewActions.click()));
 
         // Introduce a delay to allow the EditDeleteListingActivity to load
         try {
