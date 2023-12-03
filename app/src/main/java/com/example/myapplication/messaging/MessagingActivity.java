@@ -129,6 +129,17 @@ public class MessagingActivity extends AppCompatActivity {
 
         });
     }
+    // This method sends a request to the provider
+    public void sendRequest(Message message){
+        String chatPath = userId + "_" + receiverId;
+
+        DatabaseReference chatRef = dbReference.child(chatPath);
+
+        chatRef.push().setValue(message)
+                .addOnSuccessListener(aVoid -> messageRecyclerView.scrollToPosition(messageList.size() -1))
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Could not send message: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+
+    }
     private void getMessages() {
         messageList.clear();
 

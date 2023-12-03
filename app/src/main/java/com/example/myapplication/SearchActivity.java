@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -7,6 +8,7 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +18,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.transactions.Transaction;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +42,8 @@ public class SearchActivity extends AppCompatActivity {
     private List<String> searchResultsData;
     private ArrayAdapter<String> adapter;
 
+    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +51,20 @@ public class SearchActivity extends AppCompatActivity {
         initializeUIElements();
         setupSearchButton();
         initializeFirebase();
+
+        searchResultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get the clicked item
+                String selectedItem = searchResultsData.get(position);
+
+                // Start the SendRequestActivity or navigate to send_request_action.xml layout
+                Intent intent = new Intent(SearchActivity.this, Transaction.class);
+                // Pass any necessary data to the SendRequestActivity using intent extras
+                intent.putExtra("selectedItem", selectedItem);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initializeUIElements() {
@@ -208,4 +229,5 @@ public class SearchActivity extends AppCompatActivity {
     private void initializeFirebase() {
         listingNode = FirebaseDatabase.getInstance().getReference("Listings"); // Replace with your
     }
+
 }
