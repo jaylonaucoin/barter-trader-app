@@ -60,7 +60,7 @@ public class ExchangeCalculate {
             try {
                 if (parts.length == 3) { // product - value - user
                     itemValue = Double.parseDouble(parts[1]);
-                } else if (parts.length == 5) { // product - description - preference - value - user
+                } else if (parts.length > 3) { // product - description - preference - value - user
                     itemValue = Double.parseDouble(parts[3]);
                 } else {
                     return false;
