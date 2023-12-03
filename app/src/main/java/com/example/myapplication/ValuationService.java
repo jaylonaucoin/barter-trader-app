@@ -108,12 +108,15 @@ public class ValuationService extends AppCompatActivity {
             builder.setMessage("You want sell " + itemName + " and get " + itemValue + " dollars in your total value ?");
             builder.setPositiveButton("Yes", (dialog, which) -> {
                 //if chose yes
-                calculate.sellItem(itemName, itemValue);
-                tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
-                adapter.notifyDataSetChanged();
+                if (calculate != null) {
+                    calculate.sellItem(itemName, itemValue);
 
-                publicItemsRef.push().setValue(itemName + " - " + itemValue);
-                userDatabaseRef.child("totalValue").setValue(calculate.getTotalValue());
+                    tvTotalValue.setText("Your total value: " + calculate.getTotalValue());
+                    adapter.notifyDataSetChanged();
+
+                    publicItemsRef.push().setValue(itemName + " - " + itemValue);
+                    userDatabaseRef.child("totalValue").setValue(calculate.getTotalValue());
+                }
             });
             //if chose no
             builder.setNegativeButton("Cancel", null);

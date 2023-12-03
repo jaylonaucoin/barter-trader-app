@@ -38,7 +38,7 @@ public class EditListingEspressoTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        // Verify that the SuccessActivity is displayed then click listings page
+
         Espresso.onView(ViewMatchers.withId(R.id.navigation_listings))
                 .perform(click());
         try {
