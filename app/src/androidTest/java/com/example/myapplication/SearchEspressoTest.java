@@ -93,6 +93,22 @@ public class SearchEspressoTest {
     }
 
     @Test
+    public void testSearchByCategory() {
+        // When the user enters a category (e.g., "Electronics") and initiates the search
+        onView(withId(R.id.categorySpinner)).perform(ViewActions.click());
+        onView(ViewMatchers.withText("Electronics")).perform(ViewActions.click());
+        Espresso.closeSoftKeyboard();
+        onView(withId(R.id.searchButton)).perform(ViewActions.click());
+
+        // Then verify that the search results activity is displayed
+        onView(withId(R.id.searchResultsListView)).check(matches(isDisplayed()));
+
+        // And verify that the search results match the specified condition
+        onView(withId(R.id.searchResultsListView))
+                .check(matches(hasDescendant(withText(containsString("Electronics")))));
+    }
+
+    @Test
     public void testSearchWithMultipleCriteria() {
         // When the user sets various search criteria (e.g., name, condition, exchange preference) and initiates the search
         onView(withId(R.id.nameEditText)).perform(ViewActions.typeText("Laptop"));
