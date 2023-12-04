@@ -52,7 +52,6 @@ public class CheckListingsService extends Service {
                             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
 
                                 if (isFirstRun) {
-                                    System.out.println(dataSnapshot);
                                     if(!isCurrentUserListing(dataSnapshot, currentUserId)){
                                         notificationsManager.sendMessage("Open for more information.");
                                     }
