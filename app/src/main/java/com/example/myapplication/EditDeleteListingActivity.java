@@ -54,7 +54,6 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         String listingKey = getIntent().getStringExtra("listingKey");
 
         // Initialize UI elements
-        TextView listingDetailsTextView = findViewById(R.id.listingDetailsTextView);
         EditText editProductName = findViewById(R.id.editProductName);
         EditText editDescription = findViewById(R.id.editDescription);
         Spinner editCategory = findViewById(R.id.editCategory);
@@ -73,7 +72,6 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         String exchangePreference = listingDetailsLines[5].replace("Exchange Preference: ", "");
 
         // Set initial values for UI elements
-        listingDetailsTextView.setText(listingDetails);
         editProductName.setText(productName);
         editDescription.setText(description);
 
