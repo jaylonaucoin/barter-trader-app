@@ -1,11 +1,16 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +18,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.notifications.CheckListingsService;
+import com.example.myapplication.notifications.NotificationsManager;
 import com.example.myapplication.provider_fragments.ChatFragment;
 import com.example.myapplication.provider_fragments.ListingsFragment;
 import com.example.myapplication.provider_fragments.PostFragment;
@@ -32,14 +39,40 @@ import java.util.Objects;
 public class SuccessActivity extends AppCompatActivity implements PostFragment.OnPostInteractionListener {
     private FirebaseAuth auth;
     private BottomNavigationView bottomNavigationView;
+    private NotificationsManager notificationsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         connectToFirebase();
-
+       //Ask permission for notification
+        askNotificationPermission();
+        //Setup service to send notification
+        setupNotificationService();
         // Check user role and setup UI accordingly
         checkUserRoleAndSetupUI(savedInstanceState);
+    }
+
+    private void askNotificationPermission() {
+        ActivityResultLauncher<String> requestPermissionLauncher =
+                registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+
+
+                });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+            }else {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+    private void setupNotificationService(){
+        notificationsManager = new NotificationsManager();
+        notificationsManager.createToken();
+
+        Intent serviceIntent = new Intent(this, CheckListingsService.class);
+        startService(serviceIntent);
     }
 
     // Connect to Firebase

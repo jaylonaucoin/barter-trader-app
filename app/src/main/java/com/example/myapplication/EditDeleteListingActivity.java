@@ -47,7 +47,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
             toolbar.setNavigationIcon(navIcon);
         }
         toolbar.setNavigationOnClickListener(v ->
-            onBackPressed());
+                onBackPressed());
 
         // Retrieve listing details from the intent
         String listingDetails = getIntent().getStringExtra("listingDetails");
@@ -210,8 +210,8 @@ public class EditDeleteListingActivity extends AppCompatActivity {
             });
         });
         builder.setNegativeButton("No", (dialog, which) ->
-            // Dismiss the dialog if the user clicks "No"
-            dialog.dismiss());
+                // Dismiss the dialog if the user clicks "No"
+                dialog.dismiss());
         builder.show();
     }
 

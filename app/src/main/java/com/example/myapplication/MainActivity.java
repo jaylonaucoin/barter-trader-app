@@ -1,15 +1,20 @@
 package com.example.myapplication;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
-import com.example.myapplication.notifications.NotificationWorker;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.concurrent.TimeUnit;
@@ -28,40 +33,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Start the Firebase messaging worker process
-        startFirebaseMessagingWorkerProcess();
-
         // Start LoginActivity
         launchLoginActivity();
+
     }
 
-    /**
-     * Starts the Firebase Messaging Worker process to handle periodic work.
-     */
-    private void startFirebaseMessagingWorkerProcess() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        // Handle unsuccessful token retrieval
-                        return;
-                    }
-                    String token = task.getResult();
-                    scheduleFirebaseMessagingWorker(token);
-                });
-    }
 
-    /**
-     * Schedules a periodic worker for Firebase Messaging.
-     * @param token The Firebase Messaging token.
-     */
-    private void scheduleFirebaseMessagingWorker(String token) {
-        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1, TimeUnit.HOURS)
-                .setInputData(new Data.Builder().putString("token", token).build())
-                .build();
 
-        WorkManager.getInstance(getApplicationContext())
-                .enqueueUniquePeriodicWork("firebaseMessagingWorker", ExistingPeriodicWorkPolicy.KEEP, workRequest);
-    }
+
 
     /**
      * Launches the LoginActivity.
