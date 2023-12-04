@@ -47,13 +47,14 @@ public class EditDeleteListingActivity extends AppCompatActivity {
             toolbar.setNavigationIcon(navIcon);
         }
         toolbar.setNavigationOnClickListener(v ->
-            onBackPressed());
+                onBackPressed());
 
         // Retrieve listing details from the intent
         String listingDetails = getIntent().getStringExtra("listingDetails");
         String listingKey = getIntent().getStringExtra("listingKey");
 
         // Initialize UI elements
+        TextView listingDetailsTextView = findViewById(R.id.listingDetailsTextView);
         EditText editProductName = findViewById(R.id.editProductName);
         EditText editDescription = findViewById(R.id.editDescription);
         Spinner editCategory = findViewById(R.id.editCategory);
@@ -72,6 +73,7 @@ public class EditDeleteListingActivity extends AppCompatActivity {
         String exchangePreference = listingDetailsLines[5].replace("Exchange Preference: ", "");
 
         // Set initial values for UI elements
+        listingDetailsTextView.setText(listingDetails);
         editProductName.setText(productName);
         editDescription.setText(description);
 
@@ -208,8 +210,8 @@ public class EditDeleteListingActivity extends AppCompatActivity {
             });
         });
         builder.setNegativeButton("No", (dialog, which) ->
-            // Dismiss the dialog if the user clicks "No"
-            dialog.dismiss());
+                // Dismiss the dialog if the user clicks "No"
+                dialog.dismiss());
         builder.show();
     }
 

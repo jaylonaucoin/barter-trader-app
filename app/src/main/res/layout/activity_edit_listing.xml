@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,37 +11,62 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_back"
         app:title="Edit the Listing"
-        app:titleTextColor="@android:color/white" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/clickedListing"
+        android:layout_width="411dp"
+        android:layout_height="153dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/editProductName">
+
+        <TextView
+            android:id="@+id/listingDetailsTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:text="Listing Details Go Here"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.cardview.widget.CardView>
 
     <EditText
         android:id="@+id/editProductName"
         android:layout_width="366dp"
         android:layout_height="45dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="23dp"
         android:hint="Product Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/clickedListing" />
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="274dp"
-        android:text="@string/category"
+
+    <EditText
+        android:id="@+id/editDescription"
+        android:layout_width="366dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="23dp"
+        android:hint="Description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editExchangePreference" />
+        app:layout_constraintTop_toBottomOf="@+id/editProductName" />
 
     <Spinner
         android:id="@+id/editCondition"
@@ -55,42 +79,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-    <EditText
-        android:id="@+id/editDescription"
-        android:layout_width="366dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="25dp"
-        android:hint="Description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editProductName" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="271dp"
-        android:text="@string/condition"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editCategory" />
-
-    <EditText
-        android:id="@+id/editExchangePreference"
-        android:layout_width="366dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="25dp"
-        android:hint="Exchange Preference"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editDescription" />
-
     <Spinner
         android:id="@+id/editCategory"
         android:layout_width="366dp"
@@ -102,14 +90,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
-    <Button
-        android:id="@+id/markAsAvailableCheckBox"
-        android:layout_width="200dp"
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="271dp"
+        android:text="@string/category"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editExchangePreference" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="268dp"
+        android:text="@string/condition"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editCategory" />
+
+    <EditText
+        android:id="@+id/editExchangePreference"
+        android:layout_width="366dp"
         android:layout_height="45dp"
-        android:layout_marginStart="106dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="105dp"
-        android:text="Mark as Available"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="23dp"
+        android:hint="Exchange Preference"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editDescription" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="264dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="74dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="73dp"
+        android:text="@string/deleteListing"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saveButton" />
@@ -118,58 +142,63 @@
         android:id="@+id/saveButton"
         android:layout_width="264dp"
         android:layout_height="49dp"
-        android:layout_marginStart="73dp"
-        android:layout_marginTop="21dp"
-        android:layout_marginEnd="74dp"
+        android:layout_marginStart="74dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="73dp"
         android:text="Save Changes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editCondition" />
 
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="200dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="106dp"
-        android:layout_marginEnd="105dp"
-        android:text="@string/deleteListing"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/unHideListingButton" />
+<!--    <Button-->
+<!--        android:id="@+id/markAsAvailableCheckBox"-->
+<!--        android:layout_width="269dp"-->
+<!--        android:layout_height="47dp"-->
+<!--        android:text="Mark as Available"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/listingDetailsTextView"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.521"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/clickedListing"-->
+<!--        app:layout_constraintVertical_bias="0.935" />-->
 
-    <Button
-        android:id="@+id/hideListingButton"
-        android:layout_width="200dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="105dp"
-        android:layout_marginEnd="106dp"
-        android:text="Hide Listing"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/markAsAvailableCheckBox" />
+<!--    <Button-->
+<!--        android:id="@+id/hideListingButton"-->
+<!--        android:layout_width="265dp"-->
+<!--        android:layout_height="47dp"-->
+<!--        android:text="Hide Listing"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.506"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/clickedListing"-->
+<!--        app:layout_constraintVertical_bias="0.83" />-->
 
-    <Button
-        android:id="@+id/markAsExchangedCheckBox"
-        android:layout_width="200dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="105dp"
-        android:layout_marginEnd="106dp"
-        android:text="Mark as Exchanged"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deleteButton" />
+<!--    <Button-->
+<!--        android:id="@+id/markAsExchangedCheckBox"-->
+<!--        android:layout_width="265dp"-->
+<!--        android:layout_height="47dp"-->
+<!--        android:text="Mark as Exchanged"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.513"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/clickedListing"-->
+<!--        app:layout_constraintVertical_bias="0.935" />-->
 
-    <Button
-        android:id="@+id/unHideListingButton"
-        android:layout_width="200dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="105dp"
-        android:layout_marginEnd="106dp"
-        android:text="Unhide Listing"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hideListingButton" />
+<!--    <Button-->
+<!--        android:id="@+id/unHideListingButton"-->
+<!--        android:layout_width="264dp"-->
+<!--        android:layout_height="47dp"-->
+<!--        android:layout_marginBottom="88dp"-->
+<!--        android:text="Unhide Listing"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/listingDetailsTextView"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.517"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/clickedListing"-->
+<!--        app:layout_constraintVertical_bias="0.995" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
