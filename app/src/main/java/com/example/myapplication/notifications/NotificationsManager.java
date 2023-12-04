@@ -1,13 +1,10 @@
 package com.example.myapplication.notifications;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
-
-import com.google.android.datatransport.backend.cct.BuildConfig;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONObject;
 
@@ -21,23 +18,27 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class NotificationWorker extends Worker {
+public class NotificationsManager {
 
-    private String token;
+    public NotificationsManager(){
 
-    public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
     }
+    private static String token;
 
 
-    @NonNull
-    @Override
-    public Result doWork(){
-        token = getInputData().getString("token");
-        sendMessage("Hello"); //for now it sends a notification every hour
-        return Result.success();
+    public void createToken(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+                        token = task.getResult();
+
+                    }
+                });
     }
-
 
     public void sendMessage(String body)  {
 
@@ -79,4 +80,13 @@ public class NotificationWorker extends Worker {
             }
         });
     }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        NotificationsManager.token = token;
+    }
+
 }
